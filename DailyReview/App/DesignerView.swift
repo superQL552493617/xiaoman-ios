@@ -574,7 +574,7 @@ struct IconPickerSheet: View {
     private func swatch(_ h: String) -> some View {
         let on = card.hex.uppercased() == h.uppercased()
         return Button { Feedback.tap(); card.hex = h; custom = Color(hex: h) } label: {
-            RoundedRectangle(cornerRadius: 11.4, style: .continuous).fill(Color(hex: h))
+            RoundedRectangle(cornerRadius: 11.4, style: .continuous).fill(PT.vivid(h))
                 .frame(width: 38, height: 38)
                 .overlay(RoundedRectangle(cornerRadius: 11.4, style: .continuous).strokeBorder(Color.black.opacity(0.06), lineWidth: 1))
                 .overlay {

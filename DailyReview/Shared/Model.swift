@@ -375,11 +375,14 @@ struct Prefs: Codable, Hashable {
     var noBadge = false
     var widget: WidgetPrefs?
     var myPal: [MyPalette]?
+    /// 笔记编辑页的字体 sys / round / kai、纸张颜色 white / cream / mint / sky（和网页版同名字段）
+    var noteFont: String?
+    var noteBg: String?
 
     init() {}
 
     enum CodingKeys: String, CodingKey {
-        case nick, bio, gender, avatar, weekStart, flat, home, quickItems, dateColor, mode, layout, shape, sound, haptic, daily, modules, localId, tabLabel, lockOn, aiLogs, collapsed, tabSize, line, jrFold, flatOrder, tabs, pageBg, bgImg, appFont, palette, ownHex, sndIn, sndOut, noBadge, widget, myPal
+        case nick, bio, gender, avatar, weekStart, flat, home, quickItems, dateColor, mode, layout, shape, sound, haptic, daily, modules, localId, tabLabel, lockOn, aiLogs, collapsed, tabSize, line, jrFold, flatOrder, tabs, pageBg, bgImg, appFont, palette, ownHex, sndIn, sndOut, noBadge, widget, myPal, noteFont, noteBg
     }
     /// 网页版的每日提醒字段
     private enum ProtoKeys: String, CodingKey { case remind, time }
@@ -432,6 +435,8 @@ struct Prefs: Codable, Hashable {
         noBadge = c.bool(.noBadge) ?? false
         widget = c.lenient(WidgetPrefs.self, .widget)
         myPal = c.lenient([MyPalette].self, .myPal)
+        noteFont = c.lenient(String.self, .noteFont)
+        noteBg = c.lenient(String.self, .noteBg)
     }
 
     /// 底部栏中间三格（和网页版 tabSlots 一样）

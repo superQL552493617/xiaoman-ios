@@ -1,230 +1,265 @@
 import SwiftUI
 
-// MARK: - 写笔记
+// MARK: - 写笔记（网页版 openJournal：全屏纸张，左边日期，右边标题和正文，底部工具条）
 
 struct JournalEditor: View {
     @EnvironmentObject var store: Store
     @EnvironmentObject var toaster: Toaster
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
 
     let day: String
     let entryId: String?
 
     @State private var e = JournalEntry()
-    @State private var date = Date()
+    @State private var key = DK.today
     @State private var loaded = false
     @State private var isNew = true
-    @State private var confirmDelete = false
-    @FocusState private var bodyFocused: Bool
+    @State private var snap: JournalEntry?
+    @State private var askDiscard = false
+    @State private var pickDate = false
+    @State private var pickTime = false
+    @FocusState private var focus: Field?
 
-    private var dirty: Bool {
-        guard let old = store.s.journal[day]?.first(where: { $0.id == e.id }) else { return !e.text.isEmpty || !e.title.isEmpty }
-        return old.title != e.title || old.text != e.text || old.font != e.font || DK.key(date) != day
-    }
+    enum Field { case title, body }
 
-    var body: some View {
-        VStack(spacing: 0) {
-            SheetHeader(title: isNew ? "写笔记" : "笔记") {
-                Button("取消") { dismiss() }.foregroundStyle(Theme.text2)
-            } trailing: {
-                Button("保存") { save() }
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(canSave ? Theme.text : Theme.text3)
-                    .disabled(!canSave)
-            }
-            HStack(spacing: 10) {
-                DatePicker("", selection: $date, in: ...Date(), displayedComponents: .date)
-                    .labelsHidden()
-                    .environment(\.locale, Locale(identifier: "zh_CN"))
-                Spacer()
-                Menu {
-                    Picker("字体", selection: Binding(get: { e.font ?? "sys" }, set: { e.font = $0 })) {
-                        Text("系统字体").tag("sys"); Text("圆体").tag("round"); Text("宋体").tag("kai")
-                    }
-                } label: {
-                    Image(systemName: "textformat").font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.text)
-                        .frame(width: 34, height: 34).background(Circle().fill(Theme.pill))
-                }
-                .accessibilityLabel("字体")
-                if !isNew {
-                    Button { confirmDelete = true } label: {
-                        Image(systemName: "trash").font(.system(size: 14, weight: .semibold)).foregroundStyle(Color(hex: "#E0525A"))
-                            .frame(width: 34, height: 34).background(Circle().fill(Theme.pill))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("删除")
-                }
-            }
-            .padding(.horizontal, 16).padding(.bottom, 6)
-
-            VStack(alignment: .leading, spacing: 6) {
-                TextField("标题（可不填）", text: $e.title)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(Theme.text)
-                Divider()
-                ZStack(alignment: .topLeading) {
-                    if e.text.isEmpty {
-                        Text("今天有什么想记下来的？").font(AppFont.note(e.font, size: 16)).foregroundStyle(Theme.text3)
-                            .padding(.top, 8).padding(.leading, 5)
-                    }
-                    TextEditor(text: $e.text)
-                        .font(AppFont.note(e.font, size: 16))
-                        .lineSpacing(5)
-                        .scrollContentBackground(.hidden)
-                        .focused($bodyFocused)
-                }
-            }
-            .padding(.horizontal, 16)
-            HStack {
-                Text("\(e.text.count) 字").font(.system(size: 11.5)).foregroundStyle(Theme.text3)
-                Spacer()
-                if !isNew { Text("创建于 \(DK.md(DK.key(Date(timeIntervalSince1970: e.c / 1000)))) \(DK.hm(e.c))").font(.system(size: 11.5)).foregroundStyle(Theme.text3) }
-            }
-            .padding(.horizontal, 18).padding(.vertical, 8)
-        }
-        .background(Theme.adaptive("#FFFDF8", "#1B1B1A").ignoresSafeArea())
-        .interactiveDismissDisabled(dirty)
-        .onAppear {
-            guard !loaded else { return }
-            loaded = true
-            date = DK.date(day)
-            if let id = entryId, let old = store.s.journal[day]?.first(where: { $0.id == id }) {
-                e = old; isNew = false
-            } else {
-                e = JournalEntry()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { bodyFocused = true }
-            }
-        }
-        .confirmationDialog("删除这篇笔记？", isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button("删除", role: .destructive) {
-                store.deleteJournal(e.id, on: day)
-                toaster.show("已删除", gray: true)
-                dismiss()
-            }
-        }
-    }
-
-    private var canSave: Bool { !e.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !e.title.trimmingCharacters(in: .whitespaces).isEmpty }
-
-    private func save() {
-        let to = DK.key(date)
-        if isNew { store.saveJournal(e, on: to) } else { store.moveJournal(e, from: day, to: to) }
-        Feedback.success()
-        toaster.show("已保存", gray: true)
-        dismiss()
-    }
-}
-
-// MARK: - 今日复盘（三个问题）
-
-struct ReviewSheet: View {
-    @EnvironmentObject var store: Store
-    @EnvironmentObject var toaster: Toaster
-    @Environment(\.dismiss) private var dismiss
-
-    let day: String
-    @State private var ans: [String: String] = [:]
-    @State private var existing: JournalEntry?
-    @State private var loaded = false
-
-    static let questions: [(key: String, q: String, hint: String, icon: String, hex: String)] = [
-        ("good", "今天做得好的一件事", "比如：早起没有赖床", "hand.thumbsup.fill", "#5CB874"),
-        ("less", "有点遗憾的地方", "比如：晚上刷手机太久", "cloud.drizzle.fill", "#62B6E0"),
-        ("next", "明天最想完成的一件事", "比如：读完第三章", "flag.fill", "#F29D38")
+    static let fonts: [(String, String)] = [("sys", "系统"), ("round", "圆体"), ("kai", "楷体")]
+    static let papers: [(id: String, name: String, light: String, dark: String)] = [
+        ("white", "白色", "#FFFFFF", "#1B1B1A"), ("cream", "奶白", "#FBF8F2", "#2B2925"), ("mint", "薄荷", "#EEF7F0", "#232B26"), ("sky", "天青", "#EEF4FA", "#222830")
     ]
 
+    private var dark: Bool { scheme == .dark }
+    private var fontId: String { store.s.prefs.noteFont ?? "sys" }
+    private var paper: (id: String, name: String, light: String, dark: String) { Self.papers.first { $0.id == store.s.prefs.noteBg } ?? Self.papers[0] }
+    private var bg: Color { Color(hex: dark ? paper.dark : paper.light) }
+    private var ink: Color { Theme.adaptive("#2B2A27", "#F2EDE4") }
+    private var has: Bool { !e.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !e.title.trimmingCharacters(in: .whitespaces).isEmpty }
+    private var changed: Bool {
+        if isNew { return has }
+        guard let o = snap else { return false }
+        return o.title != e.title || o.text != e.text || o.c != e.c || key != day
+    }
+    private var cdate: Date { Date(timeIntervalSince1970: e.c / 1000) }
+
+    static func font(_ id: String, size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        switch id {
+        case "round": return .system(size: size, weight: weight, design: .rounded)
+        case "kai": return .custom("STKaiti", size: size).weight(weight)
+        default: return .system(size: size, weight: weight)
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            SheetHeader(title: day == DK.today ? "今日复盘" : "\(DK.md(day)) 复盘") {
-                Button("取消") { dismiss() }.foregroundStyle(Theme.text2)
-            } trailing: {
-                Button("保存") { save() }
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(hasAny ? Theme.text : Theme.text3)
-                    .disabled(!hasAny)
-            }
-            ScrollView {
-                VStack(spacing: 14) {
-                    dayCheckins
-                    ForEach(Self.questions.indices, id: \.self) { i in
-                        let q = Self.questions[i]
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack(spacing: 6) {
-                                Image(systemName: q.icon).font(.system(size: 13)).foregroundStyle(Color(hex: q.hex))
-                                Text(q.q).font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.text)
-                            }
-                            TextField(q.hint, text: Binding(get: { ans[q.key] ?? "" }, set: { ans[q.key] = $0 }), axis: .vertical)
-                                .font(.system(size: 15))
-                                .lineLimit(2...6)
-                                .padding(12)
-                                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.tile))
+            top
+            HStack(alignment: .top, spacing: 14) {
+                side
+                VStack(alignment: .leading, spacing: 0) {
+                    TextField("", text: $e.title, prompt: Text("标题（可选）").foregroundStyle(Color(hex: "#C5BDB1")))
+                        .font(Self.font(fontId, size: 24, weight: .heavy))
+                        .foregroundStyle(ink)
+                        .focused($focus, equals: .title)
+                        .submitLabel(.next)
+                        .onSubmit { focus = .body }
+                        .padding(.top, 2).padding(.bottom, 8)
+                        .onChange(of: e.title) { _, v in if v.count > 30 { e.title = String(v.prefix(30)) } }
+                    ZStack(alignment: .topLeading) {
+                        if e.text.isEmpty {
+                            Text("点一下开始写。今天发生了什么、想到了什么，随手记下来……")
+                                .font(Self.font(fontId, size: 18)).lineSpacing(11)
+                                .foregroundStyle(Color(hex: "#B9B2A7"))
+                                .padding(.top, 8).padding(.leading, 5)
+                                .allowsHitTesting(false)
                         }
-                    }
-                    if existing != nil {
-                        Button("删除这次复盘", role: .destructive) {
-                            if let e = existing { store.deleteJournal(e.id, on: day) }
-                            dismiss()
-                        }
-                        .font(.system(size: 14)).padding(.top, 6)
+                        TextEditor(text: $e.text)
+                            .font(Self.font(fontId, size: 18)).lineSpacing(11)
+                            .foregroundStyle(ink)
+                            .scrollContentBackground(.hidden)
+                            .focused($focus, equals: .body)
+                            .onChange(of: e.text) { _, v in if v.count > 5000 { e.text = String(v.prefix(5000)) } }
                     }
                 }
-                .padding(16)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 8)
+            .frame(maxHeight: .infinity, alignment: .top)
+            toolbar
         }
-        .background(Theme.pageBg.ignoresSafeArea())
-        .presentationDragIndicator(.visible)
-        .onAppear {
-            guard !loaded else { return }
-            loaded = true
-            if let e = store.s.journalList(day).first(where: { $0.isReview }) {
-                existing = e
-                ans = e.ans ?? [:]
+        .background(bg.ignoresSafeArea())
+        .animation(.easeOut(duration: 0.2), value: paper.id)
+        .onAppear(perform: load)
+        .confirmationDialog(isNew ? "放弃这篇笔记？" : "放弃这次修改？", isPresented: $askDiscard, titleVisibility: .visible) {
+            Button("放弃", role: .destructive) { dismiss() }
+            Button("继续写", role: .cancel) {}
+        } message: { Text(isNew ? "写下的内容不会保存。" : "会恢复成打开前的内容。") }
+    }
+
+    // MARK: 顶栏：取消 · 笔记 · 完成
+
+    private var top: some View {
+        ZStack {
+            Text("笔记").font(.system(size: 18, weight: .bold)).foregroundStyle(ink)
+            HStack {
+                Button { if changed { askDiscard = true } else { dismiss() } } label: {
+                    Text("取消").font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.adaptive("#4A3F45", "#ECE6DA"))
+                        .padding(.horizontal, 18).frame(height: 44)
+                        .background(Capsule().fill(dark ? Color.white.opacity(0.08) : Color.black.opacity(0.06)))
+                }
+                .buttonStyle(PressScale(scale: 0.95))
+                Spacer()
+                Button { save() } label: {
+                    Text("完成").font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(has ? Color(hex: "#4A3F45") : Color(hex: "#B9B2A7"))
+                        .padding(.horizontal, 18).frame(height: 44)
+                        .background(Capsule().fill(has ? Color(hex: "#FFE7A3") : (dark ? Color.white.opacity(0.08) : Color.black.opacity(0.06))))
+                        .overlay { if has { Capsule().strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5) } }
+                }
+                .buttonStyle(PressScale(scale: 0.95))
+                .disabled(!has)
             }
+        }
+        .padding(.horizontal, 16).padding(.top, 10).padding(.bottom, 6)
+    }
+
+    // MARK: 左边：日、周、时间
+
+    private var side: some View {
+        let d = DK.date(key)
+        return VStack(alignment: .leading, spacing: 4) {
+            Text("\(DK.day(d))日").font(.system(size: 26, weight: .heavy)).foregroundStyle(ink).lineLimit(1).fixedSize()
+            Text("周" + DK.wdName[DK.weekday(key)]).font(.system(size: 14)).foregroundStyle(Theme.adaptive("#5B4F45", "#CFC6B8"))
+            Button { focus = nil; pickTime = true } label: {
+                Text(DK.hm(e.c)).font(.system(size: 14)).monospacedDigit().foregroundStyle(Color(hex: "#A69C90"))
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 14)
+            .popover(isPresented: $pickTime) {
+                DatePicker("", selection: Binding(get: { cdate }, set: { setTime($0) }), displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.wheel).labelsHidden()
+                    .environment(\.locale, Locale(identifier: "zh_CN"))
+                    .frame(width: 260, height: 180)
+                    .presentationCompactAdaptation(.popover)
+            }
+        }
+        .padding(.trailing, 12)
+        .frame(width: 66, alignment: .leading)
+        .frame(minHeight: 150, alignment: .top)
+        .overlay(alignment: .trailing) {
+            Rectangle().fill(dark ? Color.white.opacity(0.12) : Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.12)).frame(width: 1.5)
         }
     }
 
-    /// 顶部显示当天完成了哪些
-    @ViewBuilder private var dayCheckins: some View {
-        let list = store.s.dayCheckins(day).filter { !$0.card.isNote }
-        let total = store.s.visibleCards(on: day).filter { !$0.isNote }.count
-        VStack(alignment: .leading, spacing: 10) {
-            Text("今天完成了 \(list.count)/\(max(total, list.count)) 个习惯").font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.text2)
-            if !list.isEmpty {
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
-                        ForEach(list.indices, id: \.self) { i in
-                            let x = list[i]
-                            VStack(spacing: 4) {
-                                HabitCircle(card: x.card, checked: true, size: 40)
-                                Text(x.card.name).font(.system(size: 10.5)).foregroundStyle(Theme.text2).lineLimit(1)
-                            }
-                            .frame(width: 54)
-                        }
-                    }
+    // MARK: 底部工具条：日期 | 字体 | 纸张颜色
+
+    private var toolbar: some View {
+        HStack(spacing: 0) {
+            Button { focus = nil; Feedback.tap(); pickDate = true } label: {
+                HStack(spacing: 4) {
+                    Image("stg_calendar").renderingMode(.template).resizable().scaledToFit().frame(width: 17, height: 17)
+                        .foregroundStyle(Color(hex: dark ? "#A9D59C" : "#7DBE6E"))
+                    Text("\(DK.month(DK.date(key)))月\(DK.day(DK.date(key)))日").font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1).fixedSize()
                 }
-                .scrollIndicators(.hidden)
+                .padding(.horizontal, 4).frame(height: 34)
+            }
+            .buttonStyle(.plain)
+            .popover(isPresented: $pickDate) { datePop.presentationCompactAdaptation(.popover) }
+            sep
+            HStack(spacing: 4) {
+                ForEach(Self.fonts, id: \.0) { f in
+                    let on = fontId == f.0
+                    Button { Feedback.tap(); store.updatePrefs { $0.noteFont = f.0 } } label: {
+                        Text(f.1).font(Self.font(f.0, size: 13.5, weight: on ? .bold : .regular))
+                            .foregroundStyle(on ? Color(hex: "#2E2A27") : Theme.adaptive("#7A6F64", "#CFC6B8"))
+                            .padding(.horizontal, 6).frame(height: 34)
+                            .background { if on { RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#F2EDE4")) } }
+                            .overlay { if on { RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5) } }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            sep
+            HStack(spacing: 4) {
+                ForEach(Self.papers, id: \.id) { p in
+                    let on = paper.id == p.id
+                    Button { Feedback.tap(); store.updatePrefs { $0.noteBg = p.id } } label: {
+                        Circle().fill(Color(hex: dark && p.id == "white" ? p.dark : p.light))
+                            .overlay(Circle().strokeBorder(dark && p.id == "white" ? Color.white.opacity(0.3) : Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.25), lineWidth: 1.5))
+                            .frame(width: 24, height: 24)
+                            .overlay { if on { Circle().stroke(Color(hex: "#4A3F45"), lineWidth: 1.5).padding(-3.5) } }
+                            .frame(width: 30, height: 34)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("背景：\(p.name)")
+                }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Theme.adaptive("#F2F8F3", "#232B25")))
+        .padding(.horizontal, 6).padding(.vertical, 6)
+        .frame(maxWidth: .infinity)
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(dark ? Color.white.opacity(0.06) : Color.white.opacity(0.75)))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(dark ? Color.white.opacity(0.08) : Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.10), lineWidth: 1.5))
+        .padding(.horizontal, 14).padding(.top, 6).padding(.bottom, 10)
     }
 
-    private var hasAny: Bool { ans.values.contains { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
+    private var sep: some View {
+        Rectangle().fill(dark ? Color.white.opacity(0.12) : Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.12)).frame(width: 1.5, height: 22).padding(.horizontal, 3)
+    }
+
+    private var datePop: some View {
+        VStack(spacing: 8) {
+            DatePicker("", selection: Binding(get: { DK.date(key) }, set: { setDay(DK.key($0)) }), in: ...Date(), displayedComponents: .date)
+                .datePickerStyle(.graphical).labelsHidden()
+                .environment(\.locale, Locale(identifier: "zh_CN"))
+                .tint(Color(hex: "#7DBE6E"))
+            HStack(spacing: 10) {
+                Button("昨天") { setDay(DK.addKey(DK.today, -1)); pickDate = false }
+                Button("今天") { setDay(DK.today); pickDate = false }
+            }
+            .font(.system(size: 14, weight: .semibold)).buttonStyle(.bordered).tint(Color(hex: "#5E9E52"))
+        }
+        .padding(12)
+        .frame(width: 330)
+    }
+
+    // MARK: 数据
+
+    private func load() {
+        guard !loaded else { return }
+        loaded = true
+        key = day
+        if let id = entryId, let old = store.s.journal[day]?.first(where: { $0.id == id }) {
+            e = old; isNew = false; snap = old
+        } else {
+            e = JournalEntry()
+            if day != DK.today {
+                // 补写以前的笔记：日期用那天，时间用现在
+                let n = Date(), comps = DK.calendar.dateComponents([.hour, .minute], from: n)
+                let x = DK.calendar.date(bySettingHour: comps.hour ?? 12, minute: comps.minute ?? 0, second: 0, of: DK.date(day)) ?? n
+                e.c = x.timeIntervalSince1970 * 1000
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { focus = .body }
+        }
+    }
+
+    private func setDay(_ v: String) {
+        guard v != key, v <= DK.today else { return }
+        let comps = DK.calendar.dateComponents([.hour, .minute], from: cdate)
+        let x = DK.calendar.date(bySettingHour: comps.hour ?? 12, minute: comps.minute ?? 0, second: 0, of: DK.date(v)) ?? DK.date(v)
+        e.c = x.timeIntervalSince1970 * 1000
+        key = v
+        Feedback.tap()
+    }
+
+    private func setTime(_ t: Date) {
+        let comps = DK.calendar.dateComponents([.hour, .minute], from: t)
+        let x = DK.calendar.date(bySettingHour: comps.hour ?? 0, minute: comps.minute ?? 0, second: 0, of: DK.date(key)) ?? t
+        e.c = x.timeIntervalSince1970 * 1000
+    }
 
     private func save() {
-        var e = existing ?? JournalEntry(title: "今日复盘", kind: "review")
-        var clean: [String: String] = [:]
-        for (k, v) in ans {
-            let t = v.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !t.isEmpty { clean[k] = t }
-        }
-        e.ans = clean
-        e.text = Self.questions.compactMap { q in clean[q.key].map { "\(q.q)\n\($0)" } }.joined(separator: "\n\n")
-        store.saveJournal(e, on: day)
-        Feedback.success()
-        toaster.show("复盘已保存", gray: true)
+        guard has else { return }
+        Feedback.tap()
+        if isNew { store.saveJournal(e, on: key) } else { store.moveJournal(e, from: day, to: key) }
+        toaster.show(isNew ? "笔记已保存" : "已保存", gray: true)
         dismiss()
     }
 }
@@ -275,10 +310,9 @@ struct MemoryView: View {
         }
         .background((asTab ? AnyView(PageBG()) : AnyView(Theme.adaptive("#FFFFFF", "#1E1E1D"))).ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(item: $editing) { t in
+        .fullScreenCover(item: $editing) { t in
             JournalEditor(day: t.day, entryId: t.entryId)
                 .environmentObject(store).environmentObject(toaster)
-                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $showJr) {
             JournalRangeSheet(from: sel, to: sel, label: "\(DK.month(DK.date(sel)))月\(DK.day(DK.date(sel)))日")

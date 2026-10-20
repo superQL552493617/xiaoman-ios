@@ -1243,6 +1243,7 @@ struct JournalRangeSheet: View {
     let label: String
     var title: String? = nil
     @State private var edit: JournalTarget?
+    @State private var pop: PopMenuState?
 
     var body: some View {
         let all = store.s.journal.filter { $0.key >= from && $0.key <= to }
@@ -1260,42 +1261,21 @@ struct JournalRangeSheet: View {
                 }
             }
         }
-        .sheet(item: $edit) { t in
+        .overlay { PopMenuLayer(state: $pop) }
+        .fullScreenCover(item: $edit) { t in
             JournalEditor(day: t.day, entryId: t.entryId).environmentObject(store).environmentObject(toaster)
-                .presentationDragIndicator(.visible)
         }
     }
 
     private func jrCard(_ k: String, _ e: JournalEntry) -> some View {
-        let untitled = e.title.trimmingCharacters(in: .whitespaces).isEmpty
-        let d = Date(timeIntervalSince1970: e.c / 1000)
-        return Button { edit = JournalTarget(day: k, entryId: e.id) } label: {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text(e.displayTitle).font(.system(size: 14.5, weight: .medium)).foregroundStyle(untitled ? PT.sub : PT.ink).lineLimit(1)
-                        .padding(.horizontal, 10).padding(.vertical, 4)
-                        .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(PT.jrPill))
-                    Spacer(minLength: 8)
-                    Menu {
-                        Button { edit = JournalTarget(day: k, entryId: e.id) } label: { Label("编辑", systemImage: "square.and.pencil") }
-                        Button(role: .destructive) { store.deleteJournal(e.id, on: k); toaster.show("笔记已删除") } label: { Label("删除", systemImage: "trash") }
-                    } label: {
-                        Image(systemName: "ellipsis").rotationEffect(.degrees(90))
-                            .font(.system(size: 13, weight: .bold)).foregroundStyle(PT.jrMore)
-                            .frame(width: 34, height: 34).background(Circle().fill(PT.jrPill))
-                    }
-                }
-                .frame(height: 34)
-                Text("\(DK.year(d))年\(DK.month(d))月\(DK.day(d))日 周\(DK.wdName[DK.weekday(DK.key(d))]) \(DK.hm(e.c))")
-                    .font(.system(size: 12)).foregroundStyle(PT.jrTime).padding(.top, 6).padding(.bottom, 2)
-                Text(e.text.isEmpty ? " " : e.text).font(.system(size: 14.5)).foregroundStyle(PT.ink).lineLimit(3).multilineTextAlignment(.leading)
-            }
-            .padding(.leading, 14).padding(.trailing, 12).padding(.top, 10).padding(.bottom, 9)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(PT.jrBg))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(PT.jrLine, lineWidth: 1))
+        JournalCardView(day: k, entry: e, lines: 3) {
+            edit = JournalTarget(day: k, entryId: e.id)
+        } onMore: { f in
+            pop = store.journalMenu(day: k, entry: e, anchor: f, toaster: toaster) { edit = JournalTarget(day: k, entryId: e.id) }
+        } onDelete: {
+            withAnimation(.easeOut(duration: 0.25)) { store.deleteJournal(e.id, on: k) }
+            toaster.show("已删除", gray: true)
         }
-        .buttonStyle(.plain)
     }
 }
 

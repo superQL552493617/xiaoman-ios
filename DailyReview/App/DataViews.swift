@@ -153,8 +153,8 @@ struct ExportView: View {
                 Button { export("打卡记录", Backup.recordRows(store.s, from: span.0, to: span.1)) } label: {
                     RowLabel(icon: "checklist", title: "打卡记录", sub: "\(count(Backup.recordRows(store.s, from: span.0, to: span.1))) 条，含打卡时间和日志")
                 }
-                Button { export("笔记和复盘", Backup.noteRows(store.s, from: span.0, to: span.1)) } label: {
-                    RowLabel(icon: "book.closed", title: "笔记和复盘", sub: "\(count(Backup.noteRows(store.s, from: span.0, to: span.1))) 篇")
+                Button { export("笔记", Backup.noteRows(store.s, from: span.0, to: span.1)) } label: {
+                    RowLabel(icon: "book.closed", title: "笔记", sub: "\(count(Backup.noteRows(store.s, from: span.0, to: span.1))) 篇")
                 }
                 Button { export("习惯列表", Backup.cardRows(store.s)) } label: {
                     RowLabel(icon: "square.grid.2x2", title: "习惯列表", sub: "\(store.s.cards.count + store.s.archived.count) 个（不受时间范围影响）")

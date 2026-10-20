@@ -4,6 +4,8 @@ import SwiftUI
 enum PT {
     // 页面
     static let bg = Theme.adaptive("#FFFFFF", "#1B1B1A")
+    /// 主页面（打卡、我的）深色模式下的底色，比弹窗再黑一点
+    static let pageDark = Color(hex: "#111110")
     static let ink = Theme.adaptive("#232326", "#F2F2F7")          // 标题、主文字
     static let body = Theme.adaptive("#1C1C1E", "#F2F2F7")
     static let sub = Theme.adaptive("#6E6E73", "#A1A1A6")          // 次要说明
@@ -35,11 +37,13 @@ enum PT {
 
     /// 打卡后的填充色、边框色
     static func fillOn(_ hex: String, dark: Bool) -> Color {
-        let h = HexColor(hex)
-        return dark ? h.mix(HexColor("#1B1B1A"), 0.30).color : h.mixWhite(0.22).color
+        let h = HexColor(hex).vivid
+        return dark ? h.mix(HexColor("#121211"), 0.16).color : h.mixWhite(0.07).color
     }
+    /// 卡片颜色（更鲜艳的版本）
+    static func vivid(_ hex: String) -> Color { HexColor(hex).vivid.color }
     static func ringOn(_ hex: String, dark: Bool) -> Color {
-        let h = HexColor(hex)
+        let h = HexColor(hex).vivid
         return dark ? h.mixWhite(0.20).color : h.mix(HexColor("#1A1A1A"), 0.45).color
     }
 
@@ -59,5 +63,7 @@ enum PT {
     static func nameSize(_ layout: String) -> CGFloat { layout == "compact" ? 11 : layout == "dense" ? 12 : 13 }
     static func nameGap(_ layout: String) -> CGFloat { layout == "compact" ? 6 : layout == "dense" ? 7 : 10 }
     static func rowGap(_ layout: String) -> CGFloat { layout == "compact" ? 12 : layout == "dense" ? 16 : 22 }
+    /// 网格按 56 排版；图标本身画小一点（50）
     static let dot: CGFloat = 56
+    static let dotSize: CGFloat = 50
 }

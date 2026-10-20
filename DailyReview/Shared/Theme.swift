@@ -49,6 +49,31 @@ struct HexColor {
 
     var luminance: Double { 0.2126 * r + 0.7152 * g + 0.0722 * b }
 
+    /// 提高饱和度（HSL 里的 S 乘以 k，亮度不变）
+    func saturated(_ k: Double) -> HexColor {
+        let mx = max(r, g, b), mn = min(r, g, b), l = (mx + mn) / 2
+        guard mx - mn > 0.0001 else { return self }
+        let d = mx - mn
+        var s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn)
+        var h: Double
+        if mx == r { h = (g - b) / d + (g < b ? 6 : 0) } else if mx == g { h = (b - r) / d + 2 } else { h = (r - g) / d + 4 }
+        h /= 6
+        s = min(1, s * k)
+        let q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q
+        func f(_ t0: Double) -> Double {
+            var t = t0
+            if t < 0 { t += 1 }; if t > 1 { t -= 1 }
+            if t < 1.0 / 6 { return p + (q - p) * 6 * t }
+            if t < 0.5 { return q }
+            if t < 2.0 / 3 { return p + (q - p) * (2.0 / 3 - t) * 6 }
+            return p
+        }
+        return HexColor(r: f(h + 1.0 / 3), g: f(h), b: f(h - 1.0 / 3))
+    }
+
+    /// 界面上显示卡片颜色时统一用这个：比存下来的颜色更鲜艳一些
+    var vivid: HexColor { saturated(1.2) }
+
     var hex: String {
         String(format: "#%02X%02X%02X", Int((r * 255).rounded()), Int((g * 255).rounded()), Int((b * 255).rounded()))
     }

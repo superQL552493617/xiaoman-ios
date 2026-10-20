@@ -10,7 +10,6 @@ struct TodayView: View {
 
     @State private var sel = DK.today
     @State private var stripOpen = true
-    @State private var showMood = false
     @State private var sparkle = 0
     @State private var pulses: [String: Int] = [:]
     @State private var lastAllDone: [String: Bool] = [:]
@@ -52,12 +51,6 @@ struct TodayView: View {
         .onChange(of: sel) { _, _ in noteAllDone(animate: false) }
         .onAppear { if let k = router.goDay { sel = k; router.goDay = nil } }
         .onChange(of: router.goDay) { _, k in if let k { withAnimation { sel = k }; router.goDay = nil } }
-        .confirmationDialog("今天的心情", isPresented: $showMood, titleVisibility: .visible) {
-            ForEach(Mood.all) { m in
-                Button(m.name) { store.setMood(m.id, on: sel); Feedback.tap() }
-            }
-            if store.s.moodOf(sel) != nil { Button("清除心情", role: .destructive) { store.setMood(nil, on: sel) } }
-        }
     }
 
     // MARK: 顶部：标题 + 日期条（固定在上面，内容从下面滑过）
@@ -65,15 +58,18 @@ struct TodayView: View {
     private var topFix: some View {
         VStack(spacing: 0) {
             header
-            if stripOpen {
-                DateStrip(sel: $sel, dateColor: P.dateColor)
-                    .frame(height: 78)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-            }
+            // 日期条一直留在界面里，只改变高度，展开收起时不用重新排版 800 天的日期
+            DateStrip(sel: $sel, dateColor: P.dateColor)
+                .frame(height: 78)
+                .opacity(stripOpen ? 1 : 0)
+                .offset(y: stripOpen ? 0 : -24)
+                .frame(height: stripOpen ? 78 : 0, alignment: .top)
+                .clipped()
+                .allowsHitTesting(stripOpen)
             Rectangle().fill(PT.hairline).frame(height: 1)
         }
         .background(
-            (scheme == .dark ? Color(hex: "#1B1B1A").opacity(0.84) : Color(hex: P.pageBg == "custom" ? "#FFFFFF" : PageTheme.base(P.pageBg)).opacity(0.88))
+            (scheme == .dark ? Color(hex: "#111110").opacity(0.86) : Color(hex: P.pageBg == "custom" ? "#FFFFFF" : PageTheme.base(P.pageBg)).opacity(0.88))
                 .background(.ultraThinMaterial)
                 .ignoresSafeArea(edges: .top)
         )
@@ -88,7 +84,7 @@ struct TodayView: View {
     private var header: some View {
         Button {
             Feedback.tap()
-            withAnimation(.easeInOut(duration: 0.3)) { stripOpen.toggle() }
+            withAnimation(.spring(response: 0.34, dampingFraction: 0.92)) { stripOpen.toggle() }
         } label: {
             VStack(spacing: 2) {
                 HStack(spacing: 6) {
@@ -123,29 +119,32 @@ struct TodayView: View {
 
     @ViewBuilder private func tray(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            if P.home.quick { QuickRow(day: sel, showMood: $showMood).padding(.horizontal, 12).padding(.bottom, 12) }
+            if P.home.quick { QuickRow(day: sel).padding(.horizontal, 12).padding(.bottom, 12) }
             if P.home.jr { JournalStrip(day: sel) }
-            trayHead.padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 14)
-            groupsView(width: width)
-            Text(isToday ? "今天的都完成了，真不错" : "这一天的都完成了，真不错")
-                .font(.system(size: 13))
-                .foregroundStyle(PT.cheer)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 88)
-                .opacity(allDone && P.home.cheer ? 1 : 0)
-                .animation(.easeOut(duration: 0.3), value: allDone)
-        }
-        .padding(.horizontal, 2)
-        .padding(.top, 4)
-        .contentShape(Rectangle())
-        .simultaneousGesture(
+            VStack(alignment: .leading, spacing: 0) {
+                trayHead.padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 14)
+                groupsView(width: width)
+                Text(isToday ? "今天的都完成了，真不错" : "这一天的都完成了，真不错")
+                    .font(.system(size: 13))
+                    .foregroundStyle(PT.cheer)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 88)
+                    .opacity(allDone && P.home.cheer ? 1 : 0)
+                    .animation(.easeOut(duration: 0.3), value: allDone)
+            }
+            .contentShape(Rectangle())
+            // 左右滑动换一天（笔记卡片上的左滑留给删除）
+            .simultaneousGesture(
             DragGesture(minimumDistance: 30).onEnded { v in
                 let dx = v.translation.width, dy = v.translation.height
                 guard abs(dx) > 70, abs(dx) > abs(dy) * 1.6 else { return }
                 Feedback.tap()
                 withAnimation(.easeOut(duration: 0.2)) { sel = DK.addKey(sel, dx < 0 ? 1 : -1) }
             }
-        )
+            )
+        }
+        .padding(.horizontal, 2)
+        .padding(.top, 4)
     }
 
     // MARK: 「日常打卡」标题行
@@ -374,7 +373,7 @@ struct BackTodayButton: View {
                 .opacity(breathe ? 0.9 : 0.28)
         }
         .buttonStyle(.plain)
-        .onAppear { withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) { breathe = true } }
+        .onAppear { withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) { breathe = true } }
     }
 }
 
@@ -465,16 +464,19 @@ struct DateStrip: View {
     }
 }
 
-// MARK: - 顶部快捷栏（笔记 / 回忆 / 心情 / 复盘）
+// MARK: - 顶部快捷栏（笔记 / 回忆 / 心情）
 
 struct QuickRow: View {
     @EnvironmentObject var store: Store
     @EnvironmentObject var router: Router
+    @EnvironmentObject var toaster: Toaster
     let day: String
-    @Binding var showMood: Bool
+    @State private var moodFrame: CGRect = .zero
+
+    static let ids = ["jr", "time", "mood"]
 
     var body: some View {
-        let ids = ["jr", "time", "mood", "rev"].filter { store.s.prefs.quickOn($0) }
+        let ids = Self.ids.filter { store.s.prefs.quickOn($0) }
         if !ids.isEmpty {
             HStack(spacing: 0) {
                 ForEach(Array(ids.enumerated()), id: \.element) { i, id in
@@ -489,35 +491,43 @@ struct QuickRow: View {
     }
 
     @ViewBuilder private func button(_ id: String) -> some View {
-        Button {
+        let b = Button {
             Feedback.tap()
             switch id {
             case "jr": router.journal = JournalTarget(day: day)
             case "time": router.memory = true
-            case "mood": showMood = true
-            default: router.review = DayTarget(day: day)
+            default: openMood()
             }
         } label: {
             HStack(spacing: 4) {
                 switch id {
                 case "jr": icon("q_note"); Text("笔记")
                 case "time": icon("q_memory"); Text("回忆")
-                case "mood":
+                default:
                     if let m = store.s.moodOf(day) { icon(m.asset); Text(m.name) } else { icon("q_mood"); Text("心情") }
-                default: icon("q_review"); Text("复盘")
                 }
             }
             .font(.system(size: 13, weight: .medium)).tracking(0.2)
             .foregroundStyle(PT.quickInk)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .overlay(alignment: .topTrailing) {
-                if id == "rev", store.s.journalList(day).contains(where: { $0.isReview }) {
-                    Circle().fill(PT.reviewDot).frame(width: 6, height: 6).padding(.top, 8).padding(.trailing, 10)
-                }
-            }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        if id == "mood" { b.readFrame($moodFrame) } else { b }
+    }
+
+    /// 网页版 openMood：按钮下面弹出小菜单，再点一次当前心情就是清除
+    private func openMood() {
+        let cur = store.s.moodOf(day)?.id
+        let d = DK.date(day)
+        router.pop = PopMenuState(anchor: moodFrame, title: "\(DK.month(d))月\(DK.day(d))日 心情怎么样", width: 200,
+                                  items: Mood.all.map { m in
+            PopItem(label: m.name, icon: .asset(m.asset), on: cur == m.id) { [store, toaster] in
+                store.setMood(cur == m.id ? nil : m.id, on: day)
+                Feedback.tap()
+                toaster.show(cur == m.id ? "已清除这天的心情" : "记下了：\(m.name)", gray: true)
+            }
+        })
     }
 
     private func icon(_ name: String) -> some View { Image(name).resizable().scaledToFit().frame(width: 21, height: 21) }
@@ -528,10 +538,11 @@ struct QuickRow: View {
 struct JournalStrip: View {
     @EnvironmentObject var store: Store
     @EnvironmentObject var router: Router
+    @EnvironmentObject var toaster: Toaster
     let day: String
 
     var body: some View {
-        let list = store.s.journalList(day).filter { !$0.isReview }
+        let list = store.s.journalList(day)
         if !list.isEmpty {
             let folded = store.s.prefs.jrFold
             VStack(alignment: .leading, spacing: 0) {
@@ -552,49 +563,26 @@ struct JournalStrip: View {
                 .buttonStyle(.plain)
                 .padding(.bottom, 14)
                 if !folded {
-                    VStack(spacing: 7.5) {
-                        ForEach(list) { e in card(e) }
+                    VStack(spacing: 8) {
+                        ForEach(list) { e in
+                            JournalCardView(day: day, entry: e) {
+                                router.journal = JournalTarget(day: day, entryId: e.id)
+                            } onMore: { f in
+                                router.pop = store.journalMenu(day: day, entry: e, anchor: f, toaster: toaster) {
+                                    router.journal = JournalTarget(day: day, entryId: e.id)
+                                }
+                            } onDelete: {
+                                withAnimation(.easeOut(duration: 0.25)) { store.deleteJournal(e.id, on: day) }
+                                toaster.show("已删除", gray: true)
+                            }
+                            .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading).combined(with: .opacity)))
+                        }
                     }
                     .transition(.opacity)
                 }
             }
             .padding(.top, 2).padding(.bottom, 20)
         }
-    }
-
-    private func card(_ e: JournalEntry) -> some View {
-        let untitled = e.title.trimmingCharacters(in: .whitespaces).isEmpty
-        let first = e.text.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .newlines).first ?? ""
-        return Button { router.journal = JournalTarget(day: day, entryId: e.id) } label: {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text(e.displayTitle).font(.system(size: 14.5, weight: .medium))
-                        .foregroundStyle(untitled ? PT.sub : PT.ink).lineLimit(1)
-                        .padding(.horizontal, 10).padding(.vertical, 4)
-                        .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(PT.jrPill))
-                    Spacer(minLength: 8)
-                    Image(systemName: "ellipsis").rotationEffect(.degrees(90))
-                        .font(.system(size: 13, weight: .bold)).foregroundStyle(PT.jrMore)
-                        .frame(width: 34, height: 34).background(Circle().fill(PT.jrPill))
-                }
-                .frame(height: 34)
-                Text(fullDT(e.c)).font(.system(size: 12)).foregroundStyle(PT.jrTime).padding(.top, 6).padding(.bottom, 2)
-                Text(first.isEmpty ? " " : first).font(.system(size: 14.5)).foregroundStyle(PT.ink).lineLimit(1)
-            }
-            .padding(.leading, 14).padding(.trailing, 12).padding(.top, 10).padding(.bottom, 9)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(PT.jrBg))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(PT.jrLine, lineWidth: 1))
-            .compositingGroup()
-            .shadow(color: Color(red: 60/255, green: 50/255, blue: 20/255).opacity(0.25), radius: 6, y: 8)
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func fullDT(_ ms: Double) -> String {
-        let d = Date(timeIntervalSince1970: ms / 1000)
-        let k = DK.key(d)
-        return "\(DK.year(d))年\(DK.month(d))月\(DK.day(d))日 周\(DK.wdName[DK.weekday(k)]) \(DK.hm(ms))"
     }
 }
 

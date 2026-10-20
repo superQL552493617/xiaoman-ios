@@ -359,9 +359,8 @@ struct EventsPage: View {
                 .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(Theme.adaptive("#EAE3D6", "#3A3732"), lineWidth: 1.5))
             }
         }
-        .sheet(item: $edit) { t in
+        .fullScreenCover(item: $edit) { t in
             JournalEditor(day: t.day, entryId: t.entryId).environmentObject(store).environmentObject(toaster)
-                .presentationDragIndicator(.visible)
         }
     }
 

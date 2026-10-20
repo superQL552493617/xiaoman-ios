@@ -7,7 +7,7 @@ struct ProtoDot: View {
     var on: Bool
     var shape: String
     var line: String
-    var size: CGFloat = PT.dot
+    var size: CGFloat = PT.dotSize
     /// 每次打卡加 1，用来触发动画
     var pulse: Int = 0
 
@@ -43,7 +43,7 @@ struct ProtoDot: View {
             if card.ic != "img" { glyph.modifier(ShapeIconFit(shape: shape)) }
             // 涟漪
             ForEach(ripples) { r in
-                cs.stroke(Color(hex: card.hex), lineWidth: 2)
+                cs.stroke(PT.vivid(card.hex), lineWidth: 2)
                     .scaleEffect(r.go ? r.to : 1)
                     .opacity(r.go ? 0 : r.opacity)
                     .animation(.timingCurve(0.2, 0.7, 0.3, 1, duration: r.ms).delay(r.delay), value: r.go)
@@ -120,8 +120,8 @@ struct ShapeIconFit: ViewModifier {
     let shape: String
     func body(content: Content) -> some View {
         switch shape {
-        case "onigiri": content.scaleEffect(0.86).offset(y: PT.dot * 0.58 * 0.07)
-        case "heart": content.scaleEffect(0.84).offset(y: -PT.dot * 0.58 * 0.03)
+        case "onigiri": content.scaleEffect(0.86).offset(y: PT.dotSize * 0.58 * 0.07)
+        case "heart": content.scaleEffect(0.84).offset(y: -PT.dotSize * 0.58 * 0.03)
         case "flower", "scallop": content.scaleEffect(0.92)
         default: content
         }
@@ -137,12 +137,17 @@ struct ProtoCell: View {
     var line: String
     var pulse: Int
     var width: CGFloat
+    @Environment(\.colorScheme) private var scheme
+    private var dark: Bool { scheme == .dark }
+    private var shadowTint: Color { dark ? .black : Color(red: 30/255, green: 30/255, blue: 40/255) }
 
     var body: some View {
         let on = rec?.checked == true
         VStack(spacing: 0) {
             ProtoDot(card: card, on: on, shape: shape, line: line, pulse: pulse)
-                .scaleEffect(1)
+                .compositingGroup()
+                .shadow(color: shadowTint.opacity(dark ? 0.55 : 0.16), radius: 5, y: 4)
+                .shadow(color: shadowTint.opacity(dark ? 0.35 : 0.08), radius: 1, y: 1)
             Text(card.name)
                 .font(PT.cardFont(card.font, size: PT.nameSize(layout)))
                 .foregroundStyle(PT.ink)

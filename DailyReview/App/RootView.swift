@@ -5,7 +5,8 @@ import SwiftUI
 final class Router: ObservableObject {
     @Published var designer: DesignerTarget?
     @Published var journal: JournalTarget?
-    @Published var review: DayTarget?
+    /// 网页版样式的小弹出菜单（心情、笔记 ⋮、长按图标）
+    @Published var pop: PopMenuState?
     @Published var memory = false
     @Published var vip = false
     /// 打卡弹窗（盖住底部栏，所以放在最外层）
@@ -69,6 +70,8 @@ struct RootView: View {
                     .zIndex(5)
             }
 
+            PopMenuLayer(state: $router.pop).zIndex(6)
+
             if let t = toaster.text {
                 ToastView(text: t, gray: toaster.gray)
                     .padding(.bottom, 96)
@@ -84,13 +87,8 @@ struct RootView: View {
                 .environmentObject(store).environmentObject(toaster).environmentObject(router).environmentObject(purchases)
                 .presentationDragIndicator(.visible)
         }
-        .sheet(item: $router.journal) { t in
+        .fullScreenCover(item: $router.journal) { t in
             JournalEditor(day: t.day, entryId: t.entryId)
-                .environmentObject(store).environmentObject(toaster)
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(item: $router.review) { t in
-            ReviewSheet(day: t.day)
                 .environmentObject(store).environmentObject(toaster)
         }
         .sheet(isPresented: $router.memory) {

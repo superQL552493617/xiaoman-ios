@@ -96,7 +96,7 @@ enum SFX {
 
 // MARK: - 提醒通知
 
-/// 每个习惯的提醒 + 每日复盘提醒。iOS 最多保留 64 个待发通知，按「每天」或「每周几」的重复规则排。
+/// 每个习惯的提醒 + 每日提醒。iOS 最多保留 64 个待发通知，按「每天」或「每周几」的重复规则排。
 @MainActor
 final class Notifier {
     static let shared = Notifier()
@@ -127,7 +127,7 @@ final class Notifier {
             }
         }
         if s.prefs.daily.on {
-            add(id: "daily-review", title: "每日复盘", body: "花一分钟，看看今天的自己", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
+            add(id: "daily-review", title: "小满", body: "花一分钟，记录一下今天吧", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
         }
     }
 

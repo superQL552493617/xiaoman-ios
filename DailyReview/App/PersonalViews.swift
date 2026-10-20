@@ -30,7 +30,7 @@ struct PageBG: View {
     var body: some View {
         let pid = id ?? store.s.prefs.pageBg
         if scheme == .dark && !preview {
-            PT.bg
+            PT.pageDark
         } else if pid == "custom", let ui = ImageData.image(store.s.prefs.bgImg) {
             GeometryReader { g in
                 Image(uiImage: ui).resizable().scaledToFill().frame(width: g.size.width, height: g.size.height).clipped()
@@ -460,7 +460,7 @@ struct SettingsSheet: View {
         let d = store.s.prefs.daily
         if d.on {
             Task { _ = await Notifier.shared.requestPermission(); Notifier.shared.rescheduleAll(store) }
-            toaster.show(String(format: "每天 %02d:%02d 提醒你复盘", d.h, d.m))
+            toaster.show(String(format: "每天 %02d:%02d 提醒你记录一下今天", d.h, d.m))
         } else {
             Notifier.shared.rescheduleAll(store)
             toaster.show("已关闭每日提醒")
@@ -547,7 +547,7 @@ struct HomeContentPage: View {
     @EnvironmentObject var store: Store
     private let rows: [(String, String, String, String)] = [
         ("strip", "hm_strip", "默认展开日期栏", "打开 App 时显示一周日期"),
-        ("quick", "hm_quick", "顶部快捷栏", "笔记、回忆、心情、复盘；在「个性化」里选择显示哪些"),
+        ("quick", "hm_quick", "顶部快捷栏", "笔记、回忆、心情；在「个性化」里选择显示哪些"),
         ("jr", "hm_jr", "当天笔记卡片", "写过笔记的日子，在打卡上方显示"),
         ("prog", "hm_prog", "完成进度", "「日常打卡」旁的 已完成 / 总数"),
         ("cheer", "hm_cheer", "全部完成的鼓励语", "当天打卡都完成后显示一句话")
@@ -681,8 +681,8 @@ struct PersonalSheet: View {
         case "shape": return (ShapePage.shapes.first { $0.0 == CardShapes.normalize(P.shape) }?.1 ?? "圆形") + " · " + (ShapePage.lines.first { $0.0 == P.line }?.1 ?? "实线")
         case "layout": return P.layout == "compact" ? "满满" : P.layout == "dense" ? "适中" : "宽敞"
         case "quick":
-            let n = ["jr", "time", "mood", "rev"].filter { P.quickOn($0) }.count
-            return !P.home.quick ? "已隐藏" : n == 4 ? "全部显示" : "显示 \(n) 项"
+            let n = QuickRow.ids.filter { P.quickOn($0) }.count
+            return !P.home.quick ? "已隐藏" : n == QuickRow.ids.count ? "全部显示" : "显示 \(n) 项"
         case "tabbar": return (P.tabSize == "s" ? "小" : P.tabSize == "l" ? "大" : "中") + (P.tabLabel ? " · 显示文字" : "")
         default: return P.sound ? SFX.name(P.sndIn ?? SFX.inDefault) : "已关闭"
         }
@@ -1373,7 +1373,7 @@ struct QuickPage: View {
     @EnvironmentObject var toaster: Toaster
     private let items: [(String, String, String, String)] = [
         ("jr", "q_note", "笔记", "写一篇当天的笔记"), ("time", "q_memory", "回忆", "按日历翻看过去的打卡和笔记"),
-        ("mood", "q_mood", "心情", "记下今天的心情"), ("rev", "q_review", "复盘", "用几个问题回顾今天")
+        ("mood", "q_mood", "心情", "记下今天的心情")
     ]
     var body: some View {
         let P = store.s.prefs
@@ -1382,7 +1382,7 @@ struct QuickPage: View {
                 cardHead("pp_quickh", "预览效果")
                 Group {
                     if P.home.quick {
-                        QuickRow(day: DK.today, showMood: .constant(false)).allowsHitTesting(false).padding(.bottom, 10)
+                        QuickRow(day: DK.today).allowsHitTesting(false).padding(.bottom, 10)
                     } else {
                         Text("顶部快捷栏已隐藏").font(.system(size: 13)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.vertical, 6)
                     }
@@ -1422,14 +1422,14 @@ struct QuickPage: View {
                 }
                 .opacity(P.home.quick ? 1 : 0.45)
             }
-            tip("隐藏后只是不在打卡主页显示，笔记、回忆、心情和复盘的内容都不会删除。至少保留一个入口；都不想要时，直接关闭顶部快捷栏。")
+            tip("隐藏后只是不在打卡主页显示，笔记、回忆和心情的内容都不会删除。至少保留一个入口；都不想要时，直接关闭顶部快捷栏。")
         }
     }
 
     private func toggle(_ k: String) {
         let P = store.s.prefs
         guard P.home.quick else { toaster.show("先打开「显示顶部快捷栏」"); return }
-        if P.quickOn(k) && ["jr", "time", "mood", "rev"].filter({ P.quickOn($0) }).count <= 1 { toaster.show("至少保留一个入口"); return }
+        if P.quickOn(k) && QuickRow.ids.filter({ P.quickOn($0) }).count <= 1 { toaster.show("至少保留一个入口"); return }
         Feedback.tap()
         store.updatePrefs { $0.quickItems[k] = !P.quickOn(k) }
     }

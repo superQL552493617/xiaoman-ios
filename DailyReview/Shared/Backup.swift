@@ -5,7 +5,7 @@ enum BackupError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notJSON: return "内容格式不对，请使用完整的备份文件"
-        case .notOurs: return "这不是每日复盘的备份内容"
+        case .notOurs: return "这不是小满的备份内容"
         }
     }
 }
