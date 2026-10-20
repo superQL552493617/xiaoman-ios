@@ -12,10 +12,11 @@ struct HabitsView: View {
     @EnvironmentObject var router: Router
     @Environment(\.colorScheme) private var scheme
 
+    @EnvironmentObject var purchases: Purchases
     @State private var grp = "all"
     @State private var pick: Set<String>?
-    @State private var menuCard: Card?
-    @State private var deleteCard: Card?
+    /// 编辑页由这里自己弹出：在「我的 → 习惯管理」里也能正常打开，关掉后不会再弹
+    @State private var designer: DesignerTarget?
     @State private var confirmBatch = false
     @State private var dragging: String?
 
@@ -66,37 +67,15 @@ struct HabitsView: View {
         .onAppear {
             // 截图测试用：-shotHab menu / pick
             switch UserDefaults.standard.string(forKey: "shotHab") {
-            case "menu": DispatchQueue.main.asyncAfter(deadline: .now() + 1) { menuCard = all.first }
+            case "edit": DispatchQueue.main.asyncAfter(deadline: .now() + 1) { designer = DesignerTarget(cardId: all.first?.id) }
             case "pick": pick = Set(all.prefix(1).map(\.id))
             default: break
             }
         }
-        .sheet(item: $menuCard) { c in
-            HabitMenuSheet(card: c) {
-                menuCard = nil
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { router.designer = DesignerTarget(cardId: c.id) }
-            } onMove: { gid in
-                var x = c; x.group = gid.isEmpty ? nil : gid
-                store.upsert(x)
-                menuCard = nil
-                toaster.show("已移到“\(store.s.groups.first { $0.id == gid }?.name ?? store.s.ungroupedName)”")
-            } onDelete: {
-                menuCard = nil
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { deleteCard = c }
-            }
-            .environmentObject(store)
-            .presentationDetents([.height(store.s.groups.isEmpty ? 260 : 360)])
-            .presentationCornerRadius(30)
-            .presentationDragIndicator(.visible)
-        }
-        .sheet(item: $deleteCard) { c in
-            DeleteHabitSheet(name: c.name) {
-                deleteCard = nil
-                store.archive(c.id)
-                toaster.show("习惯已删除")
-            } onCancel: { deleteCard = nil }
-            .presentationDetents([.height(250)])
-            .presentationCornerRadius(30)
+        .sheet(item: $designer) { t in
+            DesignerView(target: t)
+                .environmentObject(store).environmentObject(toaster).environmentObject(router).environmentObject(purchases)
+                .presentationDragIndicator(.visible)
         }
         .alert("删除 \(pick?.count ?? 0) 张卡片？", isPresented: $confirmBatch) {
             Button("删除", role: .destructive) {
@@ -136,7 +115,7 @@ struct HabitsView: View {
             .buttonStyle(PressScale())
             Button {
                 pick = nil
-                router.designer = DesignerTarget(group: ["all", ""].contains(grp) ? nil : grp)
+                designer = DesignerTarget(group: ["all", ""].contains(grp) ? nil : grp)
             } label: {
                 Image(systemName: "plus").font(.system(size: 17, weight: .medium)).foregroundStyle(Color(hex: "#4A3F45"))
                     .frame(width: 38, height: 38)
@@ -203,8 +182,6 @@ struct HabitsView: View {
     private func tile(_ c: Card) -> some View {
         let picked = pick?.contains(c.id) == true
         return HabitTileProto(card: c, picking: pick != nil, picked: picked) {
-            menuCard = c
-        } onResume: {
             store.resume(c.id)
             Feedback.tap()
             toaster.show("已恢复，今天起回到打卡主页")
@@ -215,7 +192,7 @@ struct HabitsView: View {
                 pick = P
                 Feedback.tap()
             } else {
-                router.designer = DesignerTarget(cardId: c.id)
+                designer = DesignerTarget(cardId: c.id)
             }
         }
         .onDrag {
@@ -223,7 +200,7 @@ struct HabitsView: View {
             Feedback.tap()
             return NSItemProvider(object: c.id as NSString)
         } preview: {
-            HabitTileProto(card: c, picking: false, picked: false, onMore: {}, onResume: {})
+            HabitTileProto(card: c, picking: false, picked: false, onResume: {})
                 .frame(width: 179).environmentObject(store)
         }
         .onDrop(of: [UTType.text], delegate: TileDrop(target: c, store: store, dragging: $dragging, enabled: pick == nil))
@@ -304,7 +281,6 @@ struct HabitTileProto: View {
     let card: Card
     var picking: Bool
     var picked: Bool
-    var onMore: () -> Void
     var onResume: () -> Void
 
     private var dark: Bool { scheme == .dark }
@@ -331,15 +307,17 @@ struct HabitTileProto: View {
                     }
                     .frame(width: 22, height: 22)
                     .padding(3)
-                } else {
-                    Button(action: onMore) {
-                        Image(systemName: "ellipsis").rotationEffect(.degrees(90))
-                            .font(.system(size: 14, weight: .bold)).foregroundStyle(Color(hex: "#A39888"))
-                            .frame(width: 28, height: 28)
-                            .background(Circle().fill(dark ? Color.white.opacity(0.08) : Color.white.opacity(0.6)))
+                } else if ap != nil {
+                    // 暂停中的卡片：右上角一个小小的「恢复」，卡片高度和其它卡片一样
+                    Button(action: onResume) {
+                        Text(apNow ? "恢复" : "取消暂停").font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(Theme.adaptive("#4A453F", "#E5E0D6"))
+                            .padding(.horizontal, 10).frame(height: 26)
+                            .background(Capsule().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")))
+                            .overlay(Capsule().strokeBorder(Theme.adaptive("#CFC9BF", "#4A4741"), lineWidth: 1.2))
                     }
                     .buttonStyle(PressScale())
-                    .accessibilityLabel("\(c.name) 更多操作")
+                    .grayscale(0)
                 }
             }
             .padding(.bottom, 6)
@@ -352,7 +330,7 @@ struct HabitTileProto: View {
                 HStack(spacing: 4) {
                     ForEach(0..<7, id: \.self) { i in
                         Circle()
-                            .fill(dots[i] ? Color(hex: b) : (dark ? Color.white.opacity(0.12) : Color.white.opacity(0.75)))
+                            .fill(dots[i] ? PT.vivid(b) : (dark ? Color.white.opacity(0.12) : Color.white.opacity(0.75)))
                             .overlay { if !dots[i] && !dark { Circle().strokeBorder(Color(hex: b).opacity(0.25), lineWidth: 1) } }
                             .overlay { if dots[i] { Circle().fill(LinearGradient(colors: [.clear, .black.opacity(0.12)], startPoint: UnitPoint(x: 0.5, y: 0.8), endPoint: .bottom)) } }
                             .frame(width: 12, height: 12)
@@ -363,17 +341,6 @@ struct HabitTileProto: View {
                     .foregroundStyle(cmix(b, 0.55, "#5E554C"))
             }
             .padding(.top, 10)
-            if ap != nil && !picking {
-                Button(action: onResume) {
-                    Text(apNow ? "恢复习惯" : "取消暂停").font(.system(size: 12.5, weight: .bold))
-                        .foregroundStyle(Theme.adaptive("#4A453F", "#E5E0D6"))
-                        .padding(.horizontal, 12).padding(.vertical, 5)
-                        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#2F2E2B")))
-                        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.adaptive("#CFC9BF", "#4A4741"), lineWidth: 1.2))
-                }
-                .buttonStyle(PressScale())
-                .padding(.top, 10)
-            }
             stats(hs, b).padding(.top, 12)
             Text("\(hs.best > 1 ? "最长连续 \(hs.best) 天 · " : "")上次 \(hs.last)")
                 .font(.system(size: 10.5)).foregroundStyle(cmix(b, 0.35, "#8F857A")).lineLimit(1)
@@ -431,6 +398,7 @@ struct HabitTileProto: View {
 
     @ViewBuilder private func bg(_ b: String, paused: Bool) -> some View {
         let r = RoundedRectangle(cornerRadius: 24, style: .continuous)
+        let vb = HexColor(b).vivid.hex
         if dark {
             r.fill(Color(hex: "#0C0C0C")).overlay(r.strokeBorder(Color.white.opacity(0.07), lineWidth: 1))
         } else if paused {
@@ -443,102 +411,16 @@ struct HabitTileProto: View {
                     .padding(.horizontal, 20).padding(.vertical, 20)
                     .offset(y: 16)
                     .blur(radius: 15)
+                // 最浓的地方接近图标本身的颜色，往下慢慢变淡
                 r.fill(LinearGradient(stops: [
-                    .init(color: cmix(b, 0.40, "#FFFFFF"), location: 0),
-                    .init(color: cmix(b, 0.20, "#FFFFFF"), location: 0.42),
-                    .init(color: cmix(b, 0.06, "#FFFFFF"), location: 1)
+                    .init(color: cmix(vb, 0.66, "#FFFFFF"), location: 0),
+                    .init(color: cmix(vb, 0.40, "#FFFFFF"), location: 0.38),
+                    .init(color: cmix(vb, 0.16, "#FFFFFF"), location: 1)
                 ], startPoint: .top, endPoint: .bottom))
                 .shadow(color: Color(red: 60/255, green: 40/255, blue: 10/255).opacity(0.12), radius: 3, y: 2)
                 r.strokeBorder(Color.white.opacity(0.7), lineWidth: 1)
             }
         }
-    }
-}
-
-// MARK: - 卡片右上角 ⋮：编辑、移到分组、删除
-
-struct HabitMenuSheet: View {
-    @EnvironmentObject var store: Store
-    let card: Card
-    var onEdit: () -> Void
-    var onMove: (String) -> Void
-    var onDelete: () -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                Text(card.name).font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
-                HStack {
-                    Spacer()
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark").font(.system(size: 17, weight: .semibold)).foregroundStyle(PT.ink)
-                            .frame(width: 48, height: 48)
-                            .background(Circle().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")).shadow(color: .black.opacity(0.2), radius: 9, y: 6))
-                    }
-                    .buttonStyle(PressScale(scale: 0.92))
-                    .accessibilityLabel("关闭")
-                }
-            }
-            .frame(height: 48).padding(.bottom, 14)
-
-            Button(action: onEdit) {
-                HStack {
-                    Text("编辑卡片").font(.system(size: 16)).foregroundStyle(PT.body)
-                    Spacer()
-                    Text("›").font(.system(size: 20)).foregroundStyle(Color(hex: "#9A9AA3"))
-                }
-                .padding(.horizontal, 16).frame(height: 53)
-                .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(WT.card))
-                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-
-            if !store.s.groups.isEmpty {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("移到分组").font(.system(size: 14)).foregroundStyle(Theme.adaptive("#8F857A", "#A39A8C")).padding(.horizontal, 2)
-                    FlowLayout(spacing: 8) {
-                        ForEach(store.s.groups) { g in moveChip(g.name, g.id) }
-                        moveChip(store.s.ungroupedName, "")
-                    }
-                }
-                .padding(.horizontal, 14).padding(.top, 12).padding(.bottom, 14)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(WT.card))
-                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
-                .padding(.top, 10)
-            }
-
-            Button(action: onDelete) {
-                HStack {
-                    Text("删除习惯").font(.system(size: 16)).foregroundStyle(Color(hex: "#FF3B30"))
-                    Spacer()
-                }
-                .padding(.horizontal, 16).frame(height: 50)
-                .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(WT.card))
-                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .padding(.top, 14)
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 18).padding(.top, 22)
-        .background(Theme.adaptive("#FFFFFF", "#1E1E1D").ignoresSafeArea())
-    }
-
-    private func moveChip(_ name: String, _ id: String) -> some View {
-        let known = store.s.groups.contains { $0.id == card.group }
-        let on = id.isEmpty ? !known : card.group == id
-        return Button { Feedback.tap(); onMove(id) } label: {
-            Text(name).font(.system(size: 14.5, weight: on ? .semibold : .medium))
-                .foregroundStyle(on ? Theme.adaptive("#FFFFFF", "#1B1B1A") : PT.ink)
-                .padding(.horizontal, 14).frame(height: 36)
-                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? PT.ink : Theme.adaptive("#FFFFFF", "#1B1B1A")))
-                .overlay { if !on { RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.adaptive("#E7E7EB", "#2F2E2B"), lineWidth: 1) } }
-        }
-        .buttonStyle(PressScale())
     }
 }
 

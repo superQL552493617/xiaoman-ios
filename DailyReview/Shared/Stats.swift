@@ -22,6 +22,8 @@ struct PerCardStat: Identifiable {
     var n: Int
     var rate: Int?
     var slots: Int
+    /// 应打卡的日子里完成了几天（和完成率对应）
+    var done: Int = 0
     var id: String { card.id }
 }
 
@@ -255,7 +257,7 @@ extension AppState {
                 sl += 1
                 if ok { dn += 1 }
             }
-            return PerCardStat(card: c, n: byCard[c.id] ?? 0, rate: sl > 0 ? Int((Double(dn) / Double(sl) * 100).rounded()) : 0, slots: sl)
+            return PerCardStat(card: c, n: byCard[c.id] ?? 0, rate: sl > 0 ? Int((Double(dn) / Double(sl) * 100).rounded()) : nil, slots: sl, done: dn)
         }
         let sk = DK.key(s), ek = DK.key(e), uk = DK.key(until)
         st.evs = allChangeEvents.filter { ["add", "del", "restore"].contains($0.type) && $0.date >= sk && $0.date <= ek }
@@ -349,18 +351,27 @@ extension AppState {
         if pv.slots > 0 { first += "，" + (dr > 0 ? "比前一周高 \(dr) 个百分点" : dr < 0 ? "比前一周低 \(-dr) 个百分点" : "和前一周持平") }
         p.append(first + "。")
         if let best, (best.rate ?? 0) > 0 {
-            var t = "最稳的习惯：「\(best.card.name)」\(best.n)/\(best.slots)，完成率 \(best.rate ?? 0)%。"
-            if let low, low.card.id != best.card.id { t += "最需要加把劲：「\(low.card.name)」\(low.n)/\(low.slots)，完成率 \(low.rate ?? 0)%。" }
+            var t = "最稳的习惯：「\(best.card.name)」\(best.done)/\(best.slots) 天，完成率 <b>\(best.rate ?? 0)%</b>。"
+            if let low, low.card.id != best.card.id, (low.rate ?? 0) < (best.rate ?? 0) {
+                t += "最需要加把劲：「\(low.card.name)」\(low.done)/\(low.slots) 天，完成率 \(low.rate ?? 0)%。"
+            }
             p.append(t)
         }
         if st.checks > 0, let mx = st.wk.indices.max(by: { st.wk[$0] < st.wk[$1] }) {
             p.append("打卡最多的一天是周\(DK.wdName[mx])，共 \(st.wk[mx]) 次。")
         }
+        // 习惯变动：新增、删除、恢复，写上名字和日期
+        let evText: (String, String) -> String? = { type, verb in
+            let L = st.evs.filter { $0.type == type }.sorted { $0.date < $1.date }
+            guard !L.isEmpty else { return nil }
+            return verb + L.prefix(4).map { "「\($0.name)」（\(DK.md($0.date))）" }.joined(separator: "、") + (L.count > 4 ? " 等 \(L.count) 个" : "")
+        }
+        let evParts = [evText("add", "新增了习惯 "), evText("restore", "恢复了 "), evText("del", "删除了 ")].compactMap { $0 }
+        if !evParts.isEmpty { p.append("这周" + evParts.joined(separator: "；") + "。") }
         var ex: [String] = []
-        if !st.evs.isEmpty { ex.append("\(st.evs.count) 个习惯变动") }
         if st.jn > 0 { ex.append("\(st.jn) 篇笔记") }
         if st.notes > 0 { ex.append("\(st.notes) 条打卡日志") }
-        if !ex.isEmpty { p.append("这周还有 " + ex.joined(separator: "、") + "。") }
+        if !ex.isEmpty { p.append("还写了 " + ex.joined(separator: "、") + "。") }
         let cheer = Theme.cheer[Int(Self.hashN(st.label + md(st.start)) % UInt32(Theme.cheer.count))]
         return AISum(paras: p, cheer: cheer, at: DK.nowMs, local: true, sig: "\(st.checks)|\(st.notes)|\(st.evs.count)",
                      stat: SumStat(rate: st.rate, checks: st.checks, days: st.days))
@@ -379,8 +390,8 @@ extension AppState {
         if pv.slots > 0 { first += dr > 0 ? "，比前一周高 \(dr) 个百分点" : dr < 0 ? "，比前一周低 \(-dr) 个百分点" : "，和前一周持平" }
         p.append(first + "。")
         if let best, (best.rate ?? 0) > 0 {
-            var t = "最稳的习惯：「\(best.card.name)」\(best.n)/\(best.slots)，完成率 \(best.rate ?? 0)%。"
-            if let low, low.card.id != best.card.id { t += "最需要加把劲：「\(low.card.name)」\(low.n)/\(low.slots)，完成率 \(low.rate ?? 0)%。" }
+            var t = "最稳的习惯：「\(best.card.name)」\(best.done)/\(best.slots) 天，完成率 \(best.rate ?? 0)%。"
+            if let low, low.card.id != best.card.id { t += "最需要加把劲：「\(low.card.name)」\(low.done)/\(low.slots) 天，完成率 \(low.rate ?? 0)%。" }
             p.append(t)
         }
         if st.checks > 0, let mx = st.wk.indices.max(by: { st.wk[$0] < st.wk[$1] }) {

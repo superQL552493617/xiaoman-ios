@@ -337,7 +337,7 @@ struct StatsView: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(x.card.name).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1)
-                    Text("\(x.n)/\(x.slots)").font(.system(size: 11)).monospacedDigit().foregroundStyle(Theme.adaptive("#A79D90", "#8A8378"))
+                    Text("\(x.done)/\(x.slots)").font(.system(size: 11)).monospacedDigit().foregroundStyle(Theme.adaptive("#A79D90", "#8A8378"))
                     Spacer(minLength: 0)
                     (Text("\(rate)") + Text("%").font(.system(size: 10.5, weight: .heavy)).foregroundColor(dark ? cmix(hc, 0.55, "#F2EDE4").opacity(0.8) : cmix(hc, 0.7, "#2E2620").opacity(0.8)))
                         .font(.system(size: 14, weight: .heavy)).monospacedDigit()
@@ -908,7 +908,10 @@ struct ProtoSheetHead: View {
 
 struct HeatSheet: View {
     @EnvironmentObject var store: Store
+    @EnvironmentObject var toaster: Toaster
     @Environment(\.dismiss) private var dismiss
+    @State private var edit: JournalTarget?
+    @State private var showJr = false
     @Environment(\.colorScheme) private var scheme
     let per: Period
     let off: Int
@@ -965,16 +968,47 @@ struct HeatSheet: View {
                     .padding(.top, 4).padding(.bottom, 6)
                     grid(list, big: true, max: mx, gap: 6)
                     legend
-                    Text("点某一天，查看当天哪些已打卡、哪些没打卡。").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
-                        .padding(.horizontal, 6).padding(.top, 8)
+                    if let k = dayK {
+                        // 选中的那天直接显示在下面（和「回忆」一样的数字 + 时间线），不再一层层弹窗
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                Text("\(DK.md(k)) 周\(DK.wdName[DK.weekday(k)])").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                                if let m = store.s.moodOf(k) {
+                                    Image(m.asset).resizable().frame(width: 20, height: 20).alignmentGuide(.firstTextBaseline) { $0[.bottom] - 4 }
+                                    Text(m.name).font(.system(size: 13)).foregroundStyle(PT.muted)
+                                }
+                                Spacer()
+                                Button { Feedback.tap(); router.goDay = k; dismiss() } label: {
+                                    Text("去这一天 ›").font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.sub)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, 4)
+                            DayMemoryPanel(day: k) { j in edit = JournalTarget(day: k, entryId: j.id) } onJournalList: { showJr = true }
+                        }
+                        .padding(.top, 18)
+                        .id(k)
+                        .transition(.opacity)
+                    } else {
+                        Text("点某一天，查看当天的打卡和笔记。").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
+                            .padding(.horizontal, 6).padding(.top, 8)
+                    }
                 }
             }
         }
-        .sheet(item: Binding(get: { dayK.map { DayK(k: $0) } }, set: { dayK = $0?.k })) { x in
-            DayDetailSheet(day: x.k).environmentObject(store)
-                .presentationCornerRadius(30).presentationDragIndicator(.visible)
+        .onChange(of: month) { _, _ in dayK = nil }
+        .fullScreenCover(item: $edit) { t in
+            JournalEditor(day: t.day, entryId: t.entryId).environmentObject(store).environmentObject(toaster)
+        }
+        .sheet(isPresented: $showJr) {
+            if let k = dayK {
+                JournalRangeSheet(from: k, to: k, label: DK.md(k)).environmentObject(store).environmentObject(toaster)
+                    .presentationCornerRadius(30).presentationDragIndicator(.visible)
+            }
         }
     }
+
+    @EnvironmentObject var router: Router
 
     private struct DayK: Identifiable { let k: String; var id: String { k } }
 
@@ -1032,9 +1066,18 @@ struct HeatSheet: View {
                     .overlay {
                         if today { RoundedRectangle(cornerRadius: big ? 9 : 3, style: .continuous).stroke(PT.body, lineWidth: big ? 2 : 1.5) }
                     }
+                    .overlay {
+                        if big && dayK == x.k {
+                            RoundedRectangle(cornerRadius: 11, style: .continuous).stroke(Color(hex: "#F5B92E"), lineWidth: 2.5).padding(-2.5)
+                        }
+                    }
                     .opacity(x.fut ? 0.35 : 1)
                     .contentShape(Rectangle())
-                    .onTapGesture { if big && !x.fut { Feedback.tap(); dayK = x.k } }
+                    .onTapGesture {
+                        guard big && !x.fut else { return }
+                        Feedback.tap()
+                        withAnimation(.easeOut(duration: 0.2)) { dayK = dayK == x.k ? nil : x.k }
+                    }
             }
         }
     }

@@ -293,8 +293,7 @@ struct MemoryView: View {
                 .padding(.horizontal, 4).padding(.top, 2).padding(.bottom, 16)
                 calendar.padding(.top, 14)
                 dayHead
-                stats
-                timeline.padding(.top, 16)
+                DayMemoryPanel(day: sel) { j in editing = JournalTarget(day: sel, entryId: j.id) } onJournalList: { showJr = true }
             }
             .padding(.horizontal, asTab ? 16 : 18).padding(.top, 10).padding(.bottom, asTab ? 130 : 30)
         }
@@ -417,19 +416,44 @@ struct MemoryView: View {
         .padding(.horizontal, 4).padding(.top, 26).padding(.bottom, 14)
     }
 
+}
+
+// MARK: - 某一天的四个数字 + 时间线（回忆页、统计日历共用）
+
+struct DayMemoryPanel: View {
+    @EnvironmentObject var store: Store
+    @Environment(\.colorScheme) private var scheme
+    let day: String
+    var onOpenJournal: (JournalEntry) -> Void
+    var onJournalList: () -> Void
+
+    private var dark: Bool { scheme == .dark }
+    private var ink: Color { Theme.adaptive("#3E3532", "#F2EDE4") }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            stats
+            timeline.padding(.top, 16)
+        }
+    }
+
     private var stats: some View {
-        let chk = store.s.dayCheckins(sel).filter { !$0.card.isNote }
-        let jr = store.s.journalList(sel)
-        let sched = store.s.checkCards.filter { store.s.scheduled($0, sel) }.count
-        let rate = sched > 0 ? Int((Double(min(chk.count, sched)) / Double(sched) * 100).rounded()) : 0
+        let chk = store.s.dayCheckins(day).filter { !$0.card.isNote }
+        let jr = store.s.journalList(day)
+        // 完成率：这天应该打卡的习惯里，完成了几个（创建之前、暂停中、不在循环日的不算）
+        let due = store.s.checkCards.filter { c in store.s.scheduled(c, day) && (store.s.cardStart(c).map { $0 <= day } ?? true) }
+        let dueDone = due.filter { store.s.isChecked(day, $0.id) }.count
+        let rate = due.isEmpty ? (chk.isEmpty ? 0 : 100) : Int((Double(dueDone) / Double(due.count) * 100).rounded())
+        // 连续天：到这天为止，连续有打卡的天数（今天还没打卡时从昨天算起）
         var streak = 0
-        var dd = DK.date(sel)
-        while !store.s.dayCheckins(DK.key(dd)).isEmpty { streak += 1; dd = DK.add(dd, -1) }
+        var dd = DK.date(day)
+        if day == DK.today && store.s.dayCount(day) == 0 { dd = DK.add(dd, -1) }
+        while store.s.dayCount(DK.key(dd)) > 0 { streak += 1; dd = DK.add(dd, -1) }
         let divider = Rectangle().fill(Theme.adaptive("#E6DDCC", "#3A3732")).frame(width: 1.5, height: 30)
         return HStack(spacing: 0) {
             stat("mm_check", "\(chk.count)", "打卡")
             divider
-            Button { if !jr.isEmpty { Feedback.tap(); showJr = true } } label: {
+            Button { if !jr.isEmpty { Feedback.tap(); onJournalList() } } label: {
                 stat("mm_note", "\(jr.count)", jr.isEmpty ? "笔记" : "笔记 ›", green: !jr.isEmpty)
             }
             .buttonStyle(.plain)
@@ -458,8 +482,8 @@ struct MemoryView: View {
     private struct Row: Identifiable { let id: String; let t: Double?; let card: Card?; let jr: JournalEntry? }
 
     private var timeline: some View {
-        let chk = store.s.dayCheckins(sel)
-        let jr = store.s.journalList(sel)
+        let chk = store.s.dayCheckins(day)
+        let jr = store.s.journalList(day)
         var rows = chk.map { Row(id: "c" + $0.card.id, t: $0.rec.t, card: $0.card, jr: nil) } + jr.map { Row(id: "j" + $0.id, t: $0.c, card: nil, jr: $0) }
         rows.sort { ($0.t.flatMap { $0 > 1e12 ? $0 : nil } ?? 9e15) < ($1.t.flatMap { $0 > 1e12 ? $0 : nil } ?? 9e15) }
         let part: (Double?) -> Int = { t in
@@ -476,7 +500,7 @@ struct MemoryView: View {
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 18)
             } else {
-                ForEach(0..<3, id: \.self) { pi in
+                ForEach(0..<3, id: \.dayf) { pi in
                     let list = rows.filter { part($0.t) == pi }
                     if !list.isEmpty {
                         HStack(spacing: 8) {
@@ -536,7 +560,7 @@ struct MemoryView: View {
         .background(alignment: .leading) { Rectangle().fill(Color(hex: "#D8D2C2")).frame(width: 1.5).padding(.leading, 14.5) }
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.adaptive("#F3EEE4", "#3A3732")).frame(height: 1.5) }
         if let j = r.jr {
-            Button { editing = JournalTarget(day: sel, entryId: j.id) } label: { content.contentShape(Rectangle()) }.buttonStyle(.plain)
+            Button { onOpenJournal(j) } label: { content.contentShape(Rectangle()) }.buttonStyle(.plain)
         } else { content }
     }
 }
