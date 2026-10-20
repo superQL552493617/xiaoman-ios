@@ -97,7 +97,7 @@ struct CheckDialogOverlay: View {
                     toaster.show("习惯已删除")
                 }
             } onCancel: { confirmDelete = false }
-            .presentationDetents([.height(250)])
+            .presentationDetents([.height(290)])
             .presentationCornerRadius(30)
         }
         .fullScreenCover(isPresented: $fullEditor) {
@@ -427,24 +427,35 @@ struct DeleteHabitSheet: View {
     var onDelete: () -> Void
     var onCancel: () -> Void
     var body: some View {
-        VStack(spacing: 10) {
-            Text("删除习惯「\(name)」？").font(.system(size: 17, weight: .bold)).foregroundStyle(WT.ink).padding(.top, 22)
+        VStack(spacing: 0) {
+            Text("删除习惯「\(name)」？").font(.system(size: 17, weight: .bold)).foregroundStyle(WT.ink)
+                .multilineTextAlignment(.center).padding(.top, 26).padding(.bottom, 8)
             Text("删除后这张卡片不再出现在打卡页，以前的打卡记录和日志会保留在统计里。")
-                .font(.system(size: 13.5)).foregroundStyle(WT.gray).multilineTextAlignment(.center).padding(.horizontal, 10)
-            Button("删除", action: onDelete)
-                .font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
-                .frame(maxWidth: .infinity).frame(height: 48)
-                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#E0525A")))
-                .buttonStyle(.plain).padding(.top, 6)
-            Button("取消", action: onCancel)
-                .font(.system(size: 16, weight: .semibold)).foregroundStyle(WT.ink)
-                .frame(maxWidth: .infinity).frame(height: 48)
-                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#F0F0F2", "#2F2E2B")))
-                .buttonStyle(.plain)
+                .font(.system(size: 14)).foregroundStyle(WT.gray).lineSpacing(4).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 6).padding(.bottom, 18)
+            Button { onDelete() } label: {
+                Text("删除").font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Color(hex: "#C9463D"))
+                    .frame(maxWidth: .infinity).frame(height: 52)
+                    .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#FBD3D3")))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color(hex: "#C9463D"), lineWidth: 1.5))
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressScale(scale: 0.98))
+            Button { onCancel() } label: {
+                Text("取消").font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#5B4F45", "#E8E0D2"))
+                    .frame(maxWidth: .infinity).frame(height: 52)
+                    .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#2C2A26")))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Theme.adaptive("#EEE7DA", "#3A3732"), lineWidth: 1.5))
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressScale(scale: 0.98))
+            .padding(.top, 8)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 22)
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(WT.card.ignoresSafeArea())
+        .background(Theme.adaptive("#FBFAF8", "#1E1E1D").ignoresSafeArea())
+        .presentationDragIndicator(.visible)
     }
 }
 

@@ -73,6 +73,23 @@ enum SFX {
 
     static func name(_ n: Int) -> String { list.first { $0.n == n }?.name ?? "" }
 
+    private static var tonePlayer: AVAudioPlayer?
+
+    /// 试听提醒铃声（静音键打开时也能听到，和闹钟响起时一样）
+    static func playTone(_ n: Int) {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, options: [.mixWithOthers])
+        try? AVAudioSession.sharedInstance().setActive(true)
+        sessionReady = false
+        guard let url = Bundle.main.url(forResource: "tone_\(n)", withExtension: "wav"),
+              let p = try? AVAudioPlayer(contentsOf: url) else { return }
+        tonePlayer?.stop()
+        p.volume = 1
+        p.play()
+        tonePlayer = p
+    }
+
+    static func stopTone() { tonePlayer?.stop(); tonePlayer = nil }
+
     static func play(_ n: Int) {
         if !sessionReady {
             // 跟随静音键，不打断别的 App 正在放的音乐
@@ -110,16 +127,21 @@ final class Notifier {
 
     func rescheduleAll(_ s: AppState) {
         center.removeAllPendingNotificationRequests()
+        // iOS 26 起：闹钟提醒交给系统闹钟（锁屏全屏响铃、静音也会响），其余用通知
+        let useAlarm = HabitAlarms.ready
+        HabitAlarms.reschedule(s)
         var count = 0
-        for c in s.cards where !c.isNote {
+        for c in s.cards where !c.isNote && s.activePause(c).map({ $0.from > DK.today }) ?? true {
             for r in c.reminders ?? [] {
+                if useAlarm && (r.mode ?? "strong") == "strong" { continue }
                 let days = Set(r.days ?? c.days)
+                let snd = r.tone ?? 1
                 if days.count == 7 {
-                    add(id: "card-\(c.id)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: nil)
+                    add(id: "card-\(c.id)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: nil, tone: snd)
                     count += 1
                 } else {
                     for wd in days {
-                        add(id: "card-\(c.id)-\(wd)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: wd + 1)
+                        add(id: "card-\(c.id)-\(wd)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: wd + 1, tone: snd)
                         count += 1
                     }
                 }
@@ -131,11 +153,15 @@ final class Notifier {
         }
     }
 
-    private func add(id: String, title: String, body: String, h: Int, m: Int, weekday: Int?) {
+    private func add(id: String, title: String, body: String, h: Int, m: Int, weekday: Int?, tone: Int? = nil) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
-        content.sound = .default
+        if let tone, Bundle.main.url(forResource: "tone_\(tone)", withExtension: "wav") != nil {
+            content.sound = UNNotificationSound(named: UNNotificationSoundName("tone_\(tone).wav"))
+        } else {
+            content.sound = .default
+        }
         var dc = DateComponents()
         dc.hour = h; dc.minute = m
         if let weekday { dc.weekday = weekday }

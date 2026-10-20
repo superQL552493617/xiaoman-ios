@@ -523,19 +523,11 @@ struct TimeWheelSheet: View {
                 .buttonStyle(.plain)
             }
             .frame(height: 44).padding(.horizontal, 22).padding(.top, 16).padding(.bottom, 10)
-            ZStack {
-                RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#F7F4EE", "#262624"))
-                RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#33322F"))
-                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Theme.adaptive("#E8E0D2", "#45433E"), lineWidth: 1.5))
-                    .frame(width: 212, height: 48)
-                HStack(spacing: 6) {
-                    WheelColumn(count: 24, value: $h)
-                    Text(":").font(.system(size: 28, weight: .bold)).foregroundStyle(Color(hex: "#3E3532")).offset(y: -2)
-                    WheelColumn(count: 60, value: $m)
-                }
-            }
-            .frame(height: 200)
-            .padding(.horizontal, 18)
+            TimeWheel(h: $h, m: $m)
+                .frame(height: 210)
+                .padding(.horizontal, 6)
+                .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#F7F4EE", "#262624")))
+                .padding(.horizontal, 18)
             Spacer(minLength: 0)
         }
         .background(Theme.adaptive("#FFFFFF", "#1E1E1D").ignoresSafeArea())

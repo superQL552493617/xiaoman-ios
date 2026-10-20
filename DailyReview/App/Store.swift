@@ -164,6 +164,7 @@ final class Store: ObservableObject {
         P.append(Pause(from: start, until: until))
         s.cards[i].pauses = P
         save()
+        Notifier.shared.rescheduleAll(self)
     }
 
     func resume(_ id: String) {
@@ -173,6 +174,7 @@ final class Store: ObservableObject {
         P = P.map { p in (p.until == nil || p.until! > T) ? Pause(from: p.from, until: T) : p }
         s.cards[i].pauses = P.isEmpty ? nil : P
         save()
+        Notifier.shared.rescheduleAll(self)
     }
 
     // MARK: 分组

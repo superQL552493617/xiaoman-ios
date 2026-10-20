@@ -31,18 +31,18 @@ struct DesignerView: View {
             bar
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    topCard.padding(.bottom, 22)
-                    groupSection.padding(.bottom, 22)
-                    reminderBox.padding(.bottom, 22)
-                    daysSection.padding(.bottom, 22)
-                    if !isNew { pauseButton.padding(.top, 6) }
+                    topCard.padding(.bottom, 14)
+                    groupSection.padding(.bottom, 14)
+                    reminderBox.padding(.bottom, 14)
+                    daysSection.padding(.bottom, isNew ? 4 : 12)
+                    if !isNew { pauseRow }
                 }
-                .padding(.horizontal, 16).padding(.top, 6).padding(.bottom, 10)
+                .padding(.horizontal, 16).padding(.top, 2).padding(.bottom, 8)
             }
             .scrollDismissesKeyboard(.interactively)
             Button { save() } label: { Text(saveLabel).frame(maxWidth: .infinity) }
                 .buttonStyle(WarmButtonStyle())
-                .padding(.horizontal, 16).padding(.top, 6).padding(.bottom, 8)
+                .padding(.horizontal, 16).padding(.top, 4).padding(.bottom, 6)
         }
         .background(PT.bg.ignoresSafeArea())
         .onAppear(perform: load)
@@ -68,6 +68,8 @@ struct DesignerView: View {
         .sheet(isPresented: $showPause) {
             PauseSheet(card: c) { from, to in
                 store.pause(c.id, from: from, to: to)
+                // 编辑页里的副本也同步，保存时不会把暂停覆盖掉
+                c.pauses = store.s.card(c.id)?.pauses
                 showPause = false
                 toaster.show(to == nil ? "已暂停，可在「我的习惯」里手动恢复" : "已暂停到 \(DK.md(to!))，之后自动恢复")
             }
@@ -108,21 +110,23 @@ struct DesignerView: View {
         ZStack {
             Text("编辑卡片").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
             HStack {
-                Button("放弃") { dismiss() }
-                    .font(.system(size: 16)).foregroundStyle(WT.gray).padding(.horizontal, 4).frame(height: 38)
+                Button { dismiss() } label: {
+                    Text("放弃").font(.system(size: 16)).foregroundStyle(WT.gray).padding(.horizontal, 4).frame(height: 38).contentShape(Rectangle())
+                }
                 Spacer()
-                Button(saveLabel) { save() }
-                    .font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.yellowInk)
-                    .padding(.horizontal, 16).frame(height: 36)
-                    .background(Capsule().fill(WT.yellow))
-                    .overlay(Capsule().strokeBorder(WT.yellowInk, lineWidth: 1))
-                    .compositingGroup()
-                    .shadow(color: Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.4), radius: 8, y: 6)
+                Button { save() } label: {
+                    Text(saveLabel).font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.yellowInk)
+                        .padding(.horizontal, 16).frame(height: 36)
+                        .background(Capsule().fill(WT.yellow))
+                        .overlay(Capsule().strokeBorder(WT.yellowInk, lineWidth: 1))
+                        .compositingGroup()
+                        .shadow(color: Color(red: 70/255, green: 55/255, blue: 30/255).opacity(0.4), radius: 8, y: 6)
+                }
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 14).padding(.vertical, 8)
-        .frame(height: 54)
+        .padding(.horizontal, 14).padding(.top, 18).padding(.bottom, 6)
+        .frame(height: 70)
     }
 
     // MARK: 图标 + 名称
@@ -153,7 +157,7 @@ struct DesignerView: View {
                     .onChange(of: c.name) { _, v in if v.count > 12 { c.name = String(v.prefix(12)) } }
             }
         }
-        .padding(.horizontal, 16).padding(.vertical, 14)
+        .padding(.horizontal, 16).padding(.vertical, 10)
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(WT.card))
         .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
     }
@@ -167,11 +171,11 @@ struct DesignerView: View {
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
             Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.ink2)
         }
-        .padding(.horizontal, 2).padding(.bottom, 10)
+        .padding(.horizontal, 2).padding(.bottom, 8)
     }
 
     private func epCard<V: View>(@ViewBuilder _ v: () -> V) -> some View {
-        v().padding(14)
+        v().padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(WT.card))
             .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
@@ -224,7 +228,7 @@ struct DesignerView: View {
                     Spacer()
                     Text("›").font(.system(size: 22)).foregroundStyle(PT.muted)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 14)
+                .padding(.horizontal, 16).padding(.vertical, 12)
                 .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(WT.card))
                 .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
                 .contentShape(Rectangle())
@@ -289,7 +293,7 @@ struct DesignerView: View {
         VStack(alignment: .leading, spacing: 0) {
             secHead("ep_cal", "#FBD3D3", "循环模式")
             epCard {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 8) {
                     weekGroup("工作日", [1, 2, 3, 4, 5])
                     weekGroup("周末", [6, 0])
                     Text("没有打勾的日子，打卡页不会显示这张卡片。").font(.system(size: 12)).foregroundStyle(WT.gray)
@@ -301,7 +305,7 @@ struct DesignerView: View {
 
     private func weekGroup(_ title: String, _ days: [Int]) -> some View {
         let all = days.allSatisfy { c.days.contains($0) }
-        return VStack(alignment: .leading, spacing: 10) {
+        return VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Text(title).font(.system(size: 13)).foregroundStyle(WT.gray)
                 Spacer()
@@ -317,7 +321,7 @@ struct DesignerView: View {
                 ForEach(days, id: \.self) { d in dayButton(d) }
             }
         }
-        .padding(12)
+        .padding(.horizontal, 12).padding(.vertical, 9)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(WT.cream))
         .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(WT.line, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
@@ -329,7 +333,7 @@ struct DesignerView: View {
             Feedback.tap()
             if on { c.days.removeAll { $0 == d } } else { c.days.append(d) }
         } label: {
-            VStack(spacing: 6) {
+            VStack(spacing: 5) {
                 Text("周" + DK.wdName[d]).font(.system(size: 13, weight: .semibold))
                 ZStack {
                     Circle().fill(on ? Color.white : Color.clear)
@@ -341,7 +345,7 @@ struct DesignerView: View {
                 .frame(width: 17, height: 17)
             }
             .foregroundStyle(on ? Color(hex: "#2F4A36") : WT.gray)
-            .frame(width: 48, height: 56)
+            .frame(width: 48, height: 50)
             .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? Color(hex: "#D3EFD9") : WT.card))
             .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(on ? Color(hex: "#4A3F45") : WT.line, lineWidth: 1))
         }
@@ -351,23 +355,43 @@ struct DesignerView: View {
 
     // MARK: 暂停习惯
 
-    private var pauseButton: some View {
+    /// 和「添加提醒」一样的整行样式
+    private var pauseRow: some View {
         let cur = store.s.card(c.id)
-        let paused = cur.flatMap { store.s.activePause($0) } != nil
+        let p = cur.flatMap { store.s.activePause($0) }
         let now = cur.map { store.s.pausedOn($0, DK.today) } ?? false
+        let sub: String = {
+            guard let p else { return "暂时不打卡，不计入完成率" }
+            let end = p.until.map { "，\(DK.md(DK.addKey($0, -1)))后自动恢复" } ?? "，需要手动恢复"
+            return now ? "暂停中\(end)" : "将从 \(DK.md(p.from)) 开始暂停\(end)"
+        }()
         return Button {
             Feedback.tap()
-            if paused {
+            if p != nil {
                 store.resume(c.id)
+                c.pauses = store.s.card(c.id)?.pauses
                 toaster.show(now ? "已恢复，今天起回到打卡主页" : "已取消计划中的暂停")
             } else {
                 showPause = true
             }
         } label: {
-            Text(paused ? (now ? "恢复习惯" : "取消暂停") : "暂停习惯")
-                .font(.system(size: 17, weight: .semibold)).foregroundStyle(WT.pzInk)
-                .frame(width: 180, height: 46)
-                .background(Capsule().fill(Theme.adaptive("#F1EEF8", "#2C2933")))
+            HStack(spacing: 12) {
+                Image("dg_pause").renderingMode(.template).resizable().scaledToFit().frame(width: 17, height: 17)
+                    .foregroundStyle(Color(hex: "#4A3F45"))
+                    .frame(width: 32, height: 32)
+                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: "#E3DAF7")))
+                    .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(p == nil ? "暂停习惯" : (now ? "恢复习惯" : "取消暂停")).font(.system(size: 15, weight: .semibold)).foregroundStyle(PT.body)
+                    Text(sub).font(.system(size: 12)).foregroundStyle(WT.gray).lineLimit(1)
+                }
+                Spacer()
+                Text("›").font(.system(size: 22)).foregroundStyle(PT.muted)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 11)
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(WT.card))
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -380,12 +404,18 @@ struct DesignerView: View {
         guard c.isNote || !c.days.isEmpty else { toaster.show("循环模式里至少选择一天"); return }
         var x = c
         x.name = name
+        // 暂停在弹窗里已经直接生效，这里以最新的为准
+        if let live = store.s.card(c.id) { x.pauses = live.pauses }
         if x.ic == "img" && x.icImg == nil { x.ic = "icon" }
         let offToday = !x.isNote && !x.days.contains(DK.weekday(DK.todayDate))
         let gName = store.s.groups.first { $0.id == x.group }?.name
         store.upsert(x)
         if !(x.reminders ?? []).isEmpty {
-            Task { _ = await Notifier.shared.requestPermission(); Notifier.shared.rescheduleAll(store) }
+            Task {
+                _ = await Notifier.shared.requestPermission()
+                await HabitAlarms.requestIfNeeded()
+                Notifier.shared.rescheduleAll(store)
+            }
         }
         Feedback.success()
         if isNew {
@@ -731,11 +761,13 @@ struct ReminderSheet: View {
                         ForEach(Self.tones, id: \.0) { t in toneRow(t) }
                     }
                     if initial != nil {
-                        Button("删除提醒") { onDelete(); dismiss() }
-                            .font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#E0525A"))
-                            .frame(maxWidth: .infinity).frame(height: 48)
-                            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#E0525A").opacity(0.1)))
-                            .buttonStyle(.plain)
+                        Button { onDelete(); dismiss() } label: {
+                            Text("删除提醒").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#E0525A"))
+                                .frame(maxWidth: .infinity).frame(height: 48)
+                                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#E0525A").opacity(0.1)))
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
                             .padding(.top, 6)
                     }
                 }
@@ -743,6 +775,7 @@ struct ReminderSheet: View {
             }
         }
         .background(PT.bg.ignoresSafeArea())
+        .onDisappear { SFX.stopTone() }
         .onAppear {
             guard !loaded else { return }
             loaded = true
@@ -759,24 +792,17 @@ struct ReminderSheet: View {
         Text(t).font(.system(size: 14, weight: .semibold)).foregroundStyle(WT.gray).padding(.horizontal, 6).padding(.top, 20).padding(.bottom, 8)
     }
 
+    /// 系统滚轮（UIPickerView）：手感顺滑、上下循环，拖动时不会带着整个弹窗一起动
     private var wheels: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#F7F4EE", "#262624"))
-            RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#33322F"))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Theme.adaptive("#E8E0D2", "#45433E"), lineWidth: 1.5))
-                .frame(width: 212, height: 48)
-            HStack(spacing: 6) {
-                WheelColumn(count: 24, value: $r.h)
-                Text(":").font(.system(size: 28, weight: .bold)).foregroundStyle(Color(hex: "#3E3532")).offset(y: -2)
-                WheelColumn(count: 60, value: $r.m)
-            }
-        }
-        .frame(height: 200)
+        TimeWheel(h: $r.h, m: $r.m)
+            .frame(height: 210)
+            .padding(.horizontal, 6)
+            .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#F7F4EE", "#262624")))
     }
 
     private func toneRow(_ t: (Int, String, String)) -> some View {
         let on = (r.tone ?? 1) == t.0
-        return Button { Feedback.tap(); r.tone = t.0 } label: {
+        return Button { Feedback.tap(); r.tone = t.0; SFX.playTone(t.0) } label: {
             HStack(spacing: 12) {
                 Image(systemName: "music.note").font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(on ? Color(hex: "#1C1C1E") : WT.gray)
@@ -797,33 +823,59 @@ struct ReminderSheet: View {
     }
 }
 
-/// 网页版样式的滚轮：选中的数字大而深，其它淡色
-struct WheelColumn: View {
-    let count: Int
-    @Binding var value: Int
-    @State private var pos: Int?
+/// 时、分两列循环滚轮，中间一个冒号
+struct TimeWheel: UIViewRepresentable {
+    @Binding var h: Int
+    @Binding var m: Int
+    private static let loops = 200
 
-    var body: some View {
-        ScrollView(.vertical) {
-            LazyVStack(spacing: 0) {
-                ForEach(0..<count, id: \.self) { i in
-                    Text(String(format: "%02d", i))
-                        .font(.system(size: i == value ? 30 : 19, weight: i == value ? .bold : .medium))
-                        .foregroundStyle(i == value ? Color(hex: "#3E3532") : Color(hex: "#CBC3B6"))
-                        .frame(width: 86, height: 40)
-                        .id(i)
-                        .onTapGesture { withAnimation { pos = i } }
-                }
-            }
-            .scrollTargetLayout()
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIView(context: Context) -> UIPickerView {
+        let p = UIPickerView()
+        p.dataSource = context.coordinator
+        p.delegate = context.coordinator
+        p.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        p.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        p.selectRow(24 * Self.loops / 2 + h, inComponent: 0, animated: false)
+        p.selectRow(60 * Self.loops / 2 + m, inComponent: 2, animated: false)
+        return p
+    }
+
+    func updateUIView(_ p: UIPickerView, context: Context) {
+        context.coordinator.parent = self
+        if p.selectedRow(inComponent: 0) % 24 != h { p.selectRow(24 * Self.loops / 2 + h, inComponent: 0, animated: false) }
+        if p.selectedRow(inComponent: 2) % 60 != m { p.selectRow(60 * Self.loops / 2 + m, inComponent: 2, animated: false) }
+    }
+
+    final class Coordinator: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
+        var parent: TimeWheel
+        init(_ p: TimeWheel) { parent = p }
+
+        func numberOfComponents(in pickerView: UIPickerView) -> Int { 3 }
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent c: Int) -> Int {
+            c == 1 ? 1 : (c == 0 ? 24 : 60) * TimeWheel.loops
         }
-        .contentMargins(.vertical, 80, for: .scrollContent)
-        .scrollTargetBehavior(.viewAligned)
-        .scrollPosition(id: $pos, anchor: .center)
-        .scrollIndicators(.hidden)
-        .frame(width: 86, height: 200)
-        .onAppear { pos = value }
-        .onChange(of: pos) { _, p in if let p, p != value { value = p; Feedback.tap() } }
+        func pickerView(_ pickerView: UIPickerView, widthForComponent c: Int) -> CGFloat {
+            c == 1 ? 30 : min(120, (pickerView.bounds.width - 60) / 2)
+        }
+        func pickerView(_ pickerView: UIPickerView, rowHeightForComponent c: Int) -> CGFloat { 48 }
+        func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent c: Int, reusing view: UIView?) -> UIView {
+            let l = (view as? UILabel) ?? UILabel()
+            l.textAlignment = .center
+            l.textColor = UIColor { $0.userInterfaceStyle == .dark ? UIColor(red: 0.95, green: 0.93, blue: 0.89, alpha: 1) : UIColor(red: 0.243, green: 0.208, blue: 0.196, alpha: 1) }
+            let base = UIFont.systemFont(ofSize: 30, weight: .bold)
+            l.font = base.fontDescriptor.withDesign(.rounded).map { UIFont(descriptor: $0, size: 30) } ?? base
+            l.text = c == 1 ? ":" : String(format: "%02d", row % (c == 0 ? 24 : 60))
+            return l
+        }
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent c: Int) {
+            guard c != 1 else { return }
+            let n = c == 0 ? 24 : 60, v = row % n
+            // 停下后悄悄回到中间，保证一直能往两边转
+            pickerView.selectRow(n * TimeWheel.loops / 2 + v, inComponent: c, animated: false)
+            if c == 0 { parent.h = v } else { parent.m = v }
+        }
     }
 }
 

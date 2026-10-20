@@ -248,6 +248,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             if let last, n > last, self?.asked == false {
                 self?.asked = true
                 _ = await Notifier.shared.requestPermission()
+                await HabitAlarms.requestIfNeeded()
             }
             Notifier.shared.rescheduleAll(s)
         }
