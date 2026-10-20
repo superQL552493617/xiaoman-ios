@@ -30,11 +30,15 @@ jobs:
           ASC_B64: ${{ secrets.ASC_KEY_ENC_B64 }}
           DIST_B64: ${{ secrets.DIST_KEY_ENC_B64 }}
         run: |
-          [ -n "$PASS" ] || { echo "缺少 SIGNING_PASSPHRASE"; exit 1; }
+          D=/tmp/cilog; mkdir -p $D
+          { echo "pass_set=$([ -n "$PASS" ] && echo yes || echo no) asc_b64_len=${#ASC_B64} dist_b64_len=${#DIST_B64}"; } > $D/diag.txt
+          [ -n "$PASS" ] || { echo "缺少 SIGNING_PASSPHRASE" >> $D/diag.txt; exit 1; }
           K="$RUNNER_TEMP/keys"; mkdir -p "$K"
           printf %s "$ASC_B64" | base64 --decode > "$RUNNER_TEMP/asc.enc"; printf %s "$DIST_B64" | base64 --decode > "$RUNNER_TEMP/dist.enc"
+          { shasum -a 256 "$RUNNER_TEMP/asc.enc" "$RUNNER_TEMP/dist.enc" | cut -c1-16; } >> $D/diag.txt
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/asc.enc" -out "$K/AuthKey_$KEY_ID.p8" -pass env:PASS
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/dist.enc" -out "$K/dist_key.pem" -pass env:PASS
+          echo "decrypt ok" >> $D/diag.txt
           openssl x509 -inform der -in ci/dist.cer -out "$K/dist.pem"
           P12PASS=$(openssl rand -hex 12)
           openssl pkcs12 -export -legacy -inkey "$K/dist_key.pem" -in "$K/dist.pem" -out "$K/dist.p12" -passout pass:$P12PASS 2>/dev/null \
