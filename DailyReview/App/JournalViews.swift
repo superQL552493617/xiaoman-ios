@@ -500,7 +500,7 @@ struct DayMemoryPanel: View {
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 18)
             } else {
-                ForEach(0..<3, id: \.dayf) { pi in
+                ForEach(0..<3, id: \.self) { pi in
                     let list = rows.filter { part($0.t) == pi }
                     if !list.isEmpty {
                         HStack(spacing: 8) {
