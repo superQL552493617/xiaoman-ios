@@ -1,0 +1,111 @@
+name: 打包上传 TestFlight
+# 触发方式：修改 ci/release.txt 并推送，或在 Actions 页面手动运行
+on:
+  push:
+    branches: [main]
+    paths: [ci/release.txt]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  testflight:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      TEAM_ID: FUWHR5TSWG
+      KEY_ID: G235VJ97RJ
+      ISSUER_ID: 984b2449-6ea9-47a4-8956-c836f0aa5f92
+    steps:
+      - uses: actions/checkout@v4
+      - name: 选择最新 Xcode
+        run: |
+          ls -d /Applications/Xcode*.app || true
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$X" ] || { echo "没有 Xcode 26"; exit 1; }
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+      - name: 解密密钥、导入发布证书
+        env:
+          PASS: ${{ secrets.SIGNING_PASSPHRASE }}
+          ASC_B64: ${{ secrets.ASC_KEY_ENC_B64 }}
+          DIST_B64: ${{ secrets.DIST_KEY_ENC_B64 }}
+        run: |
+          [ -n "$PASS" ] || { echo "缺少 SIGNING_PASSPHRASE"; exit 1; }
+          K="$RUNNER_TEMP/keys"; mkdir -p "$K"
+          printf %s "$ASC_B64" | base64 --decode > "$RUNNER_TEMP/asc.enc"; printf %s "$DIST_B64" | base64 --decode > "$RUNNER_TEMP/dist.enc"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/asc.enc" -out "$K/AuthKey_$KEY_ID.p8" -pass env:PASS
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/dist.enc" -out "$K/dist_key.pem" -pass env:PASS
+          openssl x509 -inform der -in ci/dist.cer -out "$K/dist.pem"
+          P12PASS=$(openssl rand -hex 12)
+          openssl pkcs12 -export -legacy -inkey "$K/dist_key.pem" -in "$K/dist.pem" -out "$K/dist.p12" -passout pass:$P12PASS 2>/dev/null \
+            || openssl pkcs12 -export -inkey "$K/dist_key.pem" -in "$K/dist.pem" -out "$K/dist.p12" -passout pass:$P12PASS
+          KC="$RUNNER_TEMP/build.keychain-db"; KCPASS=$(openssl rand -hex 12)
+          security create-keychain -p "$KCPASS" "$KC"
+          security set-keychain-settings -lut 21600 "$KC"
+          security unlock-keychain -p "$KCPASS" "$KC"
+          security import "$K/dist.p12" -k "$KC" -P "$P12PASS" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPASS" "$KC" >/dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$KC"
+          echo "KEY_PATH=$K/AuthKey_$KEY_ID.p8" >> $GITHUB_ENV
+          # 安装描述文件
+          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$d"
+            for f in ci/profiles/*.mobileprovision; do
+              u=$(security cms -D -i "$f" | plutil -extract UUID raw -)
+              cp "$f" "$d/$u.mobileprovision"
+            done
+          done
+          for f in ci/profiles/*.mobileprovision; do echo "== $f"; security cms -D -i "$f" | plutil -extract Entitlements xml1 -o - - | grep -A3 application-groups || true; done
+      - name: 生成工程
+        working-directory: DailyReview
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: 打包（Archive）
+        working-directory: DailyReview
+        run: |
+          set -o pipefail
+          xcodebuild -project DailyReview.xcodeproj -scheme DailyReview -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/DailyReview.xcarchive \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CURRENT_PROJECT_VERSION=$(( ${{ github.run_number }} + 10 )) \
+            archive 2>&1 | tee archive.log | grep -E "error:|ARCHIVE (SUCCEEDED|FAILED)" || true
+          grep -q "ARCHIVE SUCCEEDED" archive.log
+      - name: 导出并上传到 App Store Connect
+        working-directory: DailyReview
+        run: |
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key><dict>
+              <key>site.xiaomanhabit.app</key><string>Xiaoman AppStore site.xiaomanhabit.app</string>
+              <key>site.xiaomanhabit.app.widget</key><string>Xiaoman AppStore site.xiaomanhabit.app.widget</string>
+            </dict>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          set -o pipefail
+          xcodebuild -exportArchive -archivePath build/DailyReview.xcarchive -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER_ID" \
+            2>&1 | tee export.log | tail -40
+          grep -qE "EXPORT SUCCEEDED|Upload succeeded|Uploaded" export.log
+      - name: 保存日志
+        if: always()
+        working-directory: DailyReview
+        run: |
+          mkdir -p /tmp/cilog
+          for f in archive.log export.log; do [ -f $f ] || continue; grep -iE "error|warning: .*(sign|provision)" $f | sort -u | head -200 > /tmp/cilog/$f.errors.txt; tail -150 $f > /tmp/cilog/$f.tail.txt; done
+          cd /tmp/cilog
+          echo "$GITHUB_SHA ${{ job.status }}" > sha.txt
+          git init -q -b ci-log-testflight
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "testflight log $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-log-testflight

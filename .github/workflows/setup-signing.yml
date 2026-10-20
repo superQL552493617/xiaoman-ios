@@ -1,0 +1,39 @@
+name: 签名准备（注册 Bundle ID、创建证书）
+on:
+  push:
+    branches: [main]
+    paths: [ci/setup.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 解密 API 密钥
+        env:
+          PASS: ${{ secrets.SIGNING_PASSPHRASE }}
+          ASC_B64: ${{ secrets.ASC_KEY_ENC_B64 }}
+          DIST_B64: ${{ secrets.DIST_KEY_ENC_B64 }}
+        run: |
+          [ -n "$PASS" ] || { echo "缺少 SIGNING_PASSPHRASE"; exit 1; }
+          printf %s "$ASC_B64" | base64 --decode > "$RUNNER_TEMP/asc.enc"; printf %s "$DIST_B64" | base64 --decode > "$RUNNER_TEMP/dist.enc"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/asc.enc" -out "$RUNNER_TEMP/key.p8" -pass env:PASS
+          echo "ASC_KEY_PATH=$RUNNER_TEMP/key.p8" >> $GITHUB_ENV
+      - name: 调用 App Store Connect
+        env:
+          ASC_KEY_ID: G235VJ97RJ
+          ASC_ISSUER_ID: 984b2449-6ea9-47a4-8956-c836f0aa5f92
+        run: |
+          pip install -q pyjwt cryptography
+          python3 ci/asc.py /tmp/out 2>&1 | tee /tmp/run.log; mkdir -p /tmp/out; cp /tmp/run.log /tmp/out/ || true
+      - name: 推送结果到 ci-setup 分支
+        if: always()
+        run: |
+          mkdir -p /tmp/out && cd /tmp/out
+          echo "$GITHUB_SHA" > sha.txt
+          git init -q -b ci-setup
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "setup $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-setup

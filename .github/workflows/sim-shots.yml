@@ -1,0 +1,54 @@
+name: 模拟器截图
+on:
+  push:
+    branches: [main]
+    paths: [ci/shots.txt]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  shots:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: 选择最新 Xcode
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$X"; xcodebuild -version
+      - name: 编译（模拟器）
+        working-directory: DailyReview
+        run: |
+          brew install xcodegen; xcodegen generate
+          set -o pipefail
+          xcodebuild -project DailyReview.xcodeproj -scheme DailyReview -sdk iphonesimulator -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build 2>&1 | tail -5
+      - name: 启动并截图
+        run: |
+          mkdir -p /tmp/shots
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];c=[x for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name'] and 'Pro' in x['name'] and 'Max' not in x['name']];print(c[-1]['udid'])")
+          echo "device $UDID"
+          xcrun simctl boot $UDID; xcrun simctl bootstatus $UDID -b
+          xcrun simctl status_bar $UDID override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          APP=$(find DailyReview/build/Build/Products -name "DailyReview.app" -maxdepth 3 | head -1)
+          xcrun simctl install $UDID "$APP"
+          BID=site.xiaomanhabit.app
+          shot(){ xcrun simctl io $UDID screenshot "/tmp/shots/$1.png"; }
+          # ci/shots.txt 每行：名字|外观(light/dark)|启动参数
+          while IFS='|' read -r name look args; do
+            [ -z "$name" ] && continue
+            case "$name" in \#*) continue;; esac
+            xcrun simctl ui $UDID appearance "${look:-light}" < /dev/null
+            xcrun simctl terminate $UDID $BID < /dev/null 2>/dev/null || true
+            xcrun simctl launch $UDID $BID $args < /dev/null
+            sleep ${WAIT:-7}; shot "$name"
+          done < ci/shots.txt
+          xcrun simctl spawn $UDID log show --last 3m --predicate 'process == "DailyReview"' --style compact 2>/dev/null | tail -80 > /tmp/shots/log.txt || true
+      - name: 推送截图到 ci-shots 分支
+        if: always()
+        run: |
+          mkdir -p /tmp/shots && cd /tmp/shots
+          echo "$GITHUB_SHA" > sha.txt
+          git init -q -b ci-shots; git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "shots $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-shots

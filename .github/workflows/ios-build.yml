@@ -1,0 +1,55 @@
+name: iOS 编译检查
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: 选择最新 Xcode
+        run: |
+          ls -d /Applications/Xcode*.app || true
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$X" ] || { echo "没有 Xcode 26"; exit 1; }
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+      - name: 安装 XcodeGen
+        run: brew install xcodegen
+      - name: 生成 Xcode 工程
+        working-directory: DailyReview
+        run: xcodegen generate
+      - name: 编译（模拟器，不签名）
+        working-directory: DailyReview
+        run: |
+          set -o pipefail
+          xcodebuild -project DailyReview.xcodeproj -scheme DailyReview \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug CODE_SIGNING_ALLOWED=NO build 2>&1 | tee build.log | grep -E "error:|warning: unre|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log
+      - name: 汇总错误
+        if: failure()
+        working-directory: DailyReview
+        run: |
+          grep -E "error:" build.log | sed "s#$GITHUB_WORKSPACE/##" | sort -u > errors.txt || true
+          grep -B2 -A6 -E "error:" build.log | sed "s#$GITHUB_WORKSPACE/##" | head -3000 > errors-context.txt || true
+          tail -300 build.log > build-tail.txt
+          head -100 errors.txt
+          # 把错误摘要推到 ci-log 分支，方便远程查看
+          mkdir -p /tmp/cilog && cp errors.txt errors-context.txt build-tail.txt /tmp/cilog/
+          cd /tmp/cilog
+          git init -q -b ci-log
+          git config user.name "ci"; git config user.email "ci@users.noreply.github.com"
+          echo "$GITHUB_SHA" > sha.txt
+          git add -A && git commit -qm "build log $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-log
+      - name: 上传编译日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: DailyReview/build.log

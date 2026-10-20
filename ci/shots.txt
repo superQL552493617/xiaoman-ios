@@ -1,0 +1,16 @@
+native-today|light|-uiMode native -shotTab today -shotSeed 1
+native-me|light|-uiMode native -shotTab me -shotSeed 1
+native-memory|light|-uiMode native -shotTab me -shotMe memory -shotSeed 1
+native-backup|light|-uiMode native -shotTab me -shotMe backup -shotSeed 1
+native-events|light|-uiMode native -shotTab me -shotMe events -shotSeed 1
+native-events-dark|dark|-uiMode native -shotTab me -shotMe events -shotSeed 1
+native-widget|light|-uiMode native -shotTab me -shotMe widget -shotSeed 1
+native-widget-dark|dark|-uiMode native -shotTab me -shotMe widget -shotSeed 1
+native-export|light|-uiMode native -shotTab me -shotMe export -shotSeed 1
+native-feedback|light|-uiMode native -shotTab me -shotMe feedback -shotSeed 1
+native-account|light|-uiMode native -shotTab me -shotMe account -shotSeed 1
+native-account-dark|dark|-uiMode native -shotTab me -shotMe account -shotSeed 1
+native-vip|light|-uiMode native -shotTab me -shotMe vip -shotSeed 1
+native-modules|light|-uiMode native -shotTab me -shotMe modules -shotSeed 1
+native-pal-mine|light|-uiMode native -shotTab me -shotMe personal -shotPm palette -shotPal mine
+native-pal-edit|light|-uiMode native -shotTab me -shotMe personal -shotPm palette -shotPal edit
