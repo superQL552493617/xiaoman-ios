@@ -43,7 +43,7 @@ struct ProtoDot: View {
             if card.ic != "img" { glyph.modifier(ShapeIconFit(shape: shape)) }
             // 涟漪
             ForEach(ripples) { r in
-                cs.stroke(PT.vivid(card.hex), lineWidth: 2)
+                cs.stroke(PT.vivid(card.hex), lineWidth: 1.6)
                     .scaleEffect(r.go ? r.to : 1)
                     .opacity(r.go ? 0 : r.opacity)
                     .animation(.timingCurve(0.2, 0.7, 0.3, 1, duration: r.ms).delay(r.delay), value: r.go)
@@ -98,11 +98,13 @@ struct ProtoDot: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.29) {
             withAnimation(.easeOut(duration: 0.15)) { fill = 1 }
         }
-        let s: CGFloat = shape == "circle" ? 1 : 0.86
-        ripples = [RippleItem(scale: 1, opacity: 0.75, to: 1.6 * s, ms: 0.56, delay: 0),
-                   RippleItem(scale: 1, opacity: 0.45, to: 2.05 * s, ms: 0.76, delay: 0.15)]
+        // 涟漪：扩散范围是原来的 1/4，四层更密（和网页版一致）
+        ripples = [RippleItem(scale: 1, opacity: 0.8, to: 1.07, ms: 0.42, delay: 0),
+                   RippleItem(scale: 1, opacity: 0.65, to: 1.12, ms: 0.48, delay: 0.07),
+                   RippleItem(scale: 1, opacity: 0.5, to: 1.18, ms: 0.54, delay: 0.14),
+                   RippleItem(scale: 1, opacity: 0.35, to: 1.24, ms: 0.6, delay: 0.21)]
         DispatchQueue.main.async { for i in ripples.indices { ripples[i].go = true } }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { ripples = [] }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) { ripples = [] }
     }
 
     /// 取消打卡：颜色往中心缩回去并变淡（和网页版一样 0.3 秒）

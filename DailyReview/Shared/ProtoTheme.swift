@@ -5,7 +5,7 @@ enum PT {
     // 页面
     static let bg = Theme.adaptive("#FFFFFF", "#1B1B1A")
     /// 主页面（打卡、我的）深色模式下的底色，比弹窗再黑一点
-    static let pageDark = Color(hex: "#111110")
+    static let pageDark = Color(hex: "#0B0B0A")
     static let ink = Theme.adaptive("#232326", "#F2F2F7")          // 标题、主文字
     static let body = Theme.adaptive("#1C1C1E", "#F2F2F7")
     static let sub = Theme.adaptive("#6E6E73", "#A1A1A6")          // 次要说明
@@ -28,9 +28,9 @@ enum PT {
     // 底部栏
     static let tabOn = Theme.adaptive("#EDEDF0", "#FFFFFF24")
     // 笔记卡片
-    static let jrBg = Theme.adaptive("#FBFAF6", "#262522")
-    static let jrLine = Theme.adaptive("#E8E5DD", "#34322D")
-    static let jrPill = Theme.adaptive("#EEECE5", "#34322D")
+    static let jrBg = Theme.adaptive("#FEFDFB", "#181817")
+    static let jrLine = Theme.adaptive("#EEECE6", "#262523")
+    static let jrPill = Theme.adaptive("#F3F2ED", "#232321")
     static let jrTime = Theme.adaptive("#807C70", "#9A958A")
     static let jrMore = Theme.adaptive("#76806C", "#A7B09C")
     static let reviewDot = Color(hex: "#8DB98A")

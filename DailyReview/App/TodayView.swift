@@ -88,7 +88,7 @@ struct TodayView: View {
             Rectangle().fill(PT.hairline).frame(height: 1)
         }
         .background(
-            (scheme == .dark ? Color(hex: "#111110").opacity(0.86) : Color(hex: P.pageBg == "custom" ? "#FFFFFF" : PageTheme.base(P.pageBg)).opacity(0.88))
+            (scheme == .dark ? Color(hex: "#0B0B0A").opacity(0.86) : Color(hex: P.pageBg == "custom" ? "#FFFFFF" : PageTheme.base(P.pageBg)).opacity(0.88))
                 .background(.ultraThinMaterial)
                 .ignoresSafeArea(edges: .top)
         )

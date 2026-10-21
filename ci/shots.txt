@@ -1,2 +1,4 @@
 native-alldone|light|-uiMode native -shotTab today -shotSeed 1 -shotAllDone 1
 native-today|light|-uiMode native -shotTab today -shotSeed 1
+native-today-dark|dark|-uiMode native -shotTab today -shotSeed 1
+native-web|light|-uiMode web
