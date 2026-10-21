@@ -870,93 +870,9 @@ struct VipSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Button { dismiss() } label: {
-                    Image(systemName: "xmark").font(.app(size: 15, weight: .bold)).foregroundStyle(PT.sub)
-                        .frame(width: 34, height: 34).background(Circle().fill(PT.chip))
-                }
-                .buttonStyle(.plain).accessibilityLabel("关闭")
-                Spacer()
-                Button("恢复购买") { Task { await purchases.restore() } }
-                    .font(.app(size: 15, weight: .semibold)).foregroundStyle(PT.sub)
-                    .disabled(purchases.busy)
-            }
-            .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 4)
-
-            ScrollView {
-                VStack(spacing: 0) {
-                    Image("prog_palm").resizable().scaledToFit().frame(width: 62, height: 62)
-                    Text("小满会员").font(.app(size: 25, weight: .heavy)).foregroundStyle(PT.ink).padding(.top, 8)
-                    Text("一点点支持，让好习惯陪你更久").font(.app(size: 14)).foregroundStyle(PT.sub).padding(.top, 4)
-                    if purchases.isVIP {
-                        HStack(spacing: 6) {
-                            Image("vp_crown").renderingMode(.template).resizable().frame(width: 15, height: 15)
-                            Text(statusLine).font(.app(size: 13, weight: .semibold))
-                        }
-                        .foregroundStyle(Color(hex: "#8A6200"))
-                        .padding(.horizontal, 14).frame(height: 32)
-                        .background(Capsule().fill(Color(hex: "#FFEDB5")))
-                        .padding(.top, 12)
-                    }
-                    VStack(spacing: 0) {
-                        ForEach(Array(VipPerks.list.enumerated()), id: \.offset) { i, p in
-                            HStack(spacing: 14) {
-                                perkIcon(p.asset, i)
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text(p.title).font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
-                                    Text(p.sub).font(.app(size: 12.5)).foregroundStyle(PT.sub).fixedSize(horizontal: false, vertical: true)
-                                }
-                                Spacer(minLength: 0)
-                            }
-                            .padding(.vertical, 13)
-                            if i < VipPerks.list.count - 1 { Rectangle().fill(PT.chipLine).frame(height: 1).padding(.leading, 52) }
-                        }
-                    }
-                    .padding(.horizontal, 16).padding(.vertical, 4)
-                    .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#FAF6EC", "#21201E")))
-                    .padding(.top, 20)
-                    Text(VipPerks.free).font(.app(size: 12.5)).foregroundStyle(PT.faint).multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, 12).padding(.top, 12).padding(.bottom, 18)
-                }
-                .padding(.horizontal, 18)
-            }
-
-            // 底部：三档方案 + 开通按钮
-            VStack(spacing: 0) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(Purchases.kinds, id: \.self) { k in planCard(purchases.offer(k)) }
-                    }
-                    .padding(.horizontal, 18).padding(.top, 16).padding(.bottom, 4)
-                }
-                let cta = purchases.cta(pick)
-                Button {
-                    Feedback.tap()
-                    Task { await purchases.buy(kind: pick) }
-                } label: {
-                    HStack(spacing: 8) {
-                        if cta.enabled { Image("vp_crown").renderingMode(.template).resizable().frame(width: 18, height: 18) }
-                        Text(cta.title).font(.app(size: 18, weight: .heavy))
-                    }
-                    .foregroundStyle(Color(hex: "#3E3532").opacity(cta.enabled ? 1 : 0.55))
-                    .frame(maxWidth: .infinity).frame(height: 54)
-                    .background(Capsule().fill(Color(hex: cta.enabled ? "#F7CB57" : "#EFE6CF")))
-                }
-                .buttonStyle(.plain)
-                .disabled(!cta.enabled || purchases.busy)
-                .padding(.horizontal, 24).padding(.top, 12)
-                Text(cta.sub).font(.app(size: 12.5)).foregroundStyle(PT.sub).padding(.top, 8)
-                HStack(spacing: 4) {
-                    Text("开通即表示同意").foregroundStyle(PT.faint)
-                    Button("《用户协议》") { doc = VipDoc(id: "terms") }.foregroundStyle(PT.sub)
-                    Text("和").foregroundStyle(PT.faint)
-                    Button("《隐私政策》") { doc = VipDoc(id: "privacy") }.foregroundStyle(PT.sub)
-                }
-                .font(.app(size: 11)).buttonStyle(.plain)
-                .padding(.top, 6).padding(.bottom, 10)
-            }
-            .background(PT.bg.shadow(.drop(color: .black.opacity(0.06), radius: 8, y: -2)).ignoresSafeArea(edges: .bottom))
+            topBar
+            content
+            footer
         }
         .background(PT.bg.ignoresSafeArea())
         .overlay { if purchases.busy { ProgressView().controlSize(.large) } }
@@ -973,6 +889,109 @@ struct VipSheet: View {
                     .toolbar { ToolbarItem(placement: .topBarLeading) { Button("关闭") { doc = nil } } }
             }
         }
+    }
+
+    private var topBar: some View {
+        HStack {
+            Button { dismiss() } label: {
+                Image(systemName: "xmark").font(.app(size: 15, weight: .bold)).foregroundStyle(PT.sub)
+                    .frame(width: 34, height: 34).background(Circle().fill(PT.chip))
+            }
+            .buttonStyle(.plain).accessibilityLabel("关闭")
+            Spacer()
+            Button("恢复购买") { Task { await purchases.restore() } }
+                .font(.app(size: 15, weight: .semibold)).foregroundStyle(PT.sub)
+                .disabled(purchases.busy)
+        }
+        .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 4)
+
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                Image("vp_crown").renderingMode(.template).resizable().scaledToFit().frame(width: 34, height: 34)
+                    .foregroundStyle(Color(hex: "#6B4E00"))
+                    .frame(width: 64, height: 64)
+                    .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(LinearGradient(colors: [Color(hex: "#FFE9A8"), Color(hex: "#F7CB57")], startPoint: .topLeading, endPoint: .bottomTrailing)))
+                    .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5))
+                Text("小满会员").font(.app(size: 25, weight: .heavy)).foregroundStyle(PT.ink).padding(.top, 8)
+                Text("一点点支持，让好习惯陪你更久").font(.app(size: 14)).foregroundStyle(PT.sub).padding(.top, 4)
+                if purchases.isVIP {
+                    HStack(spacing: 6) {
+                        Image("vp_crown").renderingMode(.template).resizable().frame(width: 15, height: 15)
+                        Text(statusLine).font(.app(size: 13, weight: .semibold))
+                    }
+                    .foregroundStyle(Color(hex: "#8A6200"))
+                    .padding(.horizontal, 14).frame(height: 32)
+                    .background(Capsule().fill(Color(hex: "#FFEDB5")))
+                    .padding(.top, 12)
+                }
+                VStack(spacing: 0) {
+                    ForEach(0..<VipPerks.list.count, id: \.self) { i in perkRow(i) }
+                }
+                .padding(.horizontal, 16).padding(.vertical, 4)
+                .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.adaptive("#FAF6EC", "#21201E")))
+                .padding(.top, 20)
+                Text(VipPerks.free).font(.app(size: 12.5)).foregroundStyle(PT.faint).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 12).padding(.top, 12).padding(.bottom, 18)
+            }
+            .padding(.horizontal, 18)
+        }
+
+    }
+
+    private var footer: some View {
+        // 底部：三档方案 + 开通按钮
+        VStack(spacing: 0) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Purchases.kinds, id: \.self) { k in planCard(purchases.offer(k)) }
+                }
+                .padding(.horizontal, 18).padding(.top, 16).padding(.bottom, 4)
+            }
+            let cta = purchases.cta(pick)
+            Button {
+                Feedback.tap()
+                Task { await purchases.buy(kind: pick) }
+            } label: {
+                HStack(spacing: 8) {
+                    if cta.enabled { Image("vp_crown").renderingMode(.template).resizable().frame(width: 18, height: 18) }
+                    Text(cta.title).font(.app(size: 18, weight: .heavy))
+                }
+                .foregroundStyle(Color(hex: "#3E3532").opacity(cta.enabled ? 1 : 0.55))
+                .frame(maxWidth: .infinity).frame(height: 54)
+                .background(Capsule().fill(Color(hex: cta.enabled ? "#F7CB57" : "#EFE6CF")))
+            }
+            .buttonStyle(.plain)
+            .disabled(!cta.enabled || purchases.busy)
+            .padding(.horizontal, 24).padding(.top, 12)
+            Text(cta.sub).font(.app(size: 12.5)).foregroundStyle(PT.sub).padding(.top, 8)
+            HStack(spacing: 4) {
+                Text("开通即表示同意").foregroundStyle(PT.faint)
+                Button("《用户协议》") { doc = VipDoc(id: "terms") }.foregroundStyle(PT.sub)
+                Text("和").foregroundStyle(PT.faint)
+                Button("《隐私政策》") { doc = VipDoc(id: "privacy") }.foregroundStyle(PT.sub)
+            }
+            .font(.app(size: 11)).buttonStyle(.plain)
+            .padding(.top, 6).padding(.bottom, 10)
+        }
+        .background(PT.bg.shadow(.drop(color: .black.opacity(0.06), radius: 8, y: -2)).ignoresSafeArea(edges: .bottom))
+    }
+
+    @ViewBuilder private func perkRow(_ i: Int) -> some View {
+        let p = VipPerks.list[i]
+        HStack(spacing: 14) {
+            perkIcon(p.asset, i)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(p.title).font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                Text(p.sub).font(.app(size: 12.5)).foregroundStyle(PT.sub).fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 13)
+        if i < VipPerks.list.count - 1 { Rectangle().fill(PT.chipLine).frame(height: 1).padding(.leading, 52) }
     }
 
     private var statusLine: String {
