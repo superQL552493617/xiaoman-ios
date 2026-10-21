@@ -38,7 +38,7 @@ enum PT {
     /// 打卡后的填充色、边框色
     static func fillOn(_ hex: String, dark: Bool) -> Color {
         let h = HexColor(hex).vivid
-        return dark ? h.mix(HexColor("#121211"), 0.16).color : h.mixWhite(0.07).color
+        return dark ? h.mix(HexColor("#121211"), 0.08).color : h.color
     }
     /// 卡片颜色（更鲜艳的版本）
     static func vivid(_ hex: String) -> Color { HexColor(hex).vivid.color }

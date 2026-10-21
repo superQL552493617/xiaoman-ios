@@ -35,9 +35,11 @@ struct ProtoDot: View {
                 Image(uiImage: ui).resizable().scaledToFill().frame(width: size, height: size).clipShape(cs)
             }
             // 边框
+            // 边框整条画在图标里面（不超出图标边界）；虚线、点线用半透明，和底色融在一起
             if line != "none" {
                 cs.stroke(on ? PT.ringOn(card.hex, dark: dark) : PT.ringOff, style: strokeStyle(ringW))
-                    .padding(shape == "circle" ? size * 0.015 : 0)
+                    .opacity(line == "dash" || line == "dot" ? 0.5 : 1)
+                    .padding(ringW / 2 + (line == "dot" ? 0.4 : 0))
             }
             // 图标
             if card.ic != "img" { glyph.modifier(ShapeIconFit(shape: shape)) }
@@ -145,8 +147,12 @@ struct ProtoCell: View {
         VStack(spacing: 0) {
             ProtoDot(card: card, on: on, shape: shape, line: line, pulse: pulse)
                 .compositingGroup()
-                .shadow(color: shadowTint.opacity(dark ? 0.55 : 0.16), radius: 5, y: 4)
-                .shadow(color: shadowTint.opacity(dark ? 0.35 : 0.08), radius: 1, y: 1)
+                // 深色模式打卡后：边缘一圈淡淡的同色荧光，像亮的卡片放在暗处
+                .shadow(color: dark && on ? PT.vivid(card.hex).opacity(0.42) : shadowTint.opacity(dark ? 0.55 : 0.16),
+                        radius: dark && on ? 8 : 5, y: dark && on ? 0 : 4)
+                .shadow(color: dark && on ? PT.vivid(card.hex).opacity(0.18) : shadowTint.opacity(dark ? 0.35 : 0.08),
+                        radius: dark && on ? 2 : 1, y: dark && on ? 0 : 1)
+                .animation(.easeOut(duration: 0.35), value: on)
             Text(card.name)
                 .font(PT.cardFont(card.font, size: PT.nameSize(layout)))
                 .foregroundStyle(PT.ink)

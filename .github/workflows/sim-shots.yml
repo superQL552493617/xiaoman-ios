@@ -35,13 +35,13 @@ jobs:
           BID=site.xiaomanhabit.app
           shot(){ xcrun simctl io $UDID screenshot "/tmp/shots/$1.png"; }
           # ci/shots.txt 每行：名字|外观(light/dark)|启动参数
-          while IFS='|' read -r name look args; do
+          while IFS='|' read -r name look args wait; do
             [ -z "$name" ] && continue
             case "$name" in \#*) continue;; esac
             xcrun simctl ui $UDID appearance "${look:-light}" < /dev/null
             xcrun simctl terminate $UDID $BID < /dev/null 2>/dev/null || true
             xcrun simctl launch $UDID $BID $args < /dev/null
-            sleep ${WAIT:-7}; shot "$name"
+            sleep ${wait:-7}; shot "$name"
           done < ci/shots.txt
           xcrun simctl spawn $UDID log show --last 3m --predicate 'process == "DailyReview"' --style compact 2>/dev/null | tail -80 > /tmp/shots/log.txt || true
       - name: 推送截图到 ci-shots 分支

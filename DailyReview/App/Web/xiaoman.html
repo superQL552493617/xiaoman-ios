@@ -1254,7 +1254,7 @@ const rgbHex=a=>'#'+a.map(v=>Math.round(v).toString(16).padStart(2,'0')).join(''
 const mixHex=(h1,h2,t)=>{const a=hexRgb(h1),b=hexRgb(h2);return rgbHex(a.map((v,i)=>v+(b[i]-v)*t))};
 const lumHex=h=>{const[r,g,b]=hexRgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*r+.7152*g+.0722*b};
 const _colCache=new Map();
-function vividHex(h,k=1.2){h=String(h||'').replace('#','');if(h.length!==6)return '#'+h;
+function vividHex(h,k=1.45){h=String(h||'').replace('#','');if(h.length!==6)return '#'+h;
 let r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;
 const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;if(mx-mn<1e-4)return '#'+h;
 const d=mx-mn;let s=l>.5?d/(2-mx-mn):d/(mx+mn),hu=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;hu/=6;s=Math.min(1,s*k);
@@ -5376,8 +5376,14 @@ load().then(()=>{LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render()
 #pane .grid .cw .dot{width:calc(var(--d) * .9)!important}
 .cw .dot{filter:drop-shadow(0 4px 5px rgba(30,30,40,.16)) drop-shadow(0 1px 1px rgba(30,30,40,.08))!important}
 body.dark .cw .dot{filter:drop-shadow(0 4px 6px rgba(0,0,0,.55)) drop-shadow(0 1px 1px rgba(0,0,0,.35))!important}
-body:not(.theme-paper) .cw.on .fill{background:color-mix(in srgb,var(--b) 93%,#fff)!important}
-body.dark .cw.on .fill{background:color-mix(in srgb,var(--b) 84%,#121211)!important}
+/* 深色模式打卡后：边缘一圈淡淡的同色荧光 */
+body.dark .cw.on .dot{filter:drop-shadow(0 0 8px color-mix(in srgb,var(--b) 42%,transparent)) drop-shadow(0 0 2px color-mix(in srgb,var(--b) 18%,transparent))!important;transition:filter .35s ease}
+body:not(.theme-paper) .cw.on .fill{background:var(--b)!important}
+body.dark .cw.on .fill{background:color-mix(in srgb,var(--b) 92%,#121211)!important}
+/* 虚线、点线边框：半透明，整条画在图标里面，不超出图标边界 */
+body.line-dash .ring,.ln-opt.ln-dash .ring{opacity:.5;transform:scale(.95)}
+body.line-dot .ring,.ln-opt.ln-dot .ring{opacity:.5;transform:scale(.93)}
+body.line-solid .ring,.ln-opt.ln-solid .ring{transform:scale(.97)}
 /* 涟漪：范围小、层数密 */
 .ripple{border-width:1.6px!important}
 /* 深色模式打卡页更黑一点 */

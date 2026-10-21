@@ -72,7 +72,7 @@ struct HexColor {
     }
 
     /// 界面上显示卡片颜色时统一用这个：比存下来的颜色更鲜艳一些
-    var vivid: HexColor { saturated(1.2) }
+    var vivid: HexColor { saturated(1.45) }
 
     var hex: String {
         String(format: "#%02X%02X%02X", Int((r * 255).rounded()), Int((g * 255).rounded()), Int((b * 255).rounded()))
