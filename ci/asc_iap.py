@@ -78,19 +78,19 @@ def territories():
 
 
 def pick(points, wants):
-    by = {}
-    for p in points:
-        by.setdefault(p["attributes"]["customerPrice"], p)
     for w in wants:
-        for k in (w, w.rstrip("0").rstrip(".") if "." in w else w):
-            if k in by:
-                return by[k]
+        for p in points:
+            try:
+                if abs(float(p["attributes"]["customerPrice"]) - float(w)) < 0.001:
+                    return p
+            except (TypeError, ValueError):
+                pass
     return None
 
 
 def show_points(label, points, lo, hi):
     vals = sorted({float(p["attributes"]["customerPrice"]) for p in points})
-    print(f"   {label} 可选价位（{lo}~{hi}）：", ", ".join(f"{v:g}" for v in vals if lo <= v <= hi))
+    print(f"   {label} 共 {len(points)} 个价位，例：", [p["attributes"]["customerPrice"] for p in points[:3]])
 
 
 def upload_shot(kind, owner_type, owner_id):
