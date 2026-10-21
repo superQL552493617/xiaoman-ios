@@ -24,7 +24,7 @@ PLANS = {
     "life": dict(pid=BUNDLE + ".vip.life", name="永久会员", usd=["9.90", "9.99"], cny=["35.00", "35"],
                  zh=("永久会员", "一次购买，永久解锁全部会员功能"), en=("Lifetime", "One-time purchase, all premium features forever")),
 }
-REVIEW_NOTE = "会员解锁：不限习惯数量、照片图标、VIP 图标、全部主题背景。入口：我的 → 开通会员。"
+REVIEW_NOTE = "会员解锁：不限习惯数量、照片做习惯图标、全部主题背景。入口：我的 → 开通会员。"
 
 _tok = [None, 0]
 
@@ -290,6 +290,17 @@ def main():
     if not app:
         print("!! 找不到 App", BUNDLE); return 1
     print("App ID:", app)
+    if MODE == "note":
+        # 更新三个商品给审核看的说明
+        groups, inc = all_pages(f"/v1/apps/{app}/subscriptionGroups", {"include": "subscriptions", "limit": 50})
+        for x in inc:
+            if x["type"] == "subscriptions":
+                api("PATCH", f"/v1/subscriptions/{x['id']}", {"data": {"type": "subscriptions", "id": x["id"], "attributes": {"reviewNote": REVIEW_NOTE}}})
+                print("已更新说明", x["attributes"]["productId"])
+        iaps, _ = all_pages(f"/v1/apps/{app}/inAppPurchasesV2", {"limit": 200})
+        for i in iaps:
+            api("PATCH", f"/v2/inAppPurchases/{i['id']}", {"data": {"type": "inAppPurchases", "id": i["id"], "attributes": {"reviewNote": REVIEW_NOTE}}})
+            print("已更新说明", i["attributes"]["productId"])
     if MODE == "setup":
         terrs = territories()
         print("地区数：", len(terrs))
