@@ -60,11 +60,14 @@ enum Backup {
 
     static func csv(_ rows: [[String]]) -> String {
         let body = rows.map { r in
-            r.map { v -> String in
-                if v.contains(",") || v.contains("\"") || v.contains("\n") { return "\"" + v.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
+            r.map { raw -> String in
+                // 长笔记、换行、逗号、引号都整格保留；以 = + - @ 开头的加制表符，免得 Excel 当成公式
+                var v = raw.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
+                if let f = v.first, "=+-@".contains(f) { v = "\t" + v }
+                if v.contains(",") || v.contains("\"") || v.contains("\n") || v.contains("\t") { return "\"" + v.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
                 return v
             }.joined(separator: ",")
-        }.joined(separator: "\n")
+        }.joined(separator: "\r\n")
         return "\u{FEFF}" + body   // 加 BOM，Excel 打开中文不乱码
     }
 

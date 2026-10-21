@@ -18,6 +18,11 @@ final class Store: ObservableObject {
         }
         if s.prefs.localId == nil { s.prefs.localId = "L" + String(UUID().uuidString.prefix(6)) }
         AppFont.current = s.prefs.appFont
+        // 打卡图标默认改为圆形无边框（只改一次，之后按用户自己的选择）
+        if !UserDefaults.standard.bool(forKey: "def258") {
+            UserDefaults.standard.set(true, forKey: "def258")
+            if s.prefs.line == "solid" { s.prefs.line = "none" }
+        }
     }
 
     // MARK: 保存

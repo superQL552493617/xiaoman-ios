@@ -42,7 +42,6 @@ targets:
         NSFaceIDUsageDescription: 用面容 ID 解锁小满，保护你的打卡和笔记
         NSPhotoLibraryUsageDescription: 选择照片作为头像或习惯图标
         NSCameraUsageDescription: 拍照作为头像或习惯图标
-        NSAlarmKitUsageDescription: 到了你设定的时间，用闹钟提醒你打卡，手机静音时也能听到
         UIAppFonts:
           - xm_kose.ttf
           - xm_kuaile.ttf
@@ -68,7 +67,7 @@ targets:
     dependencies:
       - target: DailyReviewWidget
     scheme:
-      testTargets: []
+      testTargets: [DailyReviewTests, DailyReviewUITests]
   DailyReviewWidget:
     type: app-extension
     platform: iOS
@@ -97,3 +96,30 @@ targets:
           CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: Apple Distribution
           PROVISIONING_PROFILE_SPECIFIER: Xiaoman AppStore site.xiaomanhabit.app.widget
+  DailyReviewTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: DailyReview
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: site.xiaomanhabit.app.tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/DailyReview.app/DailyReview
+        BUNDLE_LOADER: $(TEST_HOST)
+  DailyReviewUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+      - path: Tests/ProductsCN.storekit
+      - path: Tests/ProductsUS.storekit
+    dependencies:
+      - target: DailyReview
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: site.xiaomanhabit.app.uitests
+        TEST_TARGET_NAME: DailyReview

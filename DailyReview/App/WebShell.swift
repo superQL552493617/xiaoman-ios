@@ -53,7 +53,12 @@ struct WebRootView: View {
             .onAppear { bridge.purchases = purchases }
             .onChange(of: purchases.plan) { _, _ in bridge.syncVip() }
             .onChange(of: purchases.loaded) { _, _ in bridge.syncVip() }
-            .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in askSwitch = true }
+            // 上架版用网页界面；摇一摇切到原生版的测试入口只在调试版里保留
+            .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in
+                #if DEBUG
+                askSwitch = true
+                #endif
+            }
             .onChange(of: phase) { _, p in
                 if p == .active { bridge.reloadIfChangedOutside() }
                 if p == .background { bridge.flush {} }
@@ -116,7 +121,9 @@ struct WebContainer: UIViewRepresentable {
         wv.allowsLinkPreview = false
         wv.navigationDelegate = bridge
         wv.uiDelegate = bridge
+        #if DEBUG
         if #available(iOS 16.4, *) { wv.isInspectable = true }
+        #endif
         bridge.webView = wv
         wv.load(URLRequest(url: URL(string: "\(LocalSchemeHandler.scheme)://app/index.html")!))
         return wv
@@ -177,10 +184,15 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     private var lastWrite = Date.distantPast
 
     /// 页面加载前注入：存储、触感、分享
-    static let startScript = """
+    static var startScript: String {
+        let info = Bundle.main.infoDictionary ?? [:]
+        let v = info["CFBundleShortVersionString"] as? String ?? "1.0.0", b = info["CFBundleVersion"] as? String ?? ""
+        return """
     (function(){
       var N=function(m){return window.webkit.messageHandlers.native.postMessage(m)};
       window.__XM_NATIVE__=true;
+      window.__XM_VER__={v:'\(v)',b:'\(b)'};
+      try{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:function(t){return N({cmd:'copy',text:String(t)}).then(function(){})}}})}catch(e){}
       window.storage={
         get:function(k){return N({cmd:'load'}).then(function(v){return v?{value:v}:null})},
         set:function(k,v){return N({cmd:'save',value:v}).then(function(){return true})}
@@ -193,6 +205,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         .then(function(r){if(r!=='shared'){var e=new Error('cancel');e.name='AbortError';throw e}})}}catch(e){}
     })();
     """
+    }
 
     /// 页面加载后注入：反馈走原生页面、面容 ID 走系统验证
     static let endScript = """
@@ -243,6 +256,22 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             guard ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) else { replyHandler(false, nil); return }
             ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
                 DispatchQueue.main.async { replyHandler(ok, nil) }
+            }
+        case "copy":
+            UIPasteboard.general.string = body["text"] as? String ?? ""
+            replyHandler(true, nil)
+        case "update":
+            // 检查更新：问 App Store 现在上架的版本（只读版本号和更新说明）
+            Task {
+                var r: [String: Any] = [:]
+                if let url = URL(string: "https://itunes.apple.com/lookup?bundleId=site.xiaomanhabit.app&country=cn&t=\(Int(Date().timeIntervalSince1970))"),
+                   let (d, _) = try? await URLSession.shared.data(from: url),
+                   let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
+                   let first = (j["results"] as? [[String: Any]])?.first {
+                    r["latest"] = first["version"] as? String ?? ""
+                    r["notes"] = first["releaseNotes"] as? String ?? ""
+                }
+                replyHandler(r, nil)
             }
         case "vip":
             // 会员：价格、购买、恢复购买、查看条款（网页版的会员页）

@@ -1,0 +1,86 @@
+{
+  "identifier": "5E1A7C01",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "35.0",
+      "familyShareable": false,
+      "internalID": "6743000001",
+      "localizations": [
+        {
+          "description": "一次购买，永久解锁全部会员功能",
+          "displayName": "永久会员",
+          "locale": "zh_Hans"
+        }
+      ],
+      "productID": "site.xiaomanhabit.app.vip.life",
+      "referenceName": "永久会员",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_locale": "zh_Hans",
+    "_storefront": "CHN",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21000001",
+      "localizations": [],
+      "name": "小满会员",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "18.0",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6743000002",
+          "introductoryOffer": {
+            "internalID": "6743000004",
+            "numberOfPeriods": 1,
+            "paymentMode": "free",
+            "subscriptionPeriod": "P3D"
+          },
+          "localizations": [
+            {
+              "description": "按年订阅，解锁全部会员功能",
+              "displayName": "年度卡",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "site.xiaomanhabit.app.vip.year",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "年度卡",
+          "subscriptionGroupID": "21000001",
+          "type": "RecurringSubscription"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "3.5",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6743000003",
+          "localizations": [
+            {
+              "description": "按月订阅，解锁全部会员功能",
+              "displayName": "月度卡",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "site.xiaomanhabit.app.vip.month",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "月度卡",
+          "subscriptionGroupID": "21000001",
+          "type": "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

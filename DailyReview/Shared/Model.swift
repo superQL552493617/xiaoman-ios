@@ -354,7 +354,7 @@ struct Prefs: Codable, Hashable {
     /// 底部栏大小 s / m / l
     var tabSize = "m"
     /// 卡片边框 solid / dash / dot / none
-    var line = "solid"
+    var line = "none"
     /// 笔记区折叠
     var jrFold = false
     /// 不分组时的卡片顺序
@@ -421,7 +421,7 @@ struct Prefs: Codable, Hashable {
         aiLogs = c.bool(.aiLogs) ?? false
         collapsed = c.lenient([String].self, .collapsed) ?? []
         tabSize = c.lenient(String.self, .tabSize) ?? "m"
-        line = c.lenient(String.self, .line) ?? "solid"
+        line = c.lenient(String.self, .line) ?? "none"
         jrFold = c.bool(.jrFold) ?? false
         flatOrder = c.lenient([String].self, .flatOrder)
         tabs = c.lenient([String].self, .tabs)

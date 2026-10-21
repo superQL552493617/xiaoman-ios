@@ -1,0 +1,46 @@
+name: 购买流程测试（模拟器）
+on:
+  push:
+    branches: [main]
+    paths: [ci/iaptest.txt]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: 选择最新 Xcode
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          sudo xcode-select -s "$X"; xcodebuild -version
+      - name: 跑测试
+        working-directory: DailyReview
+        run: |
+          brew install xcodegen; xcodegen generate
+          mkdir -p /tmp/iap
+          NAME=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];c=[x for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name'] and 'Pro' in x['name'] and 'Max' not in x['name']];print(c[-1]['udid'])")
+          echo "device $NAME"
+          set +e
+          xcodebuild test -project DailyReview.xcodeproj -scheme DailyReview -configuration Debug \
+            -destination "id=$NAME" -derivedDataPath build -resultBundlePath /tmp/iap/Test.xcresult \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
+            2>&1 | tee /tmp/iap/test.log | grep -E "FLOW\||Test Case|error:|failed|passed|TEST (SUCCEEDED|FAILED)" | head -200
+          echo "exit ${PIPESTATUS[0]}" >> /tmp/iap/summary.txt
+          grep "FLOW|" /tmp/iap/test.log > /tmp/iap/flow.txt || true
+          grep -E "Test Case .*(passed|failed)|error:|XCTAssert" /tmp/iap/test.log | head -100 >> /tmp/iap/summary.txt
+          cp -R ~/iapshots /tmp/iap/shots 2>/dev/null || true
+          mkdir -p /tmp/iap/att && xcrun xcresulttool export attachments --path /tmp/iap/Test.xcresult --output-path /tmp/iap/att 2>/dev/null || true
+          rm -rf /tmp/iap/Test.xcresult
+          tail -150 /tmp/iap/test.log > /tmp/iap/tail.txt; rm -f /tmp/iap/test.log
+          exit 0
+      - name: 推送结果
+        if: always()
+        run: |
+          mkdir -p /tmp/iap && cd /tmp/iap
+          echo "$GITHUB_SHA" > sha.txt
+          git init -q -b ci-iaptest; git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "iap test $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-iaptest

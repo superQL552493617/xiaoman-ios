@@ -87,8 +87,8 @@ final class Purchases: ObservableObject {
     }
 
     func offer(_ kind: String) -> Offer {
-        let fallbackYear = cn ? "¥18" : "$2.99", fallbackMonth = cn ? "¥3.5" : "$1.99", fallbackLife = cn ? "¥35" : "$9.99"
-        let perMonthFallback = cn ? "¥1.5" : "$0.25"
+        let fallbackYear = cn ? "¥18" : "$2.90", fallbackMonth = cn ? "¥3.5" : "$1.90", fallbackLife = cn ? "¥35" : "$9.90"
+        let perMonthFallback = cn ? "¥1.5" : "$0.24"
         switch kind {
         case "year":
             let p = product("year")
@@ -114,7 +114,7 @@ final class Purchases: ObservableObject {
         if plan == kind { return ("当前正在使用", kind == "month" ? "每月自动续费，可随时在系统设置里取消" : "每年自动续费，可随时在系统设置里取消", false) }
         switch kind {
         case "year":
-            let full = product("year")?.displayPrice ?? (cn ? "¥18" : "$2.99")
+            let full = product("year")?.displayPrice ?? (cn ? "¥18" : "$2.90")
             return offer("year").trial ? ("免费试用 3 天", "3 天后按 \(full)/年续费，试用期间取消不扣费", true) : ("开通年度卡", "每年 \(full) 自动续费，可随时在系统设置里取消", true)
         case "month": return ("开通月度卡", "每月自动续费，可随时在系统设置里取消", true)
         default: return (plan == "free" ? "买断永久会员" : "升级为永久会员", "一次购买，不会自动续费", true)

@@ -26,7 +26,7 @@ struct TodayView: View {
     private var P: Prefs { store.s.prefs }
     private var isToday: Bool { sel == DK.today }
     private var shape: String { CardShapes.normalize(P.shape) }
-    private var line: String { ["solid", "dash", "dot", "none"].contains(P.line) ? P.line : "solid" }
+    private var line: String { ["solid", "dash", "dot", "none"].contains(P.line) ? P.line : "none" }
 
     var body: some View {
         GeometryReader { geo in
