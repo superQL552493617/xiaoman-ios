@@ -977,7 +977,7 @@ struct VipSheet: View {
             .font(.app(size: 11)).buttonStyle(.plain)
             .padding(.top, 6).padding(.bottom, 10)
         }
-        .background(PT.bg.shadow(.drop(color: .black.opacity(0.06), radius: 8, y: -2)).ignoresSafeArea(edges: .bottom))
+        .background { PT.bg.shadow(color: .black.opacity(0.06), radius: 8, y: -2).ignoresSafeArea(edges: .bottom) }
     }
 
     @ViewBuilder private func perkRow(_ i: Int) -> some View {
