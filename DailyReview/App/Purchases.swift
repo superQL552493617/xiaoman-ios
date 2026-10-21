@@ -184,6 +184,7 @@ final class Purchases: ObservableObject {
 enum VipPerks {
     /// (网页图标, 原生图标, 标题, 说明)
     static let list: [(web: String, asset: String, title: String, sub: String)] = [
+        ("shield", "sf:sparkles", "纯净无广告", "没有弹窗打扰，坚持起来更轻松"),
         ("cards", "vp_list", "习惯不限个数", "想养多少个好习惯都行，免费版最多 \(freeLimit) 个"),
         ("camera", "vp_photo", "照片做图标", "拍一张或从相册选，做成独一无二的习惯图标"),
         ("lockf", "sf:lock.fill", "密码锁和面容 ID", "打开小满先验证，日记和打卡只有你能看"),
