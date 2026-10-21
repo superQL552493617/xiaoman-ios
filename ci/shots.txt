@@ -1,4 +1,10 @@
-native-web|light|-uiMode web|14
-native-alldone|light|-uiMode native -shotTab today -shotSeed 1 -shotAllDone 1
-native-today-dark|dark|-uiMode native -shotTab today -shotSeed 1
-native-shape|light|-uiMode native -shotTab me -shotMe personal -shotPm shape
+native-vip|light|-uiMode native -shotTab today -shotVip 1|9
+native-vip-dark|dark|-uiMode native -shotTab today -shotVip 1|9
+native-ring|light|-uiMode native -shotTab today -shotRing 1|9
+native-ring-dark|dark|-uiMode native -shotTab today -shotRing 1|9
+native-font|light|-uiMode native -shotTab me -shotMe personal -shotPm font -shotFont kose|9
+native-font-today|light|-uiMode native -shotTab today -shotSeed 1 -shotFont kuaile|9
+native-font-pixel|dark|-uiMode native -shotTab me -shotFont pixel|9
+web-font|light|-uiMode web -shotJS Uy5wcmVmcy5hcHBGb250PSdidXR0ZXInO2FwcGx5UGFnZUJnKCk7dGFiPSdtZSc7cmVuZGVyKCk=|16
+web-vip|light|-uiMode web -shotJS b3BlblZpcCgp|16
+web-ring|dark|-uiMode web -shotJS dmFyIGM9Uy5jYXJkcy5maW5kKGZ1bmN0aW9uKHgpe3JldHVybiAhaXNOb3RlQ2FyZCh4KX0pO3JpbmdBbGFybShjLHtoOjIxLG06MzAsdG9uZToxfSx7b2NjOid4fCcrYy5pZCsnfDIxOjMwJyxrOjF9KQ==|16

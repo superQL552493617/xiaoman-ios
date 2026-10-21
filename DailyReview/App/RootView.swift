@@ -131,6 +131,16 @@ struct RootView: View {
                     store.s.journal[DK.today] = [a, b]
                 }
             }
+            // 截图测试用：-shotFont kuaile 换 APP 字体；-shotVip 1 打开会员页；-shotRing 1 显示响铃页
+            if let f = UserDefaults.standard.string(forKey: "shotFont") { store.updatePrefs { $0.appFont = f } }
+            if UserDefaults.standard.bool(forKey: "shotVip") {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { router.vip = true }
+            }
+            if UserDefaults.standard.bool(forKey: "shotRing"), let c = store.s.cards.first(where: { !$0.isNote }) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    AlarmCenter.shared.present(AlarmRing(occ: AlarmRules.occ(day: DK.today, card: c.id, h: 21, m: 30), cardId: c.id, h: 21, m: 30, tone: 1, k: 1))
+                }
+            }
             // 截图测试用：-shotJr new / edit 打开笔记编辑页
             if let j = UserDefaults.standard.string(forKey: "shotJr") {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

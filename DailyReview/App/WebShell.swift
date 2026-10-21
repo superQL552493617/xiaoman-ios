@@ -389,6 +389,10 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             AlarmCenter.shared.attachWeb { js in self?.webView?.evaluateJavaScript(js) }
             self?.syncVip()
         }
+        // 截图测试用：-shotJS <base64 脚本> 页面加载后执行
+        if let b = UserDefaults.standard.string(forKey: "shotJS"), let d = Data(base64Encoded: b), let js = String(data: d, encoding: .utf8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in self?.webView?.evaluateJavaScript(js) }
+        }
     }
 
     // 页面进程被系统回收时自动重新加载
