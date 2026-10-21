@@ -1,15 +1,5 @@
 native-today|light|-uiMode native -shotTab today -shotSeed 1
-native-today-dark|dark|-uiMode native -shotTab today -shotSeed 1
-native-mood|light|-uiMode native -shotTab today -shotSeed 1 -shotMood 1
-native-jr-edit|light|-uiMode native -shotTab today -shotSeed 1 -shotJr edit
-native-jr-new|light|-uiMode native -shotTab today -shotSeed 1 -shotJr new
 native-designer|light|-uiMode native -shotTab today -shotSeed 1 -shotDesigner edit
-native-reminder|light|-uiMode native -shotTab today -shotSeed 1 -shotDesigner new -shotSub reminder
 native-dlg|light|-uiMode native -shotTab today -shotSeed 1 -shotDlg done
-native-bars|light|-uiMode native -shotTab bars -shotSeed 1
-native-heat|light|-uiMode native -shotTab ai -shotSeed 1 -shotStat heat -shotHeatDay 1
-native-ai|light|-uiMode native -shotTab ai -shotSeed 1
-native-modules|light|-uiMode native -shotTab me -shotMe modules
-native-theme|light|-uiMode native -shotTab me -shotMe personal -shotPm theme
-native-widget|light|-uiMode native -shotTab me -shotMe widget -shotSeed 1
-native-events|light|-uiMode native -shotTab me -shotMe events -shotSeed 1
+native-hab-edit|light|-uiMode native -shotTab bars -shotSeed 1 -shotHab edit
+native-designer-dark|dark|-uiMode native -shotTab today -shotSeed 1 -shotDesigner edit

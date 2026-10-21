@@ -31,10 +31,10 @@ struct DesignerView: View {
             bar
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    topCard.padding(.bottom, 14)
-                    groupSection.padding(.bottom, 14)
-                    reminderBox.padding(.bottom, 14)
-                    daysSection.padding(.bottom, isNew ? 4 : 12)
+                    topCard.padding(.bottom, 10)
+                    groupSection.padding(.bottom, 10)
+                    reminderBox.padding(.bottom, 10)
+                    daysSection.padding(.bottom, isNew ? 4 : 10)
                     if !isNew { pauseRow }
                 }
                 .padding(.horizontal, 16).padding(.top, 2).padding(.bottom, 8)
@@ -164,14 +164,14 @@ struct DesignerView: View {
 
     private func secHead(_ icon: String, _ bg: String, _ title: String) -> some View {
         HStack(spacing: 10) {
-            Image(icon).renderingMode(.template).resizable().scaledToFit().frame(width: 16, height: 16)
+            Image(icon).renderingMode(.template).resizable().scaledToFit().frame(width: 15, height: 15)
                 .foregroundStyle(Color(hex: "#4A3F45"))
-                .frame(width: 32, height: 32)
-                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: bg)))
-                .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
+                .frame(width: 28, height: 28)
+                .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(Color(hex: bg)))
+                .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
             Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.ink2)
         }
-        .padding(.horizontal, 2).padding(.bottom, 8)
+        .padding(.horizontal, 2).padding(.bottom, 6)
     }
 
     private func epCard<V: View>(@ViewBuilder _ v: () -> V) -> some View {
@@ -321,7 +321,7 @@ struct DesignerView: View {
                 ForEach(days, id: \.self) { d in dayButton(d) }
             }
         }
-        .padding(.horizontal, 12).padding(.vertical, 9)
+        .padding(.horizontal, 12).padding(.vertical, 7)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(WT.cream))
         .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(WT.line, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
@@ -345,7 +345,7 @@ struct DesignerView: View {
                 .frame(width: 17, height: 17)
             }
             .foregroundStyle(on ? Color(hex: "#2F4A36") : WT.gray)
-            .frame(width: 48, height: 50)
+            .frame(width: 48, height: 46)
             .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? Color(hex: "#D3EFD9") : WT.card))
             .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(on ? Color(hex: "#4A3F45") : WT.line, lineWidth: 1))
         }
@@ -376,7 +376,7 @@ struct DesignerView: View {
             }
         } label: {
             HStack(spacing: 12) {
-                Image("dg_pause").renderingMode(.template).resizable().scaledToFit().frame(width: 17, height: 17)
+                Image(systemName: "pause").font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Color(hex: "#4A3F45"))
                     .frame(width: 32, height: 32)
                     .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: "#E3DAF7")))
