@@ -1846,9 +1846,50 @@ const MOODS=[['great','超开心','<svg width="24" height="24" viewBox="0 0 24 2
 const MOOD_EMPTY='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A3F45" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="#FFF1C9" stroke-dasharray="2.4 2.2"/><circle cx="9.4" cy="10.4" r=".9" fill="#4A3F45" stroke="none"/><circle cx="14.6" cy="10.4" r=".9" fill="#4A3F45" stroke="none"/><path d="M9.4 14.6c1.4 1 3.8 1 5.2 0"/></svg>',REV_SVG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A3F45" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.6" fill="#DDEFF7"/><rect x="8.6" y="2.8" width="6.8" height="3.6" rx="1.2" fill="#fff"/><path d="M8 11l1.4 1.4 2.4-2.6M8 16l1.4 1.4 2.4-2.6M13.6 11.4h2.6M13.6 16.4h2.6"/></svg>';
 
 function moodOf(k){const m=(S.mood||{})[k];return m&&MOODS.some(x=>x[0]===m)?m:undefined}   // ignore unknown ids (e.g. from an old backup)
+/* 选好心情后的小特效：从心情按钮附近冒出来，1~2 秒就散 */
+function moodFx(id,r){
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+const lay=document.createElement('div');lay.className='mfx';document.body.append(lay);
+const cx=r.left+r.width/2,cy=r.top+r.height/2,W=innerWidth,H=innerHeight,R=(a,b)=>a+Math.random()*(b-a);
+const add=(html,css,frames,opt)=>{const e=document.createElement('i');e.innerHTML=html;e.style.cssText=css;lay.append(e);e.animate(frames,Object.assign({easing:'cubic-bezier(.2,.7,.3,1)',fill:'forwards'},opt))};
+const star=c=>`<svg width="100%" height="100%" viewBox="0 0 24 24"><path d="M12 2.5l2.6 6 6.4.6-4.9 4.3 1.5 6.3L12 16.4l-5.6 3.3 1.5-6.3L3 9.1l6.4-.6z" fill="${c}"/></svg>`;
+const heart=c=>`<svg width="100%" height="100%" viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-10.6A4.4 4.4 0 0 1 12 7.4a4.4 4.4 0 0 1 8 2.5c0 5.7-8 10.6-8 10.6z" fill="${c}"/></svg>`;
+const leaf=c=>`<svg width="100%" height="100%" viewBox="0 0 24 24"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-15 15z" fill="${c}"/><path d="M6 18l9-9" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg>`;
+let life=1800;
+if(id==='great'){            // 超开心：彩纸和小星星一起炸开
+const C=['#FFD36E','#FF9EB0','#8FD3C8','#B9A2F2','#FFB86B','#9FD27F'];
+for(let i=0;i<26;i++){const a=R(-Math.PI*.95,-Math.PI*.05),d=R(90,210),x=Math.cos(a)*d,y=Math.sin(a)*d,s=R(7,13),c=C[i%C.length],isStar=i%3===0;
+add(isStar?star(c):'',`left:${cx}px;top:${cy}px;width:${isStar?s+6:s}px;height:${isStar?s+6:s*.55}px;${isStar?'':`background:${c};border-radius:2px;`}`,
+[{transform:'translate(-50%,-50%) scale(.3) rotate(0)',opacity:1},{transform:`translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(1) rotate(${R(-200,200)}deg)`,opacity:1,offset:.55},
+{transform:`translate(calc(-50% + ${x*1.1}px),calc(-50% + ${y+R(120,200)}px)) scale(.9) rotate(${R(-360,360)}deg)`,opacity:0}],{duration:R(1300,1700)})}}
+else if(id==='good'){       // 不错：几颗小爱心和叶子轻轻往上飘
+for(let i=0;i<12;i++){const x=R(-70,70),s=R(14,22),c=i%2?'#FF9EB0':'#9FD27F';
+add(i%2?heart(c):leaf(c),`left:${cx}px;top:${cy}px;width:${s}px;height:${s}px`,
+[{transform:'translate(-50%,-50%) scale(.2)',opacity:0},{transform:`translate(calc(-50% + ${x*.4}px),calc(-50% - 30px)) scale(1)`,opacity:1,offset:.25},
+{transform:`translate(calc(-50% + ${x}px),calc(-50% - ${R(130,200)}px)) scale(.8) rotate(${R(-30,30)}deg)`,opacity:0}],{duration:R(1300,1800),delay:i*60,easing:'ease-out'})}life=2300}
+else if(id==='meh'){        // 平平：几个淡淡的泡泡慢慢升起
+for(let i=0;i<9;i++){const x=R(-60,60),s=R(12,26);
+add('',`left:${cx}px;top:${cy}px;width:${s}px;height:${s}px;border-radius:50%;border:1.5px solid rgba(143,170,200,.75);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9),rgba(200,220,240,.25))`,
+[{transform:'translate(-50%,-50%) scale(.3)',opacity:0},{transform:`translate(calc(-50% + ${x*.5}px),calc(-50% - 40px)) scale(1)`,opacity:.9,offset:.3},
+{transform:`translate(calc(-50% + ${x}px),calc(-50% - ${R(120,170)}px)) scale(1.05)`,opacity:0}],{duration:R(1600,2100),delay:i*90,easing:'ease-out'})}life=2600}
+else if(id==='tired'){      // 有点累：Zzz 摇摇晃晃飘上去
+['z','z','Z','z','Z'].forEach((t,i)=>{const s=14+i*3;
+add(t,`left:${cx+10}px;top:${cy}px;font:800 ${s}px/1 system-ui;color:#8E9BC4`,
+[{transform:'translate(0,0) rotate(0)',opacity:0},{transform:`translate(${12+i*8}px,${-20-i*10}px) rotate(-10deg)`,opacity:1,offset:.3},
+{transform:`translate(${30+i*14}px,${-70-i*22}px) rotate(12deg)`,opacity:0}],{duration:1700,delay:i*200,easing:'ease-in-out'})});life=2800}
+else if(id==='down'){       // 低落：下一小阵雨，然后冒出一颗暖暖的心，抱抱你
+for(let i=0;i<14;i++){const x=R(-80,80),y0=R(-90,-40);
+add('',`left:${cx+x}px;top:${cy+y0}px;width:2.5px;height:${R(10,16)}px;border-radius:2px;background:rgba(120,160,215,.8)`,
+[{transform:'translateY(-20px)',opacity:0},{transform:'translateY(10px)',opacity:1,offset:.3},{transform:`translateY(${R(70,110)}px)`,opacity:0}],{duration:R(800,1100),delay:R(0,500),easing:'ease-in'})}
+add(heart('#FF8FA3'),`left:${cx}px;top:${cy}px;width:30px;height:30px`,
+[{transform:'translate(-50%,-50%) scale(0)',opacity:0},{transform:'translate(-50%,-50%) scale(0)',opacity:0,offset:.4},{transform:'translate(-50%,calc(-50% - 40px)) scale(1.25)',opacity:1,offset:.62},
+{transform:'translate(-50%,calc(-50% - 50px)) scale(1)',opacity:1,offset:.8},{transform:'translate(-50%,calc(-50% - 70px)) scale(.9)',opacity:0}],{duration:2200,easing:'ease-out'});
+setTimeout(()=>toast('抱抱你，明天会好一点的'),900);life=2400}
+setTimeout(()=>lay.remove(),life+400);
+}
 function openMood(k,btn){
 const cur=moodOf(k);
-popMenu(btn,MOODS.map(([id,n,svg])=>({label:n,icon:svg,on:cur===id,act:()=>{S.mood=S.mood||{};if(cur===id)delete S.mood[k];else S.mood[k]=id;save();buzz();renderDay();toast(cur===id?'已清除今天的心情':`记下了：${n}`)}})),{title:`${parseKey(k).getMonth()+1}月${parseKey(k).getDate()}日 心情怎么样`,width:200});
+popMenu(btn,MOODS.map(([id,n,svg])=>({label:n,icon:svg,on:cur===id,act:()=>{const r=btn.getBoundingClientRect();S.mood=S.mood||{};if(cur===id)delete S.mood[k];else S.mood[k]=id;save();buzz();renderDay();if(cur!==id)moodFx(id,r);toast(cur===id?'已清除今天的心情':`记下了：${n}`)}})),{title:`${parseKey(k).getMonth()+1}月${parseKey(k).getDate()}日 心情怎么样`,width:200});
 }
 const REV_Q=[['good','今天做得好的一件事','比如：早起没有赖床'],['less','有点遗憾的地方','比如：晚上刷手机太久'],['next','明天最想完成的一件事','比如：读完第三章']];
 function openReview(k){
@@ -5508,9 +5549,9 @@ function pageSlide(dir){const v=$('#view');if(!v)return;v.animate([{transform:`t
 function openPageSheet(t){
 if(t==='personal')pTab=null;   // 个性化 always opens on its menu
 if(SNAV){tab=t;(PAGES[t]||PAGES.me)();pageSlide(1);return}
-const main=$('#view');
+const main=$('#view'),from=tab;   // 关掉后回到打开它的那一页（比如从打卡页点「回忆」，关掉回打卡页）
 const {sh,close}=openSheet('<div class="snav-body"></div>',()=>{
-const b=$('.snav-body',sh);if(b)b.id='';main.id='view';SNAV=null;tab='me';render()});
+const b=$('.snav-body',sh);if(b)b.id='';main.id='view';SNAV=null;tab=(from&&from!=='me'&&PAGES[from])?from:'me';render()});
 sh.classList.add('tall','snav');
 main.id='view-main';$('.snav-body',sh).id='view';
 SNAV={sh,close};tab=t;(PAGES[t]||PAGES.me)();
@@ -5670,6 +5711,15 @@ body:not(.dark) .ex-im{background:#F5F1E8!important;box-shadow:inset 0 0 0 1px r
 body:not(.dark) .sheet.exs .inp{background:#F5F1E8!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.2)!important}
 body:not(.dark) .sheet.exs .btn.sec{background:#EAE3D5!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.16)!important;color:#3E3532}
 .im-res li{margin-bottom:4px;line-height:1.5}
+
+/* 心情特效 */
+.mfx{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.mfx i{position:absolute;display:block;font-style:normal;will-change:transform,opacity}
+/* 浅色模式：点头像弹出的账号页，有框的区域比背景略深 */
+body:not(.dark) .sheet.acx .acx-card,body:not(.dark) .sheet.acx .acx-list{background:#F3EFE7!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.12)}
+body:not(.dark) .sheet.acx .acx-bio{border-color:#CFC7B8;background:#FAF8F3}
+body:not(.dark) .sheet.acx .acx-nick{background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(70,55,30,.14)}
+body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 </style>
 </body>
 </html>
