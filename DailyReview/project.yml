@@ -43,6 +43,12 @@ targets:
         NSPhotoLibraryUsageDescription: 选择照片作为头像或习惯图标
         NSCameraUsageDescription: 拍照作为头像或习惯图标
         NSAlarmKitUsageDescription: 到了你设定的时间，用闹钟提醒你打卡，手机静音时也能听到
+        UIAppFonts:
+          - xm_kose.ttf
+          - xm_kuaile.ttf
+          - xm_butter.ttf
+          - xm_kai.ttf
+          - xm_pixel.ttf
     entitlements:
       path: App/DailyReview.entitlements
       properties:

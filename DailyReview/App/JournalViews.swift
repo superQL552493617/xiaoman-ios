@@ -43,6 +43,7 @@ struct JournalEditor: View {
 
     static func font(_ id: String, size: CGFloat, weight: Font.Weight = .regular) -> Font {
         switch id {
+        // 笔记里单独选的字体，不跟着 APP 字体变
         case "round": return .system(size: size, weight: weight, design: .rounded)
         case "kai": return .custom("STKaiti", size: size).weight(weight)
         default: return .system(size: size, weight: weight)
@@ -97,17 +98,17 @@ struct JournalEditor: View {
 
     private var top: some View {
         ZStack {
-            Text("笔记").font(.system(size: 18, weight: .bold)).foregroundStyle(ink)
+            Text("笔记").font(.app(size: 18, weight: .bold)).foregroundStyle(ink)
             HStack {
                 Button { if changed { askDiscard = true } else { dismiss() } } label: {
-                    Text("取消").font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.adaptive("#4A3F45", "#ECE6DA"))
+                    Text("取消").font(.app(size: 16, weight: .bold)).foregroundStyle(Theme.adaptive("#4A3F45", "#ECE6DA"))
                         .padding(.horizontal, 18).frame(height: 44)
                         .background(Capsule().fill(dark ? Color.white.opacity(0.08) : Color.black.opacity(0.06)))
                 }
                 .buttonStyle(PressScale(scale: 0.95))
                 Spacer()
                 Button { save() } label: {
-                    Text("完成").font(.system(size: 16, weight: .bold))
+                    Text("完成").font(.app(size: 16, weight: .bold))
                         .foregroundStyle(has ? Color(hex: "#4A3F45") : Color(hex: "#B9B2A7"))
                         .padding(.horizontal, 18).frame(height: 44)
                         .background(Capsule().fill(has ? Color(hex: "#FFE7A3") : (dark ? Color.white.opacity(0.08) : Color.black.opacity(0.06))))
@@ -125,10 +126,10 @@ struct JournalEditor: View {
     private var side: some View {
         let d = DK.date(key)
         return VStack(alignment: .leading, spacing: 4) {
-            Text("\(DK.day(d))日").font(.system(size: 26, weight: .heavy)).foregroundStyle(ink).lineLimit(1).fixedSize()
-            Text("周" + DK.wdName[DK.weekday(key)]).font(.system(size: 14)).foregroundStyle(Theme.adaptive("#5B4F45", "#CFC6B8"))
+            Text("\(DK.day(d))日").font(.app(size: 26, weight: .heavy)).foregroundStyle(ink).lineLimit(1).fixedSize()
+            Text("周" + DK.wdName[DK.weekday(key)]).font(.app(size: 14)).foregroundStyle(Theme.adaptive("#5B4F45", "#CFC6B8"))
             Button { focus = nil; pickTime = true } label: {
-                Text(DK.hm(e.c)).font(.system(size: 14)).monospacedDigit().foregroundStyle(Color(hex: "#A69C90"))
+                Text(DK.hm(e.c)).font(.app(size: 14)).monospacedDigit().foregroundStyle(Color(hex: "#A69C90"))
             }
             .buttonStyle(.plain)
             .padding(.top, 14)
@@ -156,7 +157,7 @@ struct JournalEditor: View {
                 HStack(spacing: 4) {
                     Image("stg_calendar").renderingMode(.template).resizable().scaledToFit().frame(width: 17, height: 17)
                         .foregroundStyle(Color(hex: dark ? "#A9D59C" : "#7DBE6E"))
-                    Text("\(DK.month(DK.date(key)))月\(DK.day(DK.date(key)))日").font(.system(size: 13.5, weight: .semibold))
+                    Text("\(DK.month(DK.date(key)))月\(DK.day(DK.date(key)))日").font(.app(size: 13.5, weight: .semibold))
                         .foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1).fixedSize()
                 }
                 .padding(.horizontal, 4).frame(height: 34)
@@ -214,7 +215,7 @@ struct JournalEditor: View {
                 Button("昨天") { setDay(DK.addKey(DK.today, -1)); pickDate = false }
                 Button("今天") { setDay(DK.today); pickDate = false }
             }
-            .font(.system(size: 14, weight: .semibold)).buttonStyle(.bordered).tint(Color(hex: "#5E9E52"))
+            .font(.app(size: 14, weight: .semibold)).buttonStyle(.bordered).tint(Color(hex: "#5E9E52"))
         }
         .padding(12)
         .frame(width: 330)
@@ -288,7 +289,7 @@ struct MemoryView: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 10) {
                     Image("mm_sun").resizable().frame(width: 26, height: 26)
-                    Text("今天的小小进步，都收在这里").font(.system(size: 15)).foregroundStyle(Theme.adaptive("#7A6F64", "#B8AE9C"))
+                    Text("今天的小小进步，都收在这里").font(.app(size: 15)).foregroundStyle(Theme.adaptive("#7A6F64", "#B8AE9C"))
                 }
                 .padding(.horizontal, 4).padding(.top, 2).padding(.bottom, 16)
                 calendar.padding(.top, 14)
@@ -300,7 +301,7 @@ struct MemoryView: View {
         .scrollIndicators(.hidden)
         .safeAreaInset(edge: .top, spacing: 0) {
             if asTab {
-                Text("回忆").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                Text("回忆").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
                     .frame(maxWidth: .infinity).frame(height: 56)
                     .background(Theme.adaptive("#FFFFFFE6", "#1E1E1DE6")).background(.ultraThinMaterial)
             } else {
@@ -333,14 +334,14 @@ struct MemoryView: View {
             HStack(spacing: 6) {
                 navBtn("«", disabled: false) { y -= 1 }
                 navBtn("‹", disabled: false) { m -= 1; if m < 1 { m = 12; y -= 1 } }
-                Text(verbatim: "\(y)年\(m)月").font(.system(size: 19, weight: .bold)).monospacedDigit().foregroundStyle(ink).frame(maxWidth: .infinity)
+                Text(verbatim: "\(y)年\(m)月").font(.app(size: 19, weight: .bold)).monospacedDigit().foregroundStyle(ink).frame(maxWidth: .infinity)
                 navBtn("›", disabled: y == ty && m >= tm) { m += 1; if m > 12 { m = 1; y += 1 } }
                 navBtn("»", disabled: y >= ty) { y += 1; if y == ty && m > tm { m = tm } }
             }
             .padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 12)
             .overlay(alignment: .bottom) { Rectangle().fill(Theme.adaptive("#EFE9DD", "#3A3732")).frame(height: 1.5) }
             HStack(spacing: 0) {
-                ForEach(wd, id: \.self) { w in Text(w).font(.system(size: 13)).foregroundStyle(Color(hex: "#A69C90")).frame(maxWidth: .infinity) }
+                ForEach(wd, id: \.self) { w in Text(w).font(.app(size: 13)).foregroundStyle(Color(hex: "#A69C90")).frame(maxWidth: .infinity) }
             }
             .padding(.top, 12).padding(.bottom, 4)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 6) {
@@ -351,7 +352,7 @@ struct MemoryView: View {
                     let fut = k > DK.today, isSel = k == sel
                     Button { Feedback.tap(); sel = k } label: {
                         ZStack {
-                            Text("\(i)").font(.system(size: 16, weight: k == DK.today ? .heavy : isSel ? .bold : .medium)).monospacedDigit()
+                            Text("\(i)").font(.app(size: 16, weight: k == DK.today ? .heavy : isSel ? .bold : .medium)).monospacedDigit()
                                 .foregroundStyle(ink)
                                 .frame(width: 31, height: 31)
                                 .background { if isSel { RoundedRectangle(cornerRadius: 9, style: .continuous).fill(Theme.adaptive("#FBEFD9", "#4A4237")) } }
@@ -390,7 +391,7 @@ struct MemoryView: View {
 
     private func navBtn(_ t: String, disabled: Bool, _ a: @escaping () -> Void) -> some View {
         Button { Feedback.tap(); a() } label: {
-            Text(t).font(.system(size: 22)).foregroundStyle(Theme.adaptive("#5B4F45", "#F2EDE4")).frame(width: 30, height: 32)
+            Text(t).font(.app(size: 22)).foregroundStyle(Theme.adaptive("#5B4F45", "#F2EDE4")).frame(width: 30, height: 32)
         }
         .buttonStyle(.plain).disabled(disabled).opacity(disabled ? 0.25 : 1)
     }
@@ -400,16 +401,16 @@ struct MemoryView: View {
     private var dayHead: some View {
         let d = DK.date(sel)
         return HStack(spacing: 12) {
-            Text("\(DK.day(d))").font(.system(size: 52, weight: .heavy)).monospacedDigit().tracking(-1).foregroundStyle(ink)
+            Text("\(DK.day(d))").font(.app(size: 52, weight: .heavy)).monospacedDigit().tracking(-1).foregroundStyle(ink)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(DK.month(d))月 · 周\(DK.wdName[DK.weekday(sel)])").font(.system(size: 17, weight: .semibold)).foregroundStyle(ink)
-                Text(verbatim: "\(DK.year(d))").font(.system(size: 15)).foregroundStyle(Color(hex: "#9C9186"))
+                Text("\(DK.month(d))月 · 周\(DK.wdName[DK.weekday(sel)])").font(.app(size: 17, weight: .semibold)).foregroundStyle(ink)
+                Text(verbatim: "\(DK.year(d))").font(.app(size: 15)).foregroundStyle(Color(hex: "#9C9186"))
             }
             Spacer()
             if let mood = store.s.moodOf(sel) {
                 VStack(spacing: 2) {
                     Image(mood.asset).resizable().frame(width: 34, height: 34)
-                    Text(mood.name).font(.system(size: 12)).foregroundStyle(Color(hex: "#8F857A"))
+                    Text(mood.name).font(.app(size: 12)).foregroundStyle(Color(hex: "#8F857A"))
                 }
             }
         }
@@ -470,8 +471,8 @@ struct DayMemoryPanel: View {
         HStack(spacing: 4) {
             Image(icon).resizable().frame(width: 26, height: 26)
             VStack(alignment: .leading, spacing: 0) {
-                Text(v).font(.system(size: 15, weight: .bold)).monospacedDigit().foregroundStyle(ink)
-                Text(l).font(.system(size: 10.5, weight: green ? .semibold : .regular)).foregroundStyle(Color(hex: green ? "#6F9A63" : "#8F857A"))
+                Text(v).font(.app(size: 15, weight: .bold)).monospacedDigit().foregroundStyle(ink)
+                Text(l).font(.app(size: 10.5, weight: green ? .semibold : .regular)).foregroundStyle(Color(hex: green ? "#6F9A63" : "#8F857A"))
             }
         }
         .frame(maxWidth: .infinity)
@@ -496,7 +497,7 @@ struct DayMemoryPanel: View {
             if rows.isEmpty {
                 HStack(spacing: 10) {
                     Image("mm_sprout").resizable().frame(width: 22, height: 22)
-                    Text("这一天还没有记录\n打卡、写笔记之后会出现在这里").font(.system(size: 13.5)).lineSpacing(5).foregroundStyle(Color(hex: "#9C9186"))
+                    Text("这一天还没有记录\n打卡、写笔记之后会出现在这里").font(.app(size: 13.5)).lineSpacing(5).foregroundStyle(Color(hex: "#9C9186"))
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 18)
             } else {
@@ -505,7 +506,7 @@ struct DayMemoryPanel: View {
                     if !list.isEmpty {
                         HStack(spacing: 8) {
                             Image(parts[pi].1).resizable().scaledToFit().frame(width: 22, height: 22).frame(width: 30)
-                            Text(parts[pi].0).font(.system(size: 14.5, weight: .semibold)).foregroundStyle(Color(hex: "#4A4038"))
+                            Text(parts[pi].0).font(.app(size: 14.5, weight: .semibold)).foregroundStyle(Color(hex: "#4A4038"))
                                 .padding(.horizontal, 13).frame(height: 30)
                                 .background(Capsule().fill(Color(hex: parts[pi].2)))
                                 .brightness(dark ? -0.08 : 0)
@@ -527,12 +528,12 @@ struct DayMemoryPanel: View {
         let fl = r.jr != nil ? "mm_flower2" : pi == 2 ? "mm_flower1" : "mm_flower0"
         let content = HStack(spacing: 10) {
             Image(fl).resizable().frame(width: 14, height: 14).frame(width: 30)
-            Text(r.t.map { DK.hm($0) }.flatMap { $0.isEmpty ? nil : $0 } ?? "—").font(.system(size: 13.5)).monospacedDigit()
+            Text(r.t.map { DK.hm($0) }.flatMap { $0.isEmpty ? nil : $0 } ?? "—").font(.app(size: 13.5)).monospacedDigit()
                 .foregroundStyle(Color(hex: "#B3AA9E")).frame(width: 44, alignment: .leading)
             if let c = r.card {
                 Group {
                     if c.ic == "text" {
-                        Text(c.text.isEmpty ? String(c.name.prefix(1)) : c.text).font(.system(size: 15, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
+                        Text(c.text.isEmpty ? String(c.name.prefix(1)) : c.text).font(.app(size: 15, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
                     } else if c.ic == "img", let ui = ImageData.image(c.icImg) {
                         Image(uiImage: ui).resizable().scaledToFill().frame(width: 30, height: 30).clipShape(RoundedRectangle(cornerRadius: 8))
                     } else {
@@ -542,16 +543,16 @@ struct DayMemoryPanel: View {
                 .frame(width: 42, height: 42)
                 .background(RoundedRectangle(cornerRadius: 13, style: .continuous).fill(cmix(c.hex, 0.22, "#FFFFFF")))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(c.name).font(.system(size: 15.5, weight: .semibold)).foregroundStyle(ink).lineLimit(1)
-                    Text("已完成").font(.system(size: 13)).foregroundStyle(Color(hex: "#B3AA9E"))
+                    Text(c.name).font(.app(size: 15.5, weight: .semibold)).foregroundStyle(ink).lineLimit(1)
+                    Text("已完成").font(.app(size: 13)).foregroundStyle(Color(hex: "#B3AA9E"))
                 }
             } else {
                 Image("mm_note").resizable().frame(width: 28, height: 28)
                     .frame(width: 42, height: 42)
                     .background(RoundedRectangle(cornerRadius: 13, style: .continuous).fill(Color(hex: "#FDF1CF")))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("写了一篇笔记").font(.system(size: 15.5, weight: .semibold)).foregroundStyle(ink)
-                    Text("点开查看").font(.system(size: 13)).foregroundStyle(Color(hex: "#B3AA9E"))
+                    Text("写了一篇笔记").font(.app(size: 15.5, weight: .semibold)).foregroundStyle(ink)
+                    Text("点开查看").font(.app(size: 13)).foregroundStyle(Color(hex: "#B3AA9E"))
                 }
             }
             Spacer(minLength: 0)

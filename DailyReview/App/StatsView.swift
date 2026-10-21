@@ -92,7 +92,7 @@ struct StatsView: View {
 
     private var topBar: some View {
         ZStack {
-            Text("统计").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+            Text("统计").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
             HStack {
                 Spacer()
                 Button {
@@ -132,7 +132,7 @@ struct StatsView: View {
                     Feedback.tap()
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { per = p; off = 0 }
                 } label: {
-                    Text(p.name).font(.system(size: 14, weight: on ? .heavy : .semibold))
+                    Text(p.name).font(.app(size: 14, weight: on ? .heavy : .semibold))
                         .foregroundStyle(Color(hex: on ? c.onTxt : c.txt))
                         .frame(maxWidth: .infinity).frame(height: 34)
                         .background {
@@ -151,12 +151,12 @@ struct StatsView: View {
     private func nav(_ st: PeriodStats) -> some View {
         HStack(spacing: 18) {
             Button { Feedback.tap(); withAnimation { off -= 1 } } label: {
-                Text("‹").font(.system(size: 22)).foregroundStyle(Theme.adaptive("#5E5E66", "#AEAEB2")).frame(width: 34, height: 34)
+                Text("‹").font(.app(size: 22)).foregroundStyle(Theme.adaptive("#5E5E66", "#AEAEB2")).frame(width: 34, height: 34)
             }
             .accessibilityLabel("上一段")
             Button { Feedback.tap(); sheet = .heat } label: {
                 HStack(spacing: 6) {
-                    Text(st.label).font(.system(size: 15, weight: .bold)).foregroundStyle(PT.body)
+                    Text(st.label).font(.app(size: 15, weight: .bold)).foregroundStyle(PT.body)
                     Image("st_percal").renderingMode(.template).resizable().frame(width: 15, height: 15)
                         .foregroundStyle(Color(hex: dark ? "#8E8CFF" : "#5E5CE6"))
                 }
@@ -165,7 +165,7 @@ struct StatsView: View {
             }
             .accessibilityLabel("查看\(st.label)的打卡日历")
             Button { Feedback.tap(); withAnimation { off = min(0, off + 1) } } label: {
-                Text("›").font(.system(size: 22)).foregroundStyle(Theme.adaptive("#5E5E66", "#AEAEB2")).frame(width: 34, height: 34)
+                Text("›").font(.app(size: 22)).foregroundStyle(Theme.adaptive("#5E5E66", "#AEAEB2")).frame(width: 34, height: 34)
             }
             .disabled(off >= 0).opacity(off >= 0 ? 0.25 : 1)
             .accessibilityLabel("下一段")
@@ -187,7 +187,7 @@ struct StatsView: View {
     private func kpis(_ st: PeriodStats) -> some View {
         HStack(spacing: 8) {
             kpi(kcs[0], "st_check", Text("\(st.checks)"), "打卡次数", action: nil)
-            kpi(kcs[1], "st_ring", Text("\(st.rate)") + Text("%").font(.system(size: 13, weight: .heavy)), "完成率", action: nil)
+            kpi(kcs[1], "st_ring", Text("\(st.rate)") + Text("%").font(.app(size: 13, weight: .heavy)), "完成率", action: nil)
             kpi(kcs[2], "st_cal", Text("\(st.days)"), "打卡天数 ›") { sheet = .days }
             kpi(kcs[3], "st_pen", Text("\(st.jn)"), "笔记 ›") { sheet = .journal }
         }
@@ -200,8 +200,8 @@ struct StatsView: View {
                 .foregroundStyle(kt)
                 .frame(width: 28, height: 28)
                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(dark ? kt.opacity(0.16) : Color.white.opacity(0.62)))
-            v.font(.system(size: 22, weight: .heavy)).monospacedDigit().foregroundStyle(kt).lineLimit(1).minimumScaleFactor(0.6)
-            Text(label).font(.system(size: 11.5)).foregroundStyle(Color(hex: dark ? k.dks : k.ks)).lineLimit(1).fixedSize()
+            v.font(.app(size: 22, weight: .heavy)).monospacedDigit().foregroundStyle(kt).lineLimit(1).minimumScaleFactor(0.6)
+            Text(label).font(.app(size: 11.5)).foregroundStyle(Color(hex: dark ? k.dks : k.ks)).lineLimit(1).fixedSize()
         }
         .padding(.horizontal, 10).padding(.top, 12).padding(.bottom, 11)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -251,8 +251,8 @@ struct StatsView: View {
 
     private func h3(_ t: String, _ sub: String? = nil) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(t).font(.system(size: 16, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
-            if let sub { Text(sub).font(.system(size: 11.5, weight: .medium)).foregroundStyle(Color(hex: "#A39888")) }
+            Text(t).font(.app(size: 16, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+            if let sub { Text(sub).font(.app(size: 11.5, weight: .medium)).foregroundStyle(Color(hex: "#A39888")) }
         }
         .padding(.horizontal, 2).padding(.bottom, 10)
     }
@@ -272,7 +272,7 @@ struct StatsView: View {
                                                 startPoint: .topLeading, endPoint: .bottomTrailing))))
         let rated = st.perCard.filter { $0.rate != nil && $0.slots > 0 }.sorted { ($0.rate ?? 0) > ($1.rate ?? 0) }
         if rated.isEmpty {
-            Text("这段时间没有需要打卡的习惯").font(.system(size: 12.5)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
+            Text("这段时间没有需要打卡的习惯").font(.app(size: 12.5)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
                 .padding(.horizontal, 6).padding(.top, 14)
         } else {
             VStack(spacing: 14) {
@@ -291,7 +291,7 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 9) {
             HStack(spacing: 4) {
                 Image("st_star").renderingMode(.template).resizable().frame(width: 12, height: 12)
-                Text(lv.0).font(.system(size: 12, weight: .bold))
+                Text(lv.0).font(.app(size: 12, weight: .bold))
             }
             .foregroundStyle(Color(hex: dark ? lv.4 : lv.2))
             .padding(.horizontal, 10).frame(height: 24)
@@ -320,11 +320,11 @@ struct StatsView: View {
                 .frame(width: 20, height: 20)
                 .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(on ? Color(hex: "#7FC48A") : Theme.adaptive("#FFFFFF", "#2C2A27")))
                 .overlay { if !on { RoundedRectangle(cornerRadius: 7, style: .continuous).strokeBorder(Theme.adaptive("#E5DED1", "#45423D"), lineWidth: 1.2) } }
-            Text(t).font(.system(size: 13)).foregroundStyle(Theme.adaptive("#7A7066", "#A39A8E"))
+            Text(t).font(.app(size: 13)).foregroundStyle(Theme.adaptive("#7A7066", "#A39A8E"))
             Spacer(minLength: 4)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text("\(n)").font(.system(size: 19, weight: .heavy)).monospacedDigit().foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
-                Text("次").font(.system(size: 11.5)).foregroundStyle(Theme.adaptive("#A49A8E", "#7D756B"))
+                Text("\(n)").font(.app(size: 19, weight: .heavy)).monospacedDigit().foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+                Text("次").font(.app(size: 11.5)).foregroundStyle(Theme.adaptive("#A49A8E", "#7D756B"))
             }
         }
         .frame(height: 28)
@@ -336,11 +336,11 @@ struct StatsView: View {
             ProtoDot(card: x.card, on: true, shape: "circle", line: "solid", size: 32)
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(x.card.name).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1)
-                    Text("\(x.done)/\(x.slots)").font(.system(size: 11)).monospacedDigit().foregroundStyle(Theme.adaptive("#A79D90", "#8A8378"))
+                    Text(x.card.name).font(.app(size: 13.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1)
+                    Text("\(x.done)/\(x.slots)").font(.app(size: 11)).monospacedDigit().foregroundStyle(Theme.adaptive("#A79D90", "#8A8378"))
                     Spacer(minLength: 0)
-                    (Text("\(rate)") + Text("%").font(.system(size: 10.5, weight: .heavy)).foregroundColor(dark ? cmix(hc, 0.55, "#F2EDE4").opacity(0.8) : cmix(hc, 0.7, "#2E2620").opacity(0.8)))
-                        .font(.system(size: 14, weight: .heavy)).monospacedDigit()
+                    (Text("\(rate)") + Text("%").font(.app(size: 10.5, weight: .heavy)).foregroundColor(dark ? cmix(hc, 0.55, "#F2EDE4").opacity(0.8) : cmix(hc, 0.7, "#2E2620").opacity(0.8)))
+                        .font(.app(size: 14, weight: .heavy)).monospacedDigit()
                         .foregroundStyle(dark ? cmix(hc, 0.55, "#F2EDE4") : cmix(hc, 0.7, "#2E2620"))
                 }
                 GeometryReader { g in
@@ -380,7 +380,7 @@ struct StatsView: View {
     @ViewBuilder private func events(_ st: PeriodStats) -> some View {
         h3("新事件")
         if st.evs.isEmpty {
-            Text("这段时间没有新增、删除或恢复习惯").font(.system(size: 12.5)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
+            Text("这段时间没有新增、删除或恢复习惯").font(.app(size: 12.5)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
                 .padding(.horizontal, 4).padding(.bottom, 6)
         } else {
             VStack(alignment: .leading, spacing: 10) {
@@ -393,8 +393,8 @@ struct StatsView: View {
                         .frame(width: 30, height: 30)
                         VStack(alignment: .leading, spacing: 1) {
                             Text(e.type == "del" ? "删除了习惯「\(e.name)」" : e.type == "restore" ? "恢复了习惯「\(e.name)」" : "新增了习惯「\(e.name)」")
-                                .font(.system(size: 14.5, weight: .semibold)).foregroundStyle(PT.body).lineLimit(1)
-                            Text(DK.md(e.date)).font(.system(size: 12)).foregroundStyle(Color(hex: "#9A9AA3"))
+                                .font(.app(size: 14.5, weight: .semibold)).foregroundStyle(PT.body).lineLimit(1)
+                            Text(DK.md(e.date)).font(.app(size: 12)).foregroundStyle(Color(hex: "#9A9AA3"))
                         }
                     }
                 }
@@ -416,13 +416,13 @@ struct StatsView: View {
 
     @ViewBuilder private func summaryCard(_ proxy: ScrollViewProxy) -> some View {
         HStack(spacing: 0) {
-            Text("打卡总结").font(.system(size: 16, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+            Text("打卡总结").font(.app(size: 16, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
             if histCount > 0 {
                 Spacer(minLength: 8)
                 Button { Feedback.tap(); sheet = .history } label: {
                     HStack(spacing: 4) {
                         Image("si_clock").renderingMode(.template).resizable().frame(width: 14, height: 14)
-                        Text("往期总结 \(histCount)").font(.system(size: 12, weight: .bold))
+                        Text("往期总结 \(histCount)").font(.app(size: 12, weight: .bold))
                     }
                     .foregroundStyle(Theme.adaptive("#5E554C", "#E8E1D6"))
                     .padding(.horizontal, 11).frame(height: 28)
@@ -453,7 +453,7 @@ struct StatsView: View {
             .id("aiBody")
 
         Text("周总结在手机上直接统计，不联网，每周 1 次。AI 月度、年度总结升级中，敬请期待。")
-            .font(.system(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).lineSpacing(3)
+            .font(.app(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).lineSpacing(3)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 4).padding(.top, 12)
@@ -479,15 +479,15 @@ struct StatsView: View {
                 Image(soon ? "st_bot" : "st_wk").resizable().scaledToFit().frame(width: soon ? 27 : 26, height: soon ? 23 : 24)
                     .rotationEffect(.degrees(-6))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(names[p]!).font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+                    Text(names[p]!).font(.app(size: 15, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
                     HStack(spacing: 5) {
                         Circle().fill(Color(hex: soon ? "#E9A93C" : "#5CB874")).frame(width: 6, height: 6)
-                        Text(sub).font(.system(size: 11.5, weight: .medium)).foregroundStyle(Theme.adaptive("#7D7266", "#A39A8E")).lineLimit(1)
+                        Text(sub).font(.app(size: 11.5, weight: .medium)).foregroundStyle(Theme.adaptive("#7D7266", "#A39A8E")).lineLimit(1)
                     }
                 }
                 Spacer(minLength: 0)
                 if soon {
-                    Text("即将上线").font(.system(size: 10.5, weight: .heavy))
+                    Text("即将上线").font(.app(size: 10.5, weight: .heavy))
                         .foregroundStyle(Color(hex: dark ? "#D9C38A" : "#8A6410"))
                         .padding(.horizontal, 8).padding(.vertical, 3)
                         .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(dark ? Color.white.opacity(0.08) : Color.white.opacity(0.75)))
@@ -509,7 +509,7 @@ struct StatsView: View {
         if generating {
             LoadingDots(text: "正在统计 \(store.s.sumTarget(.week, sumOff(.week)).label) 的数据…")
         } else if let last = store.s.aiLast, let r = store.s.aiCache[last.key] {
-            Text(last.label).font(.system(size: 12.5, weight: .bold)).foregroundStyle(Color(hex: "#5E9E52"))
+            Text(last.label).font(.app(size: 12.5, weight: .bold)).foregroundStyle(Color(hex: "#5E9E52"))
                 .padding(.horizontal, 2).padding(.top, 14).padding(.bottom, 6)
             SumResultView(r: r, tick: streamTick)
         }
@@ -651,11 +651,11 @@ struct CompletionRing: View {
     private var center: some View {
         VStack(spacing: 1) {
             HStack(alignment: .firstTextBaseline, spacing: 1) {
-                Text("\(rate)").font(.system(size: 27, weight: .heavy)).tracking(-0.5).monospacedDigit()
-                Text("%").font(.system(size: 13, weight: .heavy)).opacity(0.75)
+                Text("\(rate)").font(.app(size: 27, weight: .heavy)).tracking(-0.5).monospacedDigit()
+                Text("%").font(.app(size: 13, weight: .heavy)).opacity(0.75)
             }
             .foregroundStyle(Color(hex: dark ? "#BFE6C8" : "#2F6B4A"))
-            Text("完成率").font(.system(size: 11)).foregroundStyle(Color(hex: dark ? "#8FA897" : "#7E9A86"))
+            Text("完成率").font(.app(size: 11)).foregroundStyle(Color(hex: dark ? "#8FA897" : "#7E9A86"))
         }
     }
 }
@@ -691,8 +691,8 @@ struct BarChartView: View {
                     }
                     let grid = Color(red: 118/255, green: 118/255, blue: 128/255)
                     ln(top, grid.opacity(0.18)); ln(top + ph / 2, grid.opacity(0.18)); ln(H - bot, grid.opacity(0.4))
-                    ctx.draw(Text("\(nice)").font(.system(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: W * k, y: (top - 4) * k), anchor: .bottomTrailing)
-                    ctx.draw(Text("\(nice / 2)").font(.system(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: W * k, y: (top + ph / 2 - 4) * k), anchor: .bottomTrailing)
+                    ctx.draw(Text("\(nice)").font(.app(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: W * k, y: (top - 4) * k), anchor: .bottomTrailing)
+                    ctx.draw(Text("\(nice / 2)").font(.app(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: W * k, y: (top + ph / 2 - 4) * k), anchor: .bottomTrailing)
                     for (i, x) in points.enumerated() {
                         let cx = CGFloat(i) * step + step / 2
                         let h = x.v > 0 ? max(3, CGFloat(x.v) / CGFloat(nice) * ph) : 0
@@ -703,7 +703,7 @@ struct BarChartView: View {
                             ctx.fill(p, with: .color(Color(hex: x.col ?? "#BFE3C9")))
                         }
                         if i % every == 0 || i == n - 1 {
-                            ctx.draw(Text(x.l).font(.system(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: cx * k, y: (H - 6) * k), anchor: .bottom)
+                            ctx.draw(Text(x.l).font(.app(size: 10 * k)).foregroundColor(ink3), at: CGPoint(x: cx * k, y: (H - 6) * k), anchor: .bottom)
                         }
                     }
                 }
@@ -718,7 +718,7 @@ struct BarChartView: View {
                     let cx = (CGFloat(s) * step + step / 2) * k
                     let h = x.v > 0 ? max(3, CGFloat(x.v) / CGFloat(nice) * ph) : 0
                     let y = (H - bot - h) * k
-                    Text(x.tip).font(.system(size: 12, weight: .semibold))
+                    Text(x.tip).font(.app(size: 12, weight: .semibold))
                         .foregroundStyle(Theme.adaptive("#FFFFFF", "#1B1B1A"))
                         .padding(.horizontal, 9).padding(.vertical, 4)
                         .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(PT.body))
@@ -757,7 +757,7 @@ struct LoadingDots: View {
                         .animation(.easeInOut(duration: 0.5).repeatForever().delay(Double(i) * 0.15), value: on)
                 }
             }
-            Text(text).font(.system(size: 13.5)).foregroundStyle(PT.muted)
+            Text(text).font(.app(size: 13.5)).foregroundStyle(PT.muted)
         }
         .frame(maxWidth: .infinity).padding(.vertical, 22)
         .onAppear { on = true }
@@ -796,11 +796,11 @@ struct SumResultView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 4) {
                 Image("st_wk").resizable().scaledToFit().frame(width: 16, height: 15)
-                Text(stamp).font(.system(size: 12)).foregroundStyle(PT.muted)
+                Text(stamp).font(.app(size: 12)).foregroundStyle(PT.muted)
             }
             .padding(.bottom, 10)
             ForEach(Array(r.paras.enumerated()), id: \.offset) { i, p in
-                richText(p).font(.system(size: 14.5)).foregroundStyle(PT.body).lineSpacing(14.5 * 0.7 - 4)
+                richText(p).font(.app(size: 14.5)).foregroundStyle(PT.body).lineSpacing(14.5 * 0.7 - 4)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.bottom, 10)
                     .opacity(i < shown ? 1 : 0).offset(y: i < shown ? 0 : 6)
@@ -808,7 +808,7 @@ struct SumResultView: View {
             HStack(alignment: .top, spacing: 10) {
                 Image("st_ai").renderingMode(.template).resizable().frame(width: 18, height: 18)
                     .foregroundStyle(Theme.adaptive("#5E5CE6", "#8E8CFF")).padding(.top, 3)
-                Text(r.cheer).font(.system(size: 14, weight: .medium)).foregroundStyle(PT.body).lineSpacing(14 * 0.65 - 4)
+                Text(r.cheer).font(.app(size: 14, weight: .medium)).foregroundStyle(PT.body).lineSpacing(14 * 0.65 - 4)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 14).padding(.vertical, 12)
@@ -873,14 +873,14 @@ struct ProtoSheetHead: View {
     var body: some View {
         ZStack {
             VStack(spacing: 2) {
-                Text(title).font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
-                if let sub { Text(sub).font(.system(size: 12, weight: .medium)).foregroundStyle(PT.sub) }
+                Text(title).font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                if let sub { Text(sub).font(.app(size: 12, weight: .medium)).foregroundStyle(PT.sub) }
             }
             .padding(.bottom, 6)
             HStack {
                 if let back {
                     Button(action: back) {
-                        Image(systemName: "chevron.left").font(.system(size: 18, weight: .semibold)).foregroundStyle(PT.ink)
+                        Image(systemName: "chevron.left").font(.app(size: 18, weight: .semibold)).foregroundStyle(PT.ink)
                             .frame(width: 48, height: 48).background(Circle().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")).shadow(color: .black.opacity(0.2), radius: 9, y: 6))
                     }
                     .buttonStyle(PressScale(scale: 0.92))
@@ -895,7 +895,7 @@ struct ProtoSheetHead: View {
 
     private var closeBtn: some View {
         Button(action: onClose) {
-            Image(systemName: "xmark").font(.system(size: 17, weight: .semibold)).foregroundStyle(PT.ink)
+            Image(systemName: "xmark").font(.app(size: 17, weight: .semibold)).foregroundStyle(PT.ink)
                 .frame(width: 48, height: 48)
                 .background(Circle().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")).shadow(color: .black.opacity(0.2), radius: 9, y: 6))
         }
@@ -939,9 +939,9 @@ struct HeatSheet: View {
                             Button { Feedback.tap(); withAnimation { month = m } } label: {
                                 VStack(alignment: .leading, spacing: 6) {
                                     HStack(alignment: .firstTextBaseline) {
-                                        Text("\(m + 1)月").font(.system(size: 12.5, weight: .bold)).foregroundStyle(PT.body)
+                                        Text("\(m + 1)月").font(.app(size: 12.5, weight: .bold)).foregroundStyle(PT.body)
                                         Spacer()
-                                        Text("\(list.reduce(0) { $0 + $1.n }) 次").font(.system(size: 11)).monospacedDigit().foregroundStyle(PT.muted)
+                                        Text("\(list.reduce(0) { $0 + $1.n }) 次").font(.app(size: 11)).monospacedDigit().foregroundStyle(PT.muted)
                                     }
                                     grid(list, big: false, max: mx, gap: 2)
                                 }
@@ -951,7 +951,7 @@ struct HeatSheet: View {
                         }
                     }
                     legend
-                    Text("颜色越深，那天打卡越多。点一个月份，再点具体某一天查看。").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
+                    Text("颜色越深，那天打卡越多。点一个月份，再点具体某一天查看。").font(.app(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
                         .padding(.horizontal, 6).padding(.top, 8)
                 } else {
                     let list = month.map { m in cells.filter { DK.month($0.d) == m + 1 } } ?? cells
@@ -962,7 +962,7 @@ struct HeatSheet: View {
                     let ws = store.s.prefs.weekStart == 0 ? 0 : 1
                     HStack(spacing: 6) {
                         ForEach(0..<7, id: \.self) { i in
-                            Text(DK.wdName[(i + ws) % 7]).font(.system(size: 12)).foregroundStyle(PT.muted).frame(maxWidth: .infinity)
+                            Text(DK.wdName[(i + ws) % 7]).font(.app(size: 12)).foregroundStyle(PT.muted).frame(maxWidth: .infinity)
                         }
                     }
                     .padding(.top, 4).padding(.bottom, 6)
@@ -972,14 +972,14 @@ struct HeatSheet: View {
                         // 选中的那天直接显示在下面（和「回忆」一样的数字 + 时间线），不再一层层弹窗
                         VStack(alignment: .leading, spacing: 12) {
                             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                                Text("\(DK.md(k)) 周\(DK.wdName[DK.weekday(k)])").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                                Text("\(DK.md(k)) 周\(DK.wdName[DK.weekday(k)])").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
                                 if let m = store.s.moodOf(k) {
                                     Image(m.asset).resizable().frame(width: 20, height: 20).alignmentGuide(.firstTextBaseline) { $0[.bottom] - 4 }
-                                    Text(m.name).font(.system(size: 13)).foregroundStyle(PT.muted)
+                                    Text(m.name).font(.app(size: 13)).foregroundStyle(PT.muted)
                                 }
                                 Spacer()
                                 Button { Feedback.tap(); router.goDay = k; dismiss() } label: {
-                                    Text("去这一天 ›").font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.sub)
+                                    Text("去这一天 ›").font(.app(size: 13, weight: .semibold)).foregroundStyle(PT.sub)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -990,7 +990,7 @@ struct HeatSheet: View {
                         .id(k)
                         .transition(.opacity)
                     } else {
-                        Text("点某一天，查看当天的打卡和笔记。").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
+                        Text("点某一天，查看当天的打卡和笔记。").font(.app(size: 12)).foregroundStyle(Theme.adaptive("#5E5E66", "#A1A1A6"))
                             .padding(.horizontal, 6).padding(.top, 8)
                     }
                 }
@@ -1018,8 +1018,8 @@ struct HeatSheet: View {
         return HStack(spacing: 8) {
             ForEach([(total, "打卡次数"), (active, "打卡天数"), (total > 0 ? mx : 0, "单日最多")], id: \.1) { v in
                 VStack(spacing: 0) {
-                    Text("\(v.0)").font(.system(size: 20, weight: .semibold)).monospacedDigit().foregroundStyle(PT.body)
-                    Text(v.1).font(.system(size: 11.5)).foregroundStyle(PT.muted)
+                    Text("\(v.0)").font(.app(size: 20, weight: .semibold)).monospacedDigit().foregroundStyle(PT.body)
+                    Text(v.1).font(.app(size: 11.5)).foregroundStyle(PT.muted)
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 10)
                 .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(scheme == .dark ? Color(hex: "#2F2E2B") : Color(red: 118/255, green: 118/255, blue: 128/255).opacity(0.08)))
@@ -1053,11 +1053,11 @@ struct HeatSheet: View {
                     .overlay {
                         if big {
                             ZStack(alignment: .topLeading) {
-                                Text("\(DK.day(x.d))").font(.system(size: 15, weight: .semibold)).monospacedDigit()
+                                Text("\(DK.day(x.d))").font(.app(size: 15, weight: .semibold)).monospacedDigit()
                                     .foregroundStyle(lv >= 3 ? .white : PT.body)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 if x.n > 0 {
-                                    Text("\(x.n)").font(.system(size: 11, weight: .heavy)).monospacedDigit()
+                                    Text("\(x.n)").font(.app(size: 11, weight: .heavy)).monospacedDigit()
                                         .foregroundStyle(Color(hex: lv >= 3 ? "#FFB340" : "#FF9500"))
                                         .padding(.leading, 5).padding(.top, 3)
                                 }
@@ -1086,9 +1086,9 @@ struct HeatSheet: View {
     private var legend: some View {
         HStack(spacing: 4) {
             Spacer()
-            Text("少").font(.system(size: 11.5)).foregroundStyle(PT.muted)
+            Text("少").font(.app(size: 11.5)).foregroundStyle(PT.muted)
             ForEach(0..<5, id: \.self) { l in RoundedRectangle(cornerRadius: 4, style: .continuous).fill(lvColor(l)).frame(width: 14, height: 14) }
-            Text("多").font(.system(size: 11.5)).foregroundStyle(PT.muted)
+            Text("多").font(.app(size: 11.5)).foregroundStyle(PT.muted)
         }
         .padding(.top, 12)
     }
@@ -1118,15 +1118,15 @@ struct DayDetailSheet: View {
                             ZStack {
                                 Circle().fill(PT.fillOn(x.card.hex, dark: false))
                                 if x.card.ic == "text" {
-                                    Text(x.card.text.isEmpty ? String(x.card.name.prefix(1)) : x.card.text).font(.system(size: 13, weight: .bold)).foregroundStyle(PT.ink)
+                                    Text(x.card.text.isEmpty ? String(x.card.name.prefix(1)) : x.card.text).font(.app(size: 13, weight: .bold)).foregroundStyle(PT.ink)
                                 } else {
                                     Image(IconCatalog.assetName(x.card.icon)).resizable().scaledToFit().frame(width: 24, height: 24)
                                 }
                             }
                             .frame(width: 38, height: 38)
-                            Text(x.card.name).font(.system(size: 15.5, weight: .medium)).foregroundStyle(PT.ink)
+                            Text(x.card.name).font(.app(size: 15.5, weight: .medium)).foregroundStyle(PT.ink)
                             Spacer()
-                            Text(DK.hm(x.rec.t)).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#2E9E5B"))
+                            Text(DK.hm(x.rec.t)).font(.app(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#2E9E5B"))
                         }
                     }
                 }
@@ -1137,15 +1137,15 @@ struct DayDetailSheet: View {
                             ZStack {
                                 Circle().strokeBorder(Theme.adaptive("#E7E7EB", "#3A3A3E"), lineWidth: 1.5)
                                 if c.ic == "text" {
-                                    Text(c.text.isEmpty ? String(c.name.prefix(1)) : c.text).font(.system(size: 13, weight: .bold)).foregroundStyle(PT.ink)
+                                    Text(c.text.isEmpty ? String(c.name.prefix(1)) : c.text).font(.app(size: 13, weight: .bold)).foregroundStyle(PT.ink)
                                 } else {
                                     Image(IconCatalog.assetName(c.icon)).resizable().scaledToFit().frame(width: 24, height: 24)
                                 }
                             }
                             .frame(width: 38, height: 38).opacity(0.7)
-                            Text(c.name).font(.system(size: 15.5, weight: .medium)).foregroundStyle(PT.sub)
+                            Text(c.name).font(.app(size: 15.5, weight: .medium)).foregroundStyle(PT.sub)
                             Spacer()
-                            Text("未打卡").font(.system(size: 13.5, weight: .medium)).foregroundStyle(PT.faint)
+                            Text("未打卡").font(.app(size: 13.5, weight: .medium)).foregroundStyle(PT.faint)
                         }
                     }
                 }
@@ -1154,21 +1154,21 @@ struct DayDetailSheet: View {
                     ForEach(jr) { e in
                         row {
                             Image("dd_jr").renderingMode(.template).resizable().frame(width: 26, height: 23).foregroundStyle(PT.ink).frame(width: 38)
-                            Text(e.displayTitle).font(.system(size: 15.5, weight: .medium)).foregroundStyle(PT.ink).lineLimit(1)
+                            Text(e.displayTitle).font(.app(size: 15.5, weight: .medium)).foregroundStyle(PT.ink).lineLimit(1)
                             Spacer()
-                            Text(DK.hm(e.c)).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#2E9E5B"))
+                            Text(DK.hm(e.c)).font(.app(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#2E9E5B"))
                         }
                     }
                 }
                 if done.isEmpty && todo.isEmpty && jr.isEmpty {
-                    Text("这一天没有需要打卡的习惯").font(.system(size: 14)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.vertical, 24)
+                    Text("这一天没有需要打卡的习惯").font(.app(size: 14)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.vertical, 24)
                 }
             }
         }
     }
 
     private func head(_ t: String) -> some View {
-        Text(t).font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.sub).padding(.horizontal, 6).padding(.top, 14).padding(.bottom, 8)
+        Text(t).font(.app(size: 13, weight: .semibold)).foregroundStyle(PT.sub).padding(.horizontal, 6).padding(.top, 14).padding(.bottom, 8)
     }
 
     private func row<V: View>(@ViewBuilder _ v: () -> V) -> some View {
@@ -1208,8 +1208,8 @@ struct DaysSheet: View {
                             Button { Feedback.tap(); withAnimation { month = m } } label: {
                                 VStack(alignment: .leading, spacing: 4) {
                                     HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                        Text("\(DK.month(m))月").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
-                                        Text("\(cnt(m)) 天").font(.system(size: 13, weight: .medium)).foregroundStyle(Color(hex: "#A39888"))
+                                        Text("\(DK.month(m))月").font(.app(size: 13, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+                                        Text("\(cnt(m)) 天").font(.app(size: 13, weight: .medium)).foregroundStyle(Color(hex: "#A39888"))
                                     }
                                     miniGrid(m, set)
                                 }
@@ -1242,13 +1242,13 @@ struct DaysSheet: View {
         let n = DK.daysInMonth(m)
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
             ForEach(0..<7, id: \.self) { i in
-                Text(DK.wdName[(i + ws) % 7]).font(.system(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).padding(.top, 2).padding(.bottom, 6)
+                Text(DK.wdName[(i + ws) % 7]).font(.app(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).padding(.top, 2).padding(.bottom, 6)
             }
             ForEach(0..<lead(m), id: \.self) { i in Color.clear.frame(height: 40).id("b\(i)") }
             ForEach(1...n, id: \.self) { i in
                 let k = DK.key(DK.add(m, i - 1)), on = set.contains(k), r = inRange(k)
                 Button { onPick(k) } label: {
-                    Text("\(i)").font(.system(size: 15, weight: on ? .bold : .regular)).monospacedDigit()
+                    Text("\(i)").font(.app(size: 15, weight: on ? .bold : .regular)).monospacedDigit()
                         .foregroundStyle(on ? Color(hex: "#2F4B29") : Color(hex: "#C9C1B4"))
                         .frame(width: 40, height: 40)
                         .background(Circle().fill(on ? Color(hex: "#BFE3C9") : .clear))
@@ -1297,7 +1297,7 @@ struct JournalRangeSheet: View {
             VStack(alignment: .leading, spacing: 10) {
                 ProtoSheetHead(title: title ?? "\(label)的笔记", sub: "共 \(all.count) 篇 · 最近的在上面") { dismiss() }
                 if all.isEmpty {
-                    Text("\(title == nil ? "这段时间还没有笔记。" : "还没有笔记。")\n在打卡页点「笔记」写下第一篇吧。").font(.system(size: 14)).foregroundStyle(PT.faint)
+                    Text("\(title == nil ? "这段时间还没有笔记。" : "还没有笔记。")\n在打卡页点「笔记」写下第一篇吧。").font(.app(size: 14)).foregroundStyle(PT.faint)
                         .multilineTextAlignment(.center).lineSpacing(6)
                         .frame(maxWidth: .infinity).padding(.top, 24).padding(.bottom, 30)
                 } else {
@@ -1346,14 +1346,14 @@ struct SumInfoSheet: View {
                     HStack(alignment: .center, spacing: 12) {
                         Image("st_wk").resizable().scaledToFit().frame(width: 38, height: 34)
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(e == nil ? "可以生成 \(t.label) 的总结" : "这一期的总结已经生成").font(.system(size: 14.5, weight: .semibold)).foregroundStyle(Color(hex: "#3E3532"))
+                            Text(e == nil ? "可以生成 \(t.label) 的总结" : "这一期的总结已经生成").font(.app(size: 14.5, weight: .semibold)).foregroundStyle(Color(hex: "#3E3532"))
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(e.flatMap { $0.at }.map { at in
                                 let d = Date(timeIntervalSince1970: at / 1000); return "生成于 \(DK.month(d))月\(DK.day(d))日"
-                            } ?? "本机统计，马上就好").font(.system(size: 12)).foregroundStyle(Color(hex: "#7D7266"))
+                            } ?? "本机统计，马上就好").font(.app(size: 12)).foregroundStyle(Color(hex: "#7D7266"))
                         }
                         Spacer(minLength: 0)
-                        Text("所有人免费").font(.system(size: 10.5, weight: .heavy)).foregroundStyle(Color(hex: "#3F7A3A"))
+                        Text("所有人免费").font(.app(size: 10.5, weight: .heavy)).foregroundStyle(Color(hex: "#3F7A3A"))
                             .padding(.horizontal, 8).padding(.vertical, 3)
                             .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color(hex: "#DDF0D8")))
                             .frame(maxHeight: .infinity, alignment: .top)
@@ -1368,8 +1368,8 @@ struct SumInfoSheet: View {
                                 .frame(width: 28, height: 28)
                                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Theme.adaptive("#F4F0E8", "#2F2E2B")))
                             VStack(alignment: .leading, spacing: 3) {
-                                Text(r.1).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).padding(.top, 5)
-                                Text(r.2).font(.system(size: 12.5)).foregroundStyle(Theme.adaptive("#7D7266", "#A39A8E")).lineSpacing(3)
+                                Text(r.1).font(.app(size: 13.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).padding(.top, 5)
+                                Text(r.2).font(.app(size: 12.5)).foregroundStyle(Theme.adaptive("#7D7266", "#A39A8E")).lineSpacing(3)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
@@ -1381,7 +1381,7 @@ struct SumInfoSheet: View {
                         }
                     }
                     Button { onGo() } label: {
-                        Text(e == nil ? "生成这一周的总结" : "查看总结").font(.system(size: 15.5, weight: .bold))
+                        Text(e == nil ? "生成这一周的总结" : "查看总结").font(.app(size: 15.5, weight: .bold))
                             .foregroundStyle(Theme.adaptive("#FFFFFF", "#2A2724"))
                             .frame(maxWidth: .infinity).frame(height: 48)
                             .background(Capsule().fill(Theme.adaptive("#3E3532", "#F2EDE4")))
@@ -1389,7 +1389,7 @@ struct SumInfoSheet: View {
                     .buttonStyle(PressScale(scale: 0.97))
                     .padding(.top, 14)
                     if e == nil {
-                        Text("每周只能生成 1 次，生成后不能重新统计").font(.system(size: 12)).foregroundStyle(Color(hex: "#8F857A"))
+                        Text("每周只能生成 1 次，生成后不能重新统计").font(.app(size: 12)).foregroundStyle(Color(hex: "#8F857A"))
                             .frame(maxWidth: .infinity).padding(.top, 8)
                     }
                 }
@@ -1408,9 +1408,9 @@ struct SumRulesSheet: View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Image("st_wk").resizable().scaledToFit().frame(width: 26, height: 23)
-                        Text("周度打卡总结").font(.system(size: 14.5, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
+                        Text("周度打卡总结").font(.app(size: 14.5, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
                         Spacer()
-                        Text("所有人免费").font(.system(size: 10.5, weight: .heavy)).foregroundStyle(Color(hex: "#3F7A3A"))
+                        Text("所有人免费").font(.app(size: 10.5, weight: .heavy)).foregroundStyle(Color(hex: "#3F7A3A"))
                             .padding(.horizontal, 8).padding(.vertical, 3)
                             .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Color(hex: "#DDF0D8")))
                     }
@@ -1423,7 +1423,7 @@ struct SumRulesSheet: View {
                 .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Color(hex: "#EEF4FC")))
                 .padding(.bottom, 10)
                 Text("默认生成最近结束的一期；在统计页切到更早的周、月、年，再点按钮就能生成那一期。")
-                    .font(.system(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).lineSpacing(3).multilineTextAlignment(.center)
+                    .font(.app(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).lineSpacing(3).multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity).padding(.horizontal, 4).padding(.top, 4)
             }
         }
@@ -1431,8 +1431,8 @@ struct SumRulesSheet: View {
 
     private func line(_ k: String, _ v: String) -> some View {
         HStack(alignment: .top, spacing: 8) {
-            Text(k).font(.system(size: 11, weight: .bold)).foregroundStyle(Color(hex: "#A39888")).padding(.top, 1)
-            Text(v).font(.system(size: 12.5)).foregroundStyle(Color(hex: "#6F665C")).lineSpacing(3).fixedSize(horizontal: false, vertical: true)
+            Text(k).font(.app(size: 11, weight: .bold)).foregroundStyle(Color(hex: "#A39888")).padding(.top, 1)
+            Text(v).font(.app(size: 12.5)).foregroundStyle(Color(hex: "#6F665C")).lineSpacing(3).fixedSize(horizontal: false, vertical: true)
         }
         .padding(.top, 4)
     }
@@ -1453,16 +1453,16 @@ struct SumHistorySheet: View {
             VStack(alignment: .leading, spacing: 0) {
                 ProtoSheetHead(title: "往期总结", sub: "共 \(keys.count) 份 · 点一份查看") { dismiss() }
                 if keys.isEmpty {
-                    Text("还没有生成过总结").font(.system(size: 13)).foregroundStyle(PT.sub).frame(maxWidth: .infinity).padding(.vertical, 30)
+                    Text("还没有生成过总结").font(.app(size: 13)).foregroundStyle(PT.sub).frame(maxWidth: .infinity).padding(.vertical, 30)
                 }
                 ForEach(groups, id: \.0) { g in
                     let ks = keys.filter { $0.hasPrefix(g.0 + "|") }
                     if !ks.isEmpty {
                         HStack(spacing: 7) {
                             Image(g.0 == "week" ? "st_wk" : "st_bot").resizable().scaledToFit().frame(width: 24, height: 21)
-                            Text(g.1).font(.system(size: 13.5, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
+                            Text(g.1).font(.app(size: 13.5, weight: .heavy)).foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4"))
                             Spacer()
-                            Text("\(ks.count) 份").font(.system(size: 11.5, weight: .semibold)).foregroundStyle(Color(hex: "#A39888"))
+                            Text("\(ks.count) 份").font(.app(size: 11.5, weight: .semibold)).foregroundStyle(Color(hex: "#A39888"))
                         }
                         .padding(.horizontal, 4).padding(.top, 14).padding(.bottom, 8)
                         ForEach(ks, id: \.self) { k in item(k, g.0) }
@@ -1482,12 +1482,12 @@ struct SumHistorySheet: View {
         return Button { onPick(k) } label: {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(label).font(.system(size: 15, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
-                    Text(sub).font(.system(size: 12)).foregroundStyle(Color(hex: "#7D7266"))
-                    Text(pv.count > 40 ? String(pv.prefix(40)) + "…" : pv).font(.system(size: 12.5)).foregroundStyle(Color(hex: "#5E554C")).lineLimit(1)
+                    Text(label).font(.app(size: 15, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
+                    Text(sub).font(.app(size: 12)).foregroundStyle(Color(hex: "#7D7266"))
+                    Text(pv.count > 40 ? String(pv.prefix(40)) + "…" : pv).font(.app(size: 12.5)).foregroundStyle(Color(hex: "#5E554C")).lineLimit(1)
                 }
                 Spacer()
-                Text("›").font(.system(size: 20)).foregroundStyle(Color(hex: "#B5AA9C"))
+                Text("›").font(.app(size: 20)).foregroundStyle(Color(hex: "#B5AA9C"))
             }
             .padding(.horizontal, 14).padding(.vertical, 11)
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive(bg, "#161615")))
@@ -1506,11 +1506,11 @@ struct SummaryContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.text2)
+            Text(title).font(.app(size: 13, weight: .semibold)).foregroundStyle(Theme.text2)
             ForEach(Array(entry.paras.enumerated()), id: \.offset) { _, p in
-                richText(p).font(.system(size: 14.5)).foregroundStyle(Theme.text).lineSpacing(4).fixedSize(horizontal: false, vertical: true)
+                richText(p).font(.app(size: 14.5)).foregroundStyle(Theme.text).lineSpacing(4).fixedSize(horizontal: false, vertical: true)
             }
-            Text(entry.cheer).font(.system(size: 13.5)).foregroundStyle(Theme.text2)
+            Text(entry.cheer).font(.app(size: 13.5)).foregroundStyle(Theme.text2)
         }
     }
 }

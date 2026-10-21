@@ -108,14 +108,14 @@ struct DesignerView: View {
 
     private var bar: some View {
         ZStack {
-            Text("编辑卡片").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
+            Text("编辑卡片").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
             HStack {
                 Button { dismiss() } label: {
-                    Text("放弃").font(.system(size: 16)).foregroundStyle(WT.gray).padding(.horizontal, 4).frame(height: 38).contentShape(Rectangle())
+                    Text("放弃").font(.app(size: 16)).foregroundStyle(WT.gray).padding(.horizontal, 4).frame(height: 38).contentShape(Rectangle())
                 }
                 Spacer()
                 Button { save() } label: {
-                    Text(saveLabel).font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.yellowInk)
+                    Text(saveLabel).font(.app(size: 15, weight: .semibold)).foregroundStyle(WT.yellowInk)
                         .padding(.horizontal, 16).frame(height: 36)
                         .background(Capsule().fill(WT.yellow))
                         .overlay(Capsule().strokeBorder(WT.yellowInk, lineWidth: 1))
@@ -147,9 +147,9 @@ struct DesignerView: View {
             .buttonStyle(.plain)
             .accessibilityLabel("更换图标和颜色")
             VStack(alignment: .leading, spacing: 2) {
-                Text(c.isNote ? "记录名称" : "打卡名称").font(.system(size: 12)).foregroundStyle(WT.gray)
+                Text(c.isNote ? "记录名称" : "打卡名称").font(.app(size: 12)).foregroundStyle(WT.gray)
                 TextField(c.isNote ? "比如：今天的心得" : "输入打卡名称…", text: $c.name)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.app(size: 16, weight: .semibold))
                     .foregroundStyle(PT.body)
                     .focused($nameFocused)
                     .padding(.top, 5).padding(.bottom, 7)
@@ -169,7 +169,7 @@ struct DesignerView: View {
                 .frame(width: 28, height: 28)
                 .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(Color(hex: bg)))
                 .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
-            Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(WT.ink2)
+            Text(title).font(.app(size: 15, weight: .semibold)).foregroundStyle(WT.ink2)
         }
         .padding(.horizontal, 2).padding(.bottom, 6)
     }
@@ -191,7 +191,7 @@ struct DesignerView: View {
                     chip(store.s.ungroupedName, nil)
                     ForEach(store.s.groups) { g in chip(g.name, g.id) }
                     Button { newGroup = true } label: {
-                        Text("＋ 新建分组").font(.system(size: 14)).foregroundStyle(WT.gray)
+                        Text("＋ 新建分组").font(.app(size: 14)).foregroundStyle(WT.gray)
                             .padding(.horizontal, 14).frame(height: 34)
                             .overlay(Capsule().strokeBorder(Color(red: 60/255, green: 60/255, blue: 67/255).opacity(0.12), lineWidth: 1.2))
                     }
@@ -205,7 +205,7 @@ struct DesignerView: View {
         let known = store.s.groups.contains { $0.id == c.group }
         let on = id == nil ? !known : c.group == id
         return Button { Feedback.tap(); c.group = id } label: {
-            Text(name).font(.system(size: 14, weight: on ? .semibold : .regular)).foregroundStyle(on ? Color(hex: "#1C1C1E") : PT.body)
+            Text(name).font(.app(size: 14, weight: on ? .semibold : .regular)).foregroundStyle(on ? Color(hex: "#1C1C1E") : PT.body)
                 .padding(.horizontal, 14).frame(height: 34)
                 .background(Capsule().fill(on ? WT.orange : WT.chipOff))
         }
@@ -224,9 +224,9 @@ struct DesignerView: View {
                         .frame(width: 32, height: 32)
                         .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: "#CFE6FA")))
                         .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
-                    Text("添加提醒").font(.system(size: 15, weight: .semibold)).foregroundStyle(PT.body)
+                    Text("添加提醒").font(.app(size: 15, weight: .semibold)).foregroundStyle(PT.body)
                     Spacer()
-                    Text("›").font(.system(size: 22)).foregroundStyle(PT.muted)
+                    Text("›").font(.app(size: 22)).foregroundStyle(PT.muted)
                 }
                 .padding(.horizontal, 16).padding(.vertical, 12)
                 .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(WT.card))
@@ -242,7 +242,7 @@ struct DesignerView: View {
                             .foregroundStyle(Color(hex: "#4A3F45"))
                             .frame(width: 32, height: 32)
                             .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: "#CFE6FA")))
-                        Text(String(format: "%02d:%02d", r.h, r.m)).font(.system(size: 20, weight: .bold, design: .rounded)).foregroundStyle(PT.body)
+                        Text(String(format: "%02d:%02d", r.h, r.m)).font(.app(size: 20, weight: .bold, design: .rounded)).foregroundStyle(PT.body)
                         remChip(r.repShort)
                         remChip("闹钟")
                         Spacer()
@@ -266,10 +266,10 @@ struct DesignerView: View {
                     reminderEdit = ReminderEdit(index: nil)
                 } label: {
                     HStack(spacing: 10) {
-                        Text("+").font(.system(size: 20, weight: .medium)).foregroundStyle(WT.gray).frame(width: 32)
-                        Text("添加更多提醒").font(.system(size: 15)).foregroundStyle(WT.gray)
+                        Text("+").font(.app(size: 20, weight: .medium)).foregroundStyle(WT.gray).frame(width: 32)
+                        Text("添加更多提醒").font(.app(size: 15)).foregroundStyle(WT.gray)
                         Spacer()
-                        Text("›").font(.system(size: 22)).foregroundStyle(PT.muted)
+                        Text("›").font(.app(size: 22)).foregroundStyle(PT.muted)
                     }
                     .padding(.horizontal, 14).frame(height: 52)
                     .contentShape(Rectangle())
@@ -282,7 +282,7 @@ struct DesignerView: View {
     }
 
     private func remChip(_ t: String) -> some View {
-        Text(t).font(.system(size: 11.5, weight: .medium)).foregroundStyle(WT.ink2)
+        Text(t).font(.app(size: 11.5, weight: .medium)).foregroundStyle(WT.ink2)
             .padding(.horizontal, 8).frame(height: 22)
             .background(Capsule().fill(Theme.adaptive("#F3EEE4", "#34322D")))
     }
@@ -296,7 +296,7 @@ struct DesignerView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     weekGroup("工作日", [1, 2, 3, 4, 5])
                     weekGroup("周末", [6, 0])
-                    Text("没有打勾的日子，打卡页不会显示这张卡片。").font(.system(size: 12)).foregroundStyle(WT.gray)
+                    Text("没有打勾的日子，打卡页不会显示这张卡片。").font(.app(size: 12)).foregroundStyle(WT.gray)
                         .padding(.horizontal, 4)
                 }
             }
@@ -307,13 +307,13 @@ struct DesignerView: View {
         let all = days.allSatisfy { c.days.contains($0) }
         return VStack(alignment: .leading, spacing: 7) {
             HStack {
-                Text(title).font(.system(size: 13)).foregroundStyle(WT.gray)
+                Text(title).font(.app(size: 13)).foregroundStyle(WT.gray)
                 Spacer()
                 Button(all ? "取消全选" : "全选") {
                     Feedback.tap()
                     if all { c.days.removeAll { days.contains($0) } } else { c.days = Array(Set(c.days + days)) }
                 }
-                .font(.system(size: 13, weight: .medium)).foregroundStyle(PT.ink)
+                .font(.app(size: 13, weight: .medium)).foregroundStyle(PT.ink)
                 .buttonStyle(.plain)
             }
             .padding(.horizontal, 2)
@@ -334,12 +334,12 @@ struct DesignerView: View {
             if on { c.days.removeAll { $0 == d } } else { c.days.append(d) }
         } label: {
             VStack(spacing: 5) {
-                Text("周" + DK.wdName[d]).font(.system(size: 13, weight: .semibold))
+                Text("周" + DK.wdName[d]).font(.app(size: 13, weight: .semibold))
                 ZStack {
                     Circle().fill(on ? Color.white : Color.clear)
                     Circle().strokeBorder(on ? Color(hex: "#4A3F45") : Color(hex: "#C9C2B6"), lineWidth: 1.4)
                     if on {
-                        Image(systemName: "checkmark").font(.system(size: 8, weight: .heavy)).foregroundStyle(Color(hex: "#4A3F45"))
+                        Image(systemName: "checkmark").font(.app(size: 8, weight: .heavy)).foregroundStyle(Color(hex: "#4A3F45"))
                     }
                 }
                 .frame(width: 17, height: 17)
@@ -376,17 +376,17 @@ struct DesignerView: View {
             }
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: "pause").font(.system(size: 13, weight: .bold))
+                Image(systemName: "pause").font(.app(size: 13, weight: .bold))
                     .foregroundStyle(Color(hex: "#4A3F45"))
                     .frame(width: 32, height: 32)
                     .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(hex: "#E3DAF7")))
                     .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(p == nil ? "暂停习惯" : (now ? "恢复习惯" : "取消暂停")).font(.system(size: 15, weight: .semibold)).foregroundStyle(PT.body)
-                    Text(sub).font(.system(size: 12)).foregroundStyle(WT.gray).lineLimit(1)
+                    Text(p == nil ? "暂停习惯" : (now ? "恢复习惯" : "取消暂停")).font(.app(size: 15, weight: .semibold)).foregroundStyle(PT.body)
+                    Text(sub).font(.app(size: 12)).foregroundStyle(WT.gray).lineLimit(1)
                 }
                 Spacer()
-                Text("›").font(.system(size: 22)).foregroundStyle(PT.muted)
+                Text("›").font(.app(size: 22)).foregroundStyle(PT.muted)
             }
             .padding(.horizontal, 16).padding(.vertical, 11)
             .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(WT.card))
@@ -407,6 +407,12 @@ struct DesignerView: View {
         // 暂停在弹窗里已经直接生效，这里以最新的为准
         if let live = store.s.card(c.id) { x.pauses = live.pauses }
         if x.ic == "img" && x.icImg == nil { x.ic = "icon" }
+        // 免费版最多 8 个习惯，开通会员不限
+        if isNew && !x.isNote && !store.vip && store.s.cards.filter({ !$0.isNote }).count >= VipPerks.freeLimit {
+            toaster.show("免费版最多 \(VipPerks.freeLimit) 个习惯，开通会员就不限个数啦")
+            VipGate.present()
+            return
+        }
         let offToday = !x.isNote && !x.days.contains(DK.weekday(DK.todayDate))
         let gName = store.s.groups.first { $0.id == x.group }?.name
         store.upsert(x)
@@ -440,11 +446,11 @@ struct IconPickerSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ZStack {
-                    Text("图标与颜色").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
+                    Text("图标与颜色").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
                     HStack {
                         Spacer()
                         Button { dismiss() } label: {
-                            Text("✓").font(.system(size: 15, weight: .bold)).foregroundStyle(WT.yellowInk)
+                            Text("✓").font(.app(size: 15, weight: .bold)).foregroundStyle(WT.yellowInk)
                                 .frame(width: 36, height: 36)
                                 .background(Circle().fill(WT.yellow))
                                 .overlay(Circle().strokeBorder(WT.yellowInk, lineWidth: 1))
@@ -467,8 +473,8 @@ struct IconPickerSheet: View {
                 if card.ic == "img" { photoBox.padding(.bottom, 16) }
 
                 HStack(spacing: 8) {
-                    Text("颜色").font(.system(size: 13)).foregroundStyle(WT.gray)
-                    Text("左右滑动查看更多").font(.system(size: 11)).foregroundStyle(PT.muted)
+                    Text("颜色").font(.app(size: 13)).foregroundStyle(WT.gray)
+                    Text("左右滑动查看更多").font(.app(size: 11)).foregroundStyle(PT.muted)
                 }
                 .padding(.horizontal, 6).padding(.bottom, 6)
                 palette.padding(.bottom, 16)
@@ -495,7 +501,7 @@ struct IconPickerSheet: View {
     }
 
     private func label(_ t: String) -> some View {
-        Text(t).font(.system(size: 13)).foregroundStyle(WT.gray).padding(.horizontal, 6).padding(.bottom, 6)
+        Text(t).font(.app(size: 13)).foregroundStyle(WT.gray).padding(.horizontal, 6).padding(.bottom, 6)
     }
 
     private var seg: some View {
@@ -512,12 +518,14 @@ struct IconPickerSheet: View {
         let on = card.ic == id
         return Button {
             Feedback.tap()
+            // 照片做图标是会员功能（已经在用的不受影响）
+            if vip && card.ic != id && !purchases.isVIP { VipGate.present(); return }
             withAnimation(.easeOut(duration: 0.2)) { card.ic = id }
         } label: {
             HStack(spacing: 4) {
-                Text(t).font(.system(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(PT.body)
+                Text(t).font(.app(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(PT.body)
                 if vip {
-                    Text("VIP").font(.system(size: 10, weight: .heavy)).foregroundStyle(Color(hex: "#4A3000"))
+                    Text("VIP").font(.app(size: 10, weight: .heavy)).foregroundStyle(Color(hex: "#4A3000"))
                         .padding(.horizontal, 5).padding(.vertical, 1)
                         .background(RoundedRectangle(cornerRadius: 5).fill(Theme.vipGold))
                 }
@@ -531,7 +539,7 @@ struct IconPickerSheet: View {
     private var textBox: some View {
         VStack(alignment: .leading, spacing: 10) {
             TextField("1–2 个字", text: $card.text)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.app(size: 16, weight: .semibold))
                 .padding(.horizontal, 14).frame(height: 46)
                 .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.adaptive("#F4F4F6", "#2A2A28")))
                 .onChange(of: card.text) { _, v in if v.count > 3 { card.text = String(v.prefix(3)) } }
@@ -556,8 +564,8 @@ struct IconPickerSheet: View {
     private var photoBox: some View {
         PhotosPicker(selection: $photo, matching: .images) {
             HStack {
-                Image(systemName: "photo").font(.system(size: 16))
-                Text(card.icImg == nil ? "从相册选一张照片" : "换一张照片").font(.system(size: 15, weight: .semibold))
+                Image(systemName: "photo").font(.app(size: 16))
+                Text(card.icImg == nil ? "从相册选一张照片" : "换一张照片").font(.app(size: 15, weight: .semibold))
             }
             .foregroundStyle(PT.body)
             .frame(maxWidth: .infinity).frame(height: 46)
@@ -621,7 +629,7 @@ struct IconPickerSheet: View {
             HStack(spacing: 0) {
                 ForEach(IconCatalog.categories.indices, id: \.self) { i in
                     Button { Feedback.tap(); cat = i } label: {
-                        Text(IconCatalog.categories[i].name).font(.system(size: 15, weight: cat == i ? .bold : .medium))
+                        Text(IconCatalog.categories[i].name).font(.app(size: 15, weight: cat == i ? .bold : .medium))
                             .foregroundStyle(cat == i ? .white : PT.body)
                             .frame(maxWidth: .infinity).frame(height: 36)
                             .background(RoundedRectangle(cornerRadius: 11, style: .continuous).fill(cat == i ? Color(hex: "#1C1C1E") : .clear))
@@ -676,15 +684,15 @@ struct ReminderSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
-                Text(initial == nil ? "添加提醒" : "编辑提醒").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
+                Text(initial == nil ? "添加提醒" : "编辑提醒").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
                 HStack {
-                    Button("取消") { dismiss() }.font(.system(size: 16)).foregroundStyle(WT.gray)
+                    Button("取消") { dismiss() }.font(.app(size: 16)).foregroundStyle(WT.gray)
                     Spacer()
                     Button("完成") {
                         guard !(r.days ?? []).isEmpty else { return }
                         onSave(r); dismiss()
                     }
-                    .font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+                    .font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
                 }
                 .buttonStyle(.plain)
             }
@@ -697,15 +705,15 @@ struct ReminderSheet: View {
                             .frame(width: 31, height: 36)
                             .background(Circle().fill(Color(red: 118/255, green: 118/255, blue: 128/255).opacity(0.14)))
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("闹钟提醒").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#3E3532"))
-                            Text("到点响铃，锁屏和后台也会响；没处理会每 5 分钟再响一次，最多 3 次").font(.system(size: 12.5)).foregroundStyle(Color(hex: "#7D7366"))
+                            Text("闹钟提醒").font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#3E3532"))
+                            Text("到点响铃，锁屏和后台也会响；没处理会每 5 分钟再响一次，最多 3 次").font(.app(size: 12.5)).foregroundStyle(Color(hex: "#7D7366"))
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     .padding(14)
                     .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Color(hex: "#FFF4D6")))
                     .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(hex: "#F2D58A"), lineWidth: 1.5))
-                    Text("点开响铃可以去打卡、10 分钟后再提醒或关闭；打过卡当天就不再响。需要允许小满发送通知，手机静音时只振动。").font(.system(size: 12)).foregroundStyle(WT.gray)
+                    Text("点开响铃可以去打卡、10 分钟后再提醒或关闭；打过卡当天就不再响。需要允许小满发送通知，手机静音时只振动。").font(.app(size: 12)).foregroundStyle(WT.gray)
                         .padding(.horizontal, 6).padding(.top, 8)
 
                     lbl("提醒时间")
@@ -721,7 +729,7 @@ struct ReminderSheet: View {
                                     r.repeatMode = rep.id
                                     if let d = rep.days { r.days = d }
                                 } label: {
-                                    Text(rep.name).font(.system(size: 14, weight: on ? .semibold : .medium))
+                                    Text(rep.name).font(.app(size: 14, weight: on ? .semibold : .medium))
                                         .foregroundStyle(on ? .white : PT.body)
                                         .frame(maxWidth: .infinity).frame(height: 40)
                                         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(on ? Color(hex: "#1C1C1E") : .clear))
@@ -732,7 +740,7 @@ struct ReminderSheet: View {
                         }
                         .padding(.bottom, 14)
                         Rectangle().fill(Color.black.opacity(0.06)).frame(height: 1)
-                        Text("具体周几").font(.system(size: 13)).foregroundStyle(WT.gray).padding(.top, 12).padding(.bottom, 10).padding(.horizontal, 2)
+                        Text("具体周几").font(.app(size: 13)).foregroundStyle(WT.gray).padding(.top, 12).padding(.bottom, 10).padding(.horizontal, 2)
                         HStack(spacing: 4) {
                             ForEach([1, 2, 3, 4, 5, 6, 0], id: \.self) { d in
                                 let on = (r.days ?? []).contains(d)
@@ -744,7 +752,7 @@ struct ReminderSheet: View {
                                     let hit = Self.reps.first { rep in rep.days.map { Set($0) == Set(D) } ?? false }
                                     r.repeatMode = hit?.id ?? "custom"
                                 } label: {
-                                    Text("周" + DK.wdName[d]).font(.system(size: 12.5, weight: .semibold))
+                                    Text("周" + DK.wdName[d]).font(.app(size: 12.5, weight: .semibold))
                                         .foregroundStyle(Color(hex: "#1C1C1E"))
                                         .frame(width: 40, height: 40)
                                         .background(Circle().fill(on ? WT.orange : Theme.adaptive("#E8E8EC", "#3A3A3C")))
@@ -763,7 +771,7 @@ struct ReminderSheet: View {
                     }
                     if initial != nil {
                         Button { onDelete(); dismiss() } label: {
-                            Text("删除提醒").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#E0525A"))
+                            Text("删除提醒").font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#E0525A"))
                                 .frame(maxWidth: .infinity).frame(height: 48)
                                 .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#E0525A").opacity(0.1)))
                                 .contentShape(Rectangle())
@@ -776,7 +784,7 @@ struct ReminderSheet: View {
                         SFX.stopTone()
                         AlarmCenter.shared.test(card: card ?? Card(name: "试响"), tone: r.tone ?? 1)
                     } label: {
-                        Text("试响一次").font(.system(size: 14, weight: .semibold)).foregroundStyle(Theme.adaptive("#5E544A", "#E5E0D6"))
+                        Text("试响一次").font(.app(size: 14, weight: .semibold)).foregroundStyle(Theme.adaptive("#5E544A", "#E5E0D6"))
                             .padding(.horizontal, 20).frame(height: 38)
                             .background(Capsule().fill(Theme.adaptive("#F2EDE3", "#2F2E2B")))
                     }
@@ -802,7 +810,7 @@ struct ReminderSheet: View {
     }
 
     private func lbl(_ t: String) -> some View {
-        Text(t).font(.system(size: 14, weight: .semibold)).foregroundStyle(WT.gray).padding(.horizontal, 6).padding(.top, 20).padding(.bottom, 8)
+        Text(t).font(.app(size: 14, weight: .semibold)).foregroundStyle(WT.gray).padding(.horizontal, 6).padding(.top, 20).padding(.bottom, 8)
     }
 
     /// 系统滚轮（UIPickerView）：手感顺滑、上下循环，拖动时不会带着整个弹窗一起动
@@ -817,13 +825,13 @@ struct ReminderSheet: View {
         let on = (r.tone ?? 1) == t.0
         return Button { Feedback.tap(); r.tone = t.0; SFX.playTone(t.0) } label: {
             HStack(spacing: 12) {
-                Image(systemName: "music.note").font(.system(size: 13, weight: .semibold))
+                Image(systemName: "music.note").font(.app(size: 13, weight: .semibold))
                     .foregroundStyle(on ? Color(hex: "#1C1C1E") : WT.gray)
                     .frame(width: 30, height: 30)
                     .background(Circle().fill(on ? WT.orange : Theme.adaptive("#F0F0F2", "#2F2E2B")))
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(t.1).font(.system(size: 16)).foregroundStyle(PT.body)
-                    Text(t.2).font(.system(size: 12)).foregroundStyle(WT.gray)
+                    Text(t.1).font(.app(size: 16)).foregroundStyle(PT.body)
+                    Text(t.2).font(.app(size: 12)).foregroundStyle(WT.gray)
                 }
                 Spacer()
                 Circle().strokeBorder(on ? WT.orange : PT.muted, lineWidth: on ? 7 : 1.6).frame(width: 22, height: 22)

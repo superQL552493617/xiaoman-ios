@@ -174,8 +174,8 @@ struct LockScreen: View {
         VStack(spacing: 18) {
             Spacer()
             Image("prog_palm").resizable().scaledToFit().frame(width: 72, height: 72)
-            Text("小满已锁定").font(.system(size: 20, weight: .bold)).foregroundStyle(Theme.text)
-            Text("用\(AppLock.biometryName)解锁").font(.system(size: 14)).foregroundStyle(Theme.text2)
+            Text("小满已锁定").font(.app(size: 20, weight: .bold)).foregroundStyle(Theme.text)
+            Text("用\(AppLock.biometryName)解锁").font(.app(size: 14)).foregroundStyle(Theme.text2)
             Spacer()
             Button("解锁") { lock.unlock() }
                 .buttonStyle(PrimaryButtonStyle())

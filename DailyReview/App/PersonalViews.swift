@@ -160,7 +160,7 @@ struct SheetRow<Content: View>: View {
 }
 
 struct Chevron: View {
-    var body: some View { Text("›").font(.system(size: 20)).foregroundStyle(Color(hex: "#9A9AA3")) }
+    var body: some View { Text("›").font(.app(size: 20)).foregroundStyle(Color(hex: "#9A9AA3")) }
 }
 
 /// 弹出页顶部：‹ 返回 · 标题 · 右侧按钮（白色半透明，内容从下面滑过）
@@ -170,10 +170,10 @@ struct PageTop<R: View>: View {
     @ViewBuilder var right: R
     var body: some View {
         ZStack {
-            Text(title).font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+            Text(title).font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
             HStack {
                 Button(action: back) {
-                    Text("‹").font(.system(size: 30)).foregroundStyle(PT.body).padding(.bottom, 3).frame(width: 40, height: 40).contentShape(Rectangle())
+                    Text("‹").font(.app(size: 30)).foregroundStyle(PT.body).padding(.bottom, 3).frame(width: 40, height: 40).contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("返回")
@@ -226,9 +226,9 @@ struct PPHead: View {
     var top: CGFloat = 22
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(title).font(.system(size: big ? 21 : 17, weight: .bold)).foregroundStyle(PT.ink)
+            Text(title).font(.app(size: big ? 21 : 17, weight: .bold)).foregroundStyle(PT.ink)
                 .padding(.top, big ? 8 : top).padding(.bottom, big ? 4 : 10)
-            if let sub { Text(sub).font(.system(size: 13.5)).foregroundStyle(PT.faint).padding(.bottom, 14) }
+            if let sub { Text(sub).font(.app(size: 13.5)).foregroundStyle(PT.faint).padding(.bottom, 14) }
         }
         .padding(.horizontal, 4)
     }
@@ -253,7 +253,7 @@ struct PvIcon: View {
         let it = Self.icons[i % Self.icons.count]
         VStack(spacing: 6) {
             ProtoDot(card: Card(id: "pv\(i)", name: it.0, icon: it.1, hex: hex ?? Self.pvHex[i % Self.pvHex.count]), on: on, shape: shape, line: line, size: size, pulse: pulse)
-            if showName { Text(it.0).font(.system(size: 11.5)).foregroundStyle(PT.sub).lineLimit(1) }
+            if showName { Text(it.0).font(.app(size: 11.5)).foregroundStyle(PT.sub).lineLimit(1) }
         }
     }
 }
@@ -277,11 +277,11 @@ struct SettingsSheet: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ZStack {
-                        Text("设置").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
+                        Text("设置").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body).padding(.bottom, 6)
                         HStack {
                             Spacer()
                             Button { dismiss() } label: {
-                                Text("✓").font(.system(size: 15, weight: .bold)).foregroundStyle(WT.yellowInk)
+                                Text("✓").font(.app(size: 15, weight: .bold)).foregroundStyle(WT.yellowInk)
                                     .frame(width: 36, height: 36)
                                     .background(Circle().fill(WT.yellow))
                                     .overlay(Circle().strokeBorder(WT.yellowInk, lineWidth: 1))
@@ -310,7 +310,7 @@ struct SettingsSheet: View {
                             TileIcon(icon: "stg_clock", bg: Pastel.at(2))
                             label("提醒时间")
                             Button { if P.daily.on { showTime = true } } label: {
-                                Text(String(format: "%02d:%02d", P.daily.h, P.daily.m)).font(.system(size: 16, weight: .semibold)).monospacedDigit()
+                                Text(String(format: "%02d:%02d", P.daily.h, P.daily.m)).font(.app(size: 16, weight: .semibold)).monospacedDigit()
                                     .foregroundStyle(PT.ink).padding(.horizontal, 12).frame(height: 34)
                                     .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Theme.adaptive("#E9E9EC", "#3A3936")))
                             }
@@ -363,8 +363,8 @@ struct SettingsSheet: View {
                                 Button("English") { toaster.show("目前只有简体中文，其他语言正在准备") }
                             } label: {
                                 HStack(spacing: 6) {
-                                    Text("简体中文").font(.system(size: 15)).foregroundStyle(PT.sub)
-                                    Text("⌃\n⌄").font(.system(size: 8)).lineSpacing(-4).foregroundStyle(PT.faint)
+                                    Text("简体中文").font(.app(size: 15)).foregroundStyle(PT.sub)
+                                    Text("⌃\n⌄").font(.app(size: 8)).lineSpacing(-4).foregroundStyle(PT.faint)
                                 }
                             }
                         }
@@ -376,7 +376,7 @@ struct SettingsSheet: View {
                     group {
                         SheetRow {
                             TileIcon(icon: "st_user", bg: "", danger: true)
-                            Text("注销账户").font(.system(size: 16, weight: .medium)).foregroundStyle(Color(hex: "#E5534B"))
+                            Text("注销账户").font(.app(size: 16, weight: .medium)).foregroundStyle(Color(hex: "#E5534B"))
                             Spacer()
                             Chevron()
                         }
@@ -386,8 +386,8 @@ struct SettingsSheet: View {
                         SheetRow {
                             TileIcon(icon: "pp_tabbar", bg: Pastel.at(3), size: 20)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("切换到网页版界面").font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                                Text("测试用；在网页版里摇一摇可以切回来").font(.system(size: 12)).foregroundStyle(PT.faint)
+                                Text("切换到网页版界面").font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                                Text("测试用；在网页版里摇一摇可以切回来").font(.app(size: 12)).foregroundStyle(PT.faint)
                             }
                             Spacer()
                             Chevron()
@@ -473,7 +473,7 @@ struct SettingsSheet: View {
     }
 
     private func label(_ t: String) -> some View {
-        HStack { Text(t).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body); Spacer(minLength: 0) }
+        HStack { Text(t).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body); Spacer(minLength: 0) }
     }
 
     private func navRow(_ i: Int, _ icon: String, _ t: String, _ v: String?, _ action: @escaping () -> Void) -> some View {
@@ -481,7 +481,7 @@ struct SettingsSheet: View {
             SheetRow {
                 TileIcon(icon: icon, bg: Pastel.at(i))
                 label(t)
-                if let v, !v.isEmpty { Text(v).font(.system(size: 14)).foregroundStyle(PT.faint) }
+                if let v, !v.isEmpty { Text(v).font(.app(size: 14)).foregroundStyle(PT.faint) }
                 Chevron()
             }
         }
@@ -493,7 +493,7 @@ struct SettingsSheet: View {
             ForEach(items, id: \.0) { it in
                 let on = it.0 == cur
                 Button { Feedback.tap(); set(it.0) } label: {
-                    Text(it.1).font(.system(size: 14, weight: on ? .semibold : .regular))
+                    Text(it.1).font(.app(size: 14, weight: on ? .semibold : .regular))
                         .foregroundStyle(on ? PT.ink : PT.sub)
                         .padding(.horizontal, 9).frame(height: 30)
                         .background { if on { Capsule().fill(Theme.adaptive("#FFFFFF", "#636366")).shadow(color: .black.opacity(0.08), radius: 3, y: 2) } }
@@ -515,7 +515,7 @@ struct TimeWheelSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
-                Text("提醒时间").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                Text("提醒时间").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
                 HStack {
                     Button("取消") { dismiss() }.foregroundStyle(WT.gray)
                     Spacer()
@@ -552,15 +552,15 @@ struct HomeContentPage: View {
                     SheetRow {
                         TileIcon(icon: r.1, bg: Pastel.at(i))
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(r.2).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                            Text(r.3).font(.system(size: 12.5)).foregroundStyle(PT.faint).fixedSize(horizontal: false, vertical: true)
+                            Text(r.2).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                            Text(r.3).font(.app(size: 12.5)).foregroundStyle(PT.faint).fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 0)
                         ProtoSwitch(on: value(r.0)) { toggle(r.0) }
                     }
                 }
             }
-            Text("关掉的功能只是在首页隐藏，数据不会删除，随时可以再打开。").font(.system(size: 12.5)).foregroundStyle(PT.sub)
+            Text("关掉的功能只是在首页隐藏，数据不会删除，随时可以再打开。").font(.app(size: 12.5)).foregroundStyle(PT.sub)
                 .padding(.horizontal, 6).padding(.top, 8)
         }
     }
@@ -585,8 +585,8 @@ struct LockPage: View {
             SheetRow {
                 TileIcon(icon: "st_lock", bg: Pastel.at(0))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("APP 锁").font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                    Text("打开 APP 时需要用\(AppLock.biometryName)或手机密码解锁").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                    Text("APP 锁").font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                    Text("打开 APP 时需要用\(AppLock.biometryName)或手机密码解锁").font(.app(size: 12.5)).foregroundStyle(PT.faint)
                 }
                 Spacer(minLength: 0)
                 ProtoSwitch(on: store.s.prefs.lockOn) {
@@ -599,7 +599,7 @@ struct LockPage: View {
                 }
             }
             Text(store.s.prefs.lockOn ? "APP 锁已开启。离开 APP 超过 30 秒后回来，也需要重新验证。" : "开启后，每次打开 APP 都要先用\(AppLock.biometryName)或手机密码解锁。")
-                .font(.system(size: 12.5)).foregroundStyle(PT.sub).padding(.horizontal, 6).padding(.top, 8)
+                .font(.app(size: 12.5)).foregroundStyle(PT.sub).padding(.horizontal, 6).padding(.top, 8)
         }
     }
 }
@@ -622,14 +622,14 @@ struct PersonalSheet: View {
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 8) {
-                    Text("按自己的喜好慢慢装扮").font(.system(size: 13)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.bottom, 6)
+                    Text("按自己的喜好慢慢装扮").font(.app(size: 13)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.bottom, 6)
                     ForEach(Array(menu.enumerated()), id: \.offset) { i, m in
                         Button { Feedback.tap(); path.append(m.0) } label: {
                             SheetRow {
                                 TileIcon(icon: m.1, bg: Pastel.at(i))
-                                Text(m.2).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                                Text(m.2).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
                                 Spacer(minLength: 6)
-                                Text(value(m.0)).font(.system(size: 14)).foregroundStyle(PT.faint).lineLimit(1)
+                                Text(value(m.0)).font(.app(size: 14)).foregroundStyle(PT.faint).lineLimit(1)
                                 Chevron()
                             }
                         }
@@ -669,7 +669,7 @@ struct PersonalSheet: View {
         let P = store.s.prefs
         switch k {
         case "theme": return PageTheme.name(P)
-        case "font": return P.appFont == "round" ? "圆体" : "系统字体"
+        case "font": return AppFont.name(P.appFont)
         case "palette": return Palettes.all(P).first { $0.id == P.palette }?.name ?? "未使用"
         case "shape": return (ShapePage.shapes.first { $0.0 == CardShapes.normalize(P.shape) }?.1 ?? "圆形") + " · " + (ShapePage.lines.first { $0.0 == P.line }?.1 ?? "实线")
         case "layout": return P.layout == "compact" ? "满满" : P.layout == "dense" ? "适中" : "宽敞"
@@ -692,7 +692,7 @@ struct ThemePage: View {
 
     var body: some View {
         NavPage("主题") {
-            Text("手机处于深色模式时，主题背景暂不显示。").font(.system(size: 13)).foregroundStyle(PT.faint).padding(.horizontal, 4).padding(.bottom, 12)
+            Text("手机处于深色模式时，主题背景暂不显示。").font(.app(size: 13)).foregroundStyle(PT.faint).padding(.horizontal, 4).padding(.bottom, 12)
             segMode
             PPHead(title: "日期栏配色", sub: "首页顶部选中日期的底色，文字固定为黑色。")
             datePreview
@@ -709,15 +709,17 @@ struct ThemePage: View {
                             .frame(width: 34, height: 34)
                             .overlay(Circle().strokeBorder(Color.black.opacity(0.06), lineWidth: 1))
                             .overlay { if on { Circle().stroke(PT.ink, lineWidth: 2).padding(-3) } }
-                            Text(c.name).font(.system(size: 11.5, weight: on ? .semibold : .regular)).foregroundStyle(on ? PT.ink : PT.sub)
+                            Text(c.name).font(.app(size: 11.5, weight: on ? .semibold : .regular)).foregroundStyle(on ? PT.ink : PT.sub)
                         }
                         .frame(maxWidth: .infinity).padding(.vertical, 8)
                     }
                     .buttonStyle(.plain)
                 }
             }
-            PPHead(title: "自定义背景")
-            PhotosPicker(selection: $pick, matching: .images) {
+            PPHead(title: "自定义背景", sub: store.vip ? nil : "会员可以把背景换成自己的照片")
+            Group {
+                if store.vip {
+                    PhotosPicker(selection: $pick, matching: .images) {
                 HStack(spacing: 14) {
                     Group {
                         if let ui = ImageData.image(P.bgImg) { Image(uiImage: ui).resizable().scaledToFill() }
@@ -727,32 +729,72 @@ struct ThemePage: View {
                     .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")))
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("从相册选择").font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
-                        Text(P.pageBg == "custom" ? "正在使用 · 再选一张可替换" : "选择图片后立即应用").font(.system(size: 13)).foregroundStyle(PT.faint)
+                        Text("从相册选择").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                        Text(P.pageBg == "custom" ? "正在使用 · 再选一张可替换" : "选择图片后立即应用").font(.app(size: 13)).foregroundStyle(PT.faint)
                     }
                     Spacer()
                     if P.bgImg != nil {
                         Button("移除") {
                             store.updatePrefs { $0.bgImg = nil; if $0.pageBg == "custom" { $0.pageBg = "white" } }
                         }
-                        .font(.system(size: 14, weight: .semibold)).foregroundStyle(Color(hex: "#E5534B"))
+                        .font(.app(size: 14, weight: .semibold)).foregroundStyle(Color(hex: "#E5534B"))
                     } else { Chevron() }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 14)
                 .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(PT.chip))
+                                }
+                } else {
+                    // 自定义背景是会员功能：先打开会员页
+                    Button { VipGate.present() } label: {
+                HStack(spacing: 14) {
+                    Group {
+                        if let ui = ImageData.image(P.bgImg) { Image(uiImage: ui).resizable().scaledToFill() }
+                        else { Image("pp_photo").renderingMode(.template).resizable().frame(width: 26, height: 26).foregroundStyle(PT.sub) }
+                    }
+                    .frame(width: 52, height: 52)
+                    .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("从相册选择").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                        Text(P.pageBg == "custom" ? "正在使用 · 再选一张可替换" : "选择图片后立即应用").font(.app(size: 13)).foregroundStyle(PT.faint)
+                    }
+                    Spacer()
+                    if P.bgImg != nil {
+                        Button("移除") {
+                            store.updatePrefs { $0.bgImg = nil; if $0.pageBg == "custom" { $0.pageBg = "white" } }
+                        }
+                        .font(.app(size: 14, weight: .semibold)).foregroundStyle(Color(hex: "#E5534B"))
+                    } else { Chevron() }
+                }
+                .padding(.horizontal, 16).padding(.vertical, 14)
+                .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(PT.chip))
+                                }
+                }
             }
             .buttonStyle(.plain)
             PPHead(title: "主题")
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
                 ForEach(PageTheme.all, id: \.id) { t in
                     let on = P.pageBg == t.id
-                    Button { Feedback.tap(); store.updatePrefs { $0.pageBg = t.id } } label: {
+                    let locked = !VipPerks.freeThemes.contains(t.id) && !store.vip
+                    Button {
+                        Feedback.tap()
+                        if locked { VipGate.present(); return }
+                        store.updatePrefs { $0.pageBg = t.id }
+                    } label: {
                         VStack(spacing: 6) {
                             PageBG(id: t.id, preview: true)
                                 .aspectRatio(0.86, contentMode: .fit)
                                 .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
                                 .overlay(RoundedRectangle(cornerRadius: 13, style: .continuous).strokeBorder(Color.black.opacity(0.04), lineWidth: 1))
-                            Text(t.name).font(.system(size: 14, weight: .semibold)).foregroundStyle(PT.ink)
+                            HStack(spacing: 4) {
+                                Text(t.name).font(.app(size: 14, weight: .semibold)).foregroundStyle(PT.ink)
+                                if locked {
+                                    Text("VIP").font(.app(size: 9, weight: .heavy)).foregroundStyle(Color(hex: "#4A3000"))
+                                        .padding(.horizontal, 4).padding(.vertical, 1)
+                                        .background(RoundedRectangle(cornerRadius: 4).fill(Theme.vipGold))
+                                }
+                            }
                             HStack(spacing: 5) {
                                 Circle().fill(Color(hex: t.base)).frame(width: 13, height: 13).overlay(Circle().strokeBorder(Color.black.opacity(0.08), lineWidth: 1))
                                 Circle().fill(Color(hex: t.dot)).frame(width: 13, height: 13).overlay(Circle().strokeBorder(Color.black.opacity(0.08), lineWidth: 1))
@@ -768,6 +810,7 @@ struct ThemePage: View {
         }
         .onChange(of: pick) { _, it in
             guard let it else { return }
+            if !store.vip { pick = nil; VipGate.present(); return }
             Task {
                 if let d = try? await it.loadTransferable(type: Data.self), let ui = UIImage(data: d), let b = ImageData.base64(ui, maxSide: 1100, quality: 0.8) {
                     store.updatePrefs { $0.bgImg = "data:image/jpeg;base64," + b; $0.pageBg = "custom" }
@@ -783,7 +826,7 @@ struct ThemePage: View {
             ForEach([("system", "跟随系统"), ("light", "浅色"), ("dark", "深色")], id: \.0) { m in
                 let on = P.mode == m.0
                 Button { Feedback.tap(); store.updatePrefs { $0.mode = m.0 } } label: {
-                    Text(m.1).font(.system(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
+                    Text(m.1).font(.app(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
                         .frame(maxWidth: .infinity).frame(height: 34)
                         .background { if on { Capsule().fill(Theme.adaptive("#FFFFFF", "#636366")).shadow(color: .black.opacity(0.08), radius: 4, y: 2) } }
                 }
@@ -801,8 +844,8 @@ struct ThemePage: View {
             ForEach(0..<5, id: \.self) { i in
                 let on = i == 2
                 VStack(spacing: 2) {
-                    Text("周" + ["一", "二", "三", "四", "五"][i]).font(.system(size: 10)).foregroundStyle(on ? (classic ? Color.white.opacity(0.75) : Color(hex: "#1C1C1E").opacity(0.6)) : PT.faint)
-                    Text("\(11 + i)").font(.system(size: 17, weight: .semibold)).foregroundStyle(on ? (classic ? Color.white : Color(hex: "#1C1C1E")) : PT.ink)
+                    Text("周" + ["一", "二", "三", "四", "五"][i]).font(.app(size: 10)).foregroundStyle(on ? (classic ? Color.white.opacity(0.75) : Color(hex: "#1C1C1E").opacity(0.6)) : PT.faint)
+                    Text("\(11 + i)").font(.app(size: 17, weight: .semibold)).foregroundStyle(on ? (classic ? Color.white : Color(hex: "#1C1C1E")) : PT.ink)
                 }
                 .frame(width: 46, height: 56)
                 .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? Color(hex: c.hex) : PT.chip))
@@ -821,12 +864,14 @@ struct FontPage: View {
     @EnvironmentObject var store: Store
     var body: some View {
         let P = store.s.prefs
+        let cur = AppFont.face(P.appFont)
         NavPage("APP 字体") {
             VStack(alignment: .leading, spacing: 0) {
-                Text("字体预览").font(.system(size: 12.5)).foregroundStyle(PT.faint)
-                Text(P.appFont == "round" ? "圆体" : "系统字体").font(.system(size: 15)).foregroundStyle(PT.sub).padding(.top, 2)
-                Text("今日打卡").font(.system(size: 30, weight: .heavy)).foregroundStyle(PT.ink).padding(.top, 14).padding(.bottom, 4)
-                Text("Aa Bb Cc · 0123456789").font(.system(size: 19)).foregroundStyle(PT.faint)
+                Text("字体预览").font(.app(size: 12.5)).foregroundStyle(PT.faint)
+                Text(cur.name).font(.app(size: 15)).foregroundStyle(PT.sub).padding(.top, 2)
+                Text("今日打卡").font(face(cur, 30, .heavy)).foregroundStyle(PT.ink).padding(.top, 14).padding(.bottom, 6)
+                Text("早睡早起，喝水读书，慢慢变成更喜欢的自己").font(face(cur, 16)).foregroundStyle(PT.sub)
+                    .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 8) {
                     ForEach(0..<3, id: \.self) { i in PvIcon(i: i, shape: store.s.prefs.shape, line: store.s.prefs.line, size: 48).frame(maxWidth: .infinity) }
                 }
@@ -837,18 +882,23 @@ struct FontPage: View {
             .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(PT.chip))
             .padding(.bottom, 14)
             VStack(alignment: .leading, spacing: 0) {
-                Text("APP 字体").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.ink).padding(.horizontal, 2).padding(.top, 2).padding(.bottom, 2)
-                ForEach([("sys", "系统字体", Font.Design.default), ("round", "圆体", Font.Design.rounded)], id: \.0) { f in
-                    let on = P.appFont == f.0
-                    Button { Feedback.tap(); store.updatePrefs { $0.appFont = f.0 } } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(f.1).font(.system(size: 16, weight: .bold, design: f.2)).foregroundStyle(PT.ink)
-                            Text("字体预览 · 今天也要好好生活").font(.system(size: 15, design: f.2)).foregroundStyle(PT.sub)
+                Text("APP 字体").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.ink).padding(.horizontal, 2).padding(.top, 2).padding(.bottom, 2)
+                ForEach(AppFont.all) { f in
+                    let on = cur.id == f.id
+                    Button { Feedback.tap(); store.updatePrefs { $0.appFont = f.id } } label: {
+                        HStack(spacing: 10) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(f.name).font(face(f, 17, .bold)).foregroundStyle(PT.ink)
+                                Text(f.desc).font(face(f, 14)).foregroundStyle(PT.sub)
+                            }
+                            Spacer(minLength: 0)
+                            Text(f.sample).font(face(f, 13)).foregroundStyle(PT.faint).lineLimit(1)
                         }
                         .padding(.horizontal, 16).padding(.vertical, 14)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")))
                         .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(on ? PT.ink : PT.chipLine, lineWidth: on ? 2 : 1))
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 10)
@@ -856,9 +906,15 @@ struct FontPage: View {
             }
             .padding(16)
             .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(PT.chip))
-            Text("选择后所有页面的文字一起改变。笔记里单独选的字体不受影响。").font(.system(size: 13)).foregroundStyle(PT.faint).lineSpacing(4)
+            Text("选好后，所有页面的文字都会换成这款字体，笔记里单独选的字体不受影响。字体都已内置在 App 里，不用联网；个别生僻字会用系统字体显示。").font(.app(size: 13)).foregroundStyle(PT.faint).lineSpacing(4)
                 .padding(.horizontal, 4).padding(.top, 12)
+                .fixedSize(horizontal: false, vertical: true)
         }
+    }
+
+    private func face(_ f: AppFont.Face, _ size: CGFloat, _ w: Font.Weight = .regular) -> Font {
+        if let ps = f.ps { return w == .regular ? .custom(ps, fixedSize: size) : .custom(ps, fixedSize: size).weight(w) }
+        return .system(size: size, weight: w)
     }
 }
 
@@ -938,14 +994,14 @@ struct PalettePage: View {
         let cols = Palettes.colors(cur, store.s)
         return NavPage("配色板", right: {
             Button { Feedback.tap(); editing = true } label: {
-                Image(systemName: "plus").font(.system(size: 21, weight: .regular)).foregroundStyle(PT.ink).frame(width: 44, height: 44)
+                Image(systemName: "plus").font(.app(size: 21, weight: .regular)).foregroundStyle(PT.ink).frame(width: 44, height: 44)
             }
             .accessibilityLabel("新建配色板")
         }) {
             HStack(alignment: .firstTextBaseline) {
-                Text("配色预览").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.ink)
+                Text("配色预览").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.ink)
                 Spacer()
-                Text(cur.name).font(.system(size: 14)).foregroundStyle(PT.faint).padding(.trailing, 4)
+                Text(cur.name).font(.app(size: 14)).foregroundStyle(PT.faint).padding(.trailing, 4)
             }
             .padding(.horizontal, 4).padding(.top, 22).padding(.bottom, 10)
             VStack(spacing: 0) {
@@ -955,7 +1011,7 @@ struct PalettePage: View {
                         Image(IconCatalog.assetName(it.1)).resizable().scaledToFit().frame(width: 30, height: 30)
                             .frame(width: 44, height: 44)
                             .background(RoundedRectangle(cornerRadius: 13, style: .continuous).fill(Color(hex: cols[i % cols.count])))
-                        Text(it.0).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.ink)
+                        Text(it.0).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.ink)
                         Spacer()
                         Circle().strokeBorder(PT.chipLine, lineWidth: 1.5).frame(width: 24, height: 24)
                     }
@@ -969,7 +1025,7 @@ struct PalettePage: View {
                 ForEach([("preset", "预设配色板"), ("mine", "我的配色板")], id: \.0) { t in
                     let on = palTab == t.0
                     Button { Feedback.tap(); palTab = t.0 } label: {
-                        Text(t.1).font(.system(size: 16.5, weight: .semibold)).foregroundStyle(on ? PT.ink : PT.faint)
+                        Text(t.1).font(.app(size: 16.5, weight: .semibold)).foregroundStyle(on ? PT.ink : PT.faint)
                             .frame(maxWidth: .infinity).frame(height: 44)
                             .overlay(alignment: .bottom) { Rectangle().fill(on ? PT.ink : PT.chipLine).frame(height: on ? 3 : 2) }
                             .contentShape(Rectangle())
@@ -987,10 +1043,10 @@ struct PalettePage: View {
             } else if mine.isEmpty {
                 VStack(spacing: 6) {
                     Image("pm_palette").renderingMode(.template).resizable().scaledToFit().frame(width: 40, height: 40).foregroundStyle(PT.faint)
-                    Text("还没有自定义配色板").font(.system(size: 16, weight: .bold)).foregroundStyle(PT.ink).padding(.top, 8)
-                    Text("挑 3～6 个喜欢的颜色，做一组专属配色").font(.system(size: 13)).foregroundStyle(PT.faint)
+                    Text("还没有自定义配色板").font(.app(size: 16, weight: .bold)).foregroundStyle(PT.ink).padding(.top, 8)
+                    Text("挑 3～6 个喜欢的颜色，做一组专属配色").font(.app(size: 13)).foregroundStyle(PT.faint)
                     Button { Feedback.tap(); editing = true } label: {
-                        Text("＋ 新建").font(.system(size: 17, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+                        Text("＋ 新建").font(.app(size: 17, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
                             .padding(.horizontal, 26).frame(height: 44)
                     }
                     .buttonStyle(.plain)
@@ -1006,19 +1062,19 @@ struct PalettePage: View {
                     }
                 }
                 .padding(.top, 8)
-                Text("长按自己的配色板可以删除。").font(.system(size: 13)).foregroundStyle(PT.faint).padding(.horizontal, 4).padding(.top, 10)
+                Text("长按自己的配色板可以删除。").font(.app(size: 13)).foregroundStyle(PT.faint).padding(.horizontal, 4).padding(.top, 10)
                     .padding(.bottom, 100)
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 6) {
                 Button { confirm = true } label: {
-                    Text("换上这套颜色").font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                    Text("换上这套颜色").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
                         .frame(maxWidth: .infinity).frame(height: 50)
                         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#EDEDF0", "#2F2E2B")))
                 }
                 .buttonStyle(PressScale(scale: 0.98))
-                Text("所有习惯会一起换成这套颜色").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                Text("所有习惯会一起换成这套颜色").font(.app(size: 12.5)).foregroundStyle(PT.faint)
             }
             .padding(.horizontal, 20).padding(.top, 12).padding(.bottom, 12)
             .background(Theme.adaptive("#FFFFFF", "#1E1E1D").ignoresSafeArea())
@@ -1073,9 +1129,9 @@ struct PalettePage: View {
         return Button { Feedback.tap(); withAnimation(.easeOut(duration: 0.15)) { pick = p.id } } label: {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
-                    Text(p.name).font(.system(size: 15.5, weight: .semibold)).foregroundStyle(PT.ink)
+                    Text(p.name).font(.app(size: 15.5, weight: .semibold)).foregroundStyle(PT.ink)
                     if P.palette == p.id {
-                        Text("使用中").font(.system(size: 11.5)).foregroundStyle(PT.faint)
+                        Text("使用中").font(.app(size: 11.5)).foregroundStyle(PT.faint)
                             .padding(.horizontal, 7).padding(.vertical, 2)
                             .background(RoundedRectangle(cornerRadius: 6).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")))
                     }
@@ -1092,7 +1148,7 @@ struct PalettePage: View {
                             .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Color.black.opacity(0.05), lineWidth: 1))
                     }
                 }
-                if p.own { Text("你自己给每张卡片设的颜色，选它可以还原").font(.system(size: 12)).foregroundStyle(PT.faint) }
+                if p.own { Text("你自己给每张卡片设的颜色，选它可以还原").font(.app(size: 12)).foregroundStyle(PT.faint) }
             }
             .padding(.horizontal, 14).padding(.vertical, 12)
             .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(PT.chip))
@@ -1123,12 +1179,12 @@ struct PaletteEditor: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    circleBtn { Image(systemName: "xmark").font(.system(size: 17, weight: .semibold)).foregroundStyle(PT.ink) } action: { dismiss() }
+                    circleBtn { Image(systemName: "xmark").font(.app(size: 17, weight: .semibold)).foregroundStyle(PT.ink) } action: { dismiss() }
                     Spacer()
-                    Text("新建配色板").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.body)
+                    Text("新建配色板").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.body)
                     Spacer()
                     Button { save() } label: {
-                        Text("保存").font(.system(size: 16, weight: .semibold)).foregroundStyle(sel.count >= 3 ? Color(hex: "#E0A800") : PT.faint)
+                        Text("保存").font(.app(size: 16, weight: .semibold)).foregroundStyle(sel.count >= 3 ? Color(hex: "#E0A800") : PT.faint)
                             .padding(.horizontal, 20).frame(height: 48)
                             .background(Capsule().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")).shadow(color: .black.opacity(0.2), radius: 9, y: 6))
                     }
@@ -1138,7 +1194,7 @@ struct PaletteEditor: View {
                 .padding(.bottom, 6)
                 lbl("配色板名称")
                 TextField("我的配色板", text: $name)
-                    .font(.system(size: 17, weight: .medium)).foregroundStyle(PT.body)
+                    .font(.app(size: 17, weight: .medium)).foregroundStyle(PT.body)
                     .padding(.horizontal, 16).frame(height: 52)
                     .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(box))
                     .onChange(of: name) { _, v in if v.count > 10 { name = String(v.prefix(10)) } }
@@ -1147,7 +1203,7 @@ struct PaletteEditor: View {
                     if sel.count >= 3 {
                         HStack(spacing: 0) { ForEach(sel, id: \.self) { c in Rectangle().fill(Color(hex: c)) } }
                     } else {
-                        Text("请至少选择 3 个颜色").font(.system(size: 14.5)).foregroundStyle(PT.faint)
+                        Text("请至少选择 3 个颜色").font(.app(size: 14.5)).foregroundStyle(PT.faint)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(Theme.adaptive("#E5E5EA", "#2F2E2B"))
                     }
@@ -1157,14 +1213,14 @@ struct PaletteEditor: View {
                 lbl("已选颜色", right: "\(sel.count)/6")
                 Group {
                     if sel.isEmpty {
-                        Text("点击下方颜色添加到配色板").font(.system(size: 14)).foregroundStyle(PT.faint).frame(maxWidth: .infinity)
+                        Text("点击下方颜色添加到配色板").font(.app(size: 14)).foregroundStyle(PT.faint).frame(maxWidth: .infinity)
                     } else {
                         HStack(spacing: 14) {
                             ForEach(Array(sel.enumerated()), id: \.element) { i, c in
                                 RoundedRectangle(cornerRadius: 13, style: .continuous).fill(Color(hex: c)).frame(width: 48, height: 48)
                                     .overlay(alignment: .topTrailing) {
                                         Button { Feedback.tap(); sel.remove(at: i) } label: {
-                                            Text("×").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: c)).brightness(-0.3)
+                                            Text("×").font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: c)).brightness(-0.3)
                                                 .frame(width: 22, height: 22).background(Circle().fill(.white).shadow(color: .black.opacity(0.18), radius: 2, y: 1))
                                         }
                                         .buttonStyle(.plain)
@@ -1188,9 +1244,9 @@ struct PaletteEditor: View {
                         add(h)
                     } label: {
                         HStack(spacing: 8) {
-                            Text("＋").font(.system(size: 14, weight: .bold)).foregroundStyle(.white)
+                            Text("＋").font(.app(size: 14, weight: .bold)).foregroundStyle(.white)
                                 .frame(width: 20, height: 20).background(Circle().fill(Color(hex: "#F5C542")))
-                            Text("添加颜色").font(.system(size: 15, weight: .semibold)).foregroundStyle(Color(hex: "#D9A400"))
+                            Text("添加颜色").font(.app(size: 15, weight: .semibold)).foregroundStyle(Color(hex: "#D9A400"))
                         }
                         .padding(.horizontal, 16).frame(height: 40)
                         .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color(hex: "#F5C542").opacity(0.18)))
@@ -1208,7 +1264,7 @@ struct PaletteEditor: View {
                             RoundedRectangle(cornerRadius: 11, style: .continuous).fill(Color(hex: c))
                                 .aspectRatio(1, contentMode: .fit)
                                 .overlay { if on { RoundedRectangle(cornerRadius: 11, style: .continuous).stroke(PT.ink, lineWidth: 2.5).padding(-2.5) } }
-                                .overlay { if on { Image(systemName: "checkmark").font(.system(size: 13, weight: .bold)).foregroundStyle(Color(hex: "#333333")) } }
+                                .overlay { if on { Image(systemName: "checkmark").font(.app(size: 13, weight: .bold)).foregroundStyle(Color(hex: "#333333")) } }
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(c)
@@ -1244,7 +1300,7 @@ struct PaletteEditor: View {
             Spacer()
             if let right { Text(right) }
         }
-        .font(.system(size: 13.5)).foregroundStyle(PT.faint)
+        .font(.app(size: 13.5)).foregroundStyle(PT.faint)
         .padding(.horizontal, 4).padding(.top, 18).padding(.bottom, 8)
     }
 
@@ -1281,7 +1337,7 @@ struct ShapePage: View {
                     } label: {
                         VStack(spacing: 8) {
                             PvIcon(i: i, shape: s.0, line: cl, hex: PvIcon.icHex[i], on: replay[s.0] ?? true, size: 60, showName: false)
-                            Text(s.1).font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
+                            Text(s.1).font(.app(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
                         }
                         .frame(maxWidth: .infinity).padding(.horizontal, 6).padding(.top, 16).padding(.bottom, 12)
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(PT.chip))
@@ -1300,7 +1356,7 @@ struct ShapePage: View {
                                 PvIcon(i: 0, shape: cs, line: l.0, hex: PvIcon.icHex[0], on: false, size: 48, showName: false)
                                 PvIcon(i: 0, shape: cs, line: l.0, hex: PvIcon.icHex[0], on: true, size: 48, showName: false)
                             }
-                            Text(l.1).font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
+                            Text(l.1).font(.app(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
                         }
                         .frame(maxWidth: .infinity).padding(.horizontal, 6).padding(.top, 14).padding(.bottom, 12)
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(PT.chip))
@@ -1327,13 +1383,13 @@ struct LayoutPage: View {
                 Button { Feedback.tap(); store.updatePrefs { $0.layout = k.0 } } label: {
                     VStack(alignment: .leading, spacing: 14) {
                         HStack(alignment: .center, spacing: 8) {
-                            Text(k.1).font(.system(size: 18, weight: .bold)).foregroundStyle(PT.ink)
-                            Text("\(k.2) 列").font(.system(size: 14)).foregroundStyle(PT.faint).padding(.top, 2)
+                            Text(k.1).font(.app(size: 18, weight: .bold)).foregroundStyle(PT.ink)
+                            Text("\(k.2) 列").font(.app(size: 14)).foregroundStyle(PT.faint).padding(.top, 2)
                             Spacer()
                             ZStack {
                                 if on {
                                     Circle().fill(PT.ink)
-                                    Image(systemName: "checkmark").font(.system(size: 11, weight: .heavy)).foregroundStyle(Theme.adaptive("#FFFFFF", "#000000"))
+                                    Image(systemName: "checkmark").font(.app(size: 11, weight: .heavy)).foregroundStyle(Theme.adaptive("#FFFFFF", "#000000"))
                                 } else { Circle().strokeBorder(PT.chipLine, lineWidth: 2) }
                             }
                             .frame(width: 26, height: 26)
@@ -1352,7 +1408,7 @@ struct LayoutPage: View {
             }
             HStack(spacing: 8) {
                 Image("pp_check").renderingMode(.template).resizable().frame(width: 18, height: 18).foregroundStyle(Color(hex: "#34C759"))
-                Text("选好就用上了，不用另外保存").font(.system(size: 14)).foregroundStyle(PT.sub)
+                Text("选好就用上了，不用另外保存").font(.app(size: 14)).foregroundStyle(PT.sub)
             }
             .padding(.horizontal, 4).padding(.top, 6)
         }
@@ -1377,7 +1433,7 @@ struct QuickPage: View {
                     if P.home.quick {
                         QuickRow(day: DK.today).allowsHitTesting(false).padding(.bottom, 10)
                     } else {
-                        Text("顶部快捷栏已隐藏").font(.system(size: 13)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.vertical, 6)
+                        Text("顶部快捷栏已隐藏").font(.app(size: 13)).foregroundStyle(PT.faint).frame(maxWidth: .infinity).padding(.vertical, 6)
                     }
                 }
                 .padding(.horizontal, 4).padding(.top, 12)
@@ -1386,8 +1442,8 @@ struct QuickPage: View {
             card {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("显示顶部快捷栏").font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
-                        Text("在打卡主页日期栏下方显示").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                        Text("显示顶部快捷栏").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                        Text("在打卡主页日期栏下方显示").font(.app(size: 12.5)).foregroundStyle(PT.faint)
                     }
                     Spacer()
                     ProtoSwitch(on: P.home.quick) { Feedback.tap(); store.updatePrefs { $0.home.quick.toggle() } }
@@ -1404,8 +1460,8 @@ struct QuickPage: View {
                                 .frame(width: 34, height: 34)
                                 .background(RoundedRectangle(cornerRadius: 11, style: .continuous).fill(Theme.adaptive("#F4F1EA", "#2F2D2A")))
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(it.2).font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
-                                Text(it.3).font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                                Text(it.2).font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                                Text(it.3).font(.app(size: 12.5)).foregroundStyle(PT.faint)
                             }
                             Spacer()
                             ProtoSwitch(on: P.quickOn(it.0)) { toggle(it.0) }
@@ -1440,7 +1496,7 @@ func card<V: View>(@ViewBuilder _ v: () -> V) -> some View {
 func cardHead(_ icon: String, _ t: String) -> some View {
     HStack(spacing: 10) {
         Image(icon).renderingMode(.template).resizable().frame(width: 20, height: 20).foregroundStyle(PT.faint)
-        Text(t).font(.system(size: 16, weight: .bold)).foregroundStyle(PT.ink)
+        Text(t).font(.app(size: 16, weight: .bold)).foregroundStyle(PT.ink)
     }
     .padding(.horizontal, 4).padding(.top, 2).padding(.bottom, 0)
 }
@@ -1448,7 +1504,7 @@ func cardHead(_ icon: String, _ t: String) -> some View {
 func tip(_ t: String) -> some View {
     HStack(alignment: .top, spacing: 10) {
         Image("pp_bulb").renderingMode(.template).resizable().frame(width: 18, height: 18).foregroundStyle(Color(hex: "#F5B92E")).padding(.top, 1)
-        Text(t).font(.system(size: 13)).foregroundStyle(PT.sub).lineSpacing(3).fixedSize(horizontal: false, vertical: true)
+        Text(t).font(.app(size: 13)).foregroundStyle(PT.sub).lineSpacing(3).fixedSize(horizontal: false, vertical: true)
     }
     .padding(.horizontal, 14).padding(.vertical, 12)
     .frame(maxWidth: .infinity, alignment: .leading)
@@ -1475,7 +1531,7 @@ struct TabBarPage: View {
                     ForEach(keys) { k in
                         VStack(spacing: 1) {
                             Image("tb_\(k.rawValue)_on").resizable().scaledToFit().frame(width: iconS, height: iconS)
-                            if P.tabLabel { Text(k.title).font(.system(size: 10, weight: .semibold)).foregroundStyle(Theme.adaptive("#5B4F45", "#E8E0D2")) }
+                            if P.tabLabel { Text(k.title).font(.app(size: 10, weight: .semibold)).foregroundStyle(Theme.adaptive("#5B4F45", "#E8E0D2")) }
                         }
                         .frame(maxWidth: .infinity).frame(height: h + (P.tabLabel ? 12 : 0))
                     }
@@ -1492,7 +1548,7 @@ struct TabBarPage: View {
                     ForEach([("s", "小"), ("m", "中"), ("l", "大")], id: \.0) { s in
                         let on = sz == s.0
                         Button { Feedback.tap(); store.updatePrefs { $0.tabSize = s.0 } } label: {
-                            Text(s.1).font(.system(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
+                            Text(s.1).font(.app(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
                                 .frame(maxWidth: .infinity).frame(height: 34)
                                 .background { if on { Capsule().fill(Theme.adaptive("#FFFFFF", "#636366")).shadow(color: .black.opacity(0.08), radius: 4, y: 2) } }
                         }
@@ -1518,8 +1574,8 @@ struct TabBarPage: View {
                 cardHead("pp_image", "显示设置")
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("显示文字标签").font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
-                        Text("在图标下方显示功能名称，图标大小不变").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                        Text("显示文字标签").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                        Text("在图标下方显示功能名称，图标大小不变").font(.app(size: 12.5)).foregroundStyle(PT.faint)
                     }
                     Spacer()
                     ProtoSwitch(on: P.tabLabel) { Feedback.tap(); store.updatePrefs { $0.tabLabel.toggle() } }
@@ -1534,20 +1590,20 @@ struct TabBarPage: View {
 
     private func slotRow(_ n: Int, _ k: String, fixed: Bool, sub: String?, i: Int?) -> some View {
         HStack(spacing: 12) {
-            Text("\(n)").font(.system(size: 15, weight: .bold))
+            Text("\(n)").font(.app(size: 15, weight: .bold))
                 .foregroundStyle(fixed ? PT.faint : Theme.adaptive("#FFFFFF", "#1B1B1A"))
                 .frame(width: 34, height: 34)
                 .background(Circle().fill(fixed ? Theme.adaptive("#FFFFFF", "#1B1B1A") : Theme.adaptive("#1C1C1E", "#F2F2F7")))
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
-                    Text("位置 \(n)").font(.system(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
+                    Text("位置 \(n)").font(.app(size: 16, weight: .semibold)).foregroundStyle(PT.ink)
                     if fixed {
-                        Text("固定").font(.system(size: 11, weight: .medium)).foregroundStyle(PT.faint)
+                        Text("固定").font(.app(size: 11, weight: .medium)).foregroundStyle(PT.faint)
                             .padding(.horizontal, 7).padding(.vertical, 2)
                             .background(RoundedRectangle(cornerRadius: 6).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")))
                     }
                 }
-                if let sub { Text(sub).font(.system(size: 12.5)).foregroundStyle(PT.faint) }
+                if let sub { Text(sub).font(.app(size: 12.5)).foregroundStyle(PT.faint) }
             }
             Spacer()
             if fixed {
@@ -1569,8 +1625,8 @@ struct TabBarPage: View {
     private func pickLabel(_ k: String, fixed: Bool) -> some View {
         HStack(spacing: 7) {
             if k != "none" { Image("tb_\(k)_off").resizable().scaledToFit().frame(width: 20, height: 20) }
-            Text(name(k)).font(.system(size: 15, weight: k == "none" ? .medium : .semibold)).foregroundStyle(fixed || k == "none" ? PT.faint : PT.ink)
-            if !fixed { Text("⌃\n⌄").font(.system(size: 8)).lineSpacing(-4).foregroundStyle(PT.faint).padding(.leading, 2) }
+            Text(name(k)).font(.app(size: 15, weight: k == "none" ? .medium : .semibold)).foregroundStyle(fixed || k == "none" ? PT.faint : PT.ink)
+            if !fixed { Text("⌃\n⌄").font(.app(size: 8)).lineSpacing(-4).foregroundStyle(PT.faint).padding(.leading, 2) }
         }
         .padding(.horizontal, 12).frame(height: 38)
         .background { if fixed { RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#1B1B1A")) } }
@@ -1601,8 +1657,8 @@ struct SoundPage: View {
             SheetRow {
                 TileIcon(icon: "pp_sound", bg: Pastel.at(0), size: 20)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("打卡音效").font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                    Text("关闭后打卡和取消打卡都不发声").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                    Text("打卡音效").font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                    Text("关闭后打卡和取消打卡都不发声").font(.app(size: 12.5)).foregroundStyle(PT.faint)
                 }
                 Spacer(minLength: 0)
                 ProtoSwitch(on: P.sound) {
@@ -1615,7 +1671,7 @@ struct SoundPage: View {
                 ForEach([("in", "完成时"), ("out", "撤销时")], id: \.0) { s in
                     let on = kind == s.0
                     Button { Feedback.tap(); kind = s.0 } label: {
-                        Text(s.1).font(.system(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
+                        Text(s.1).font(.app(size: 14, weight: on ? .semibold : .medium)).foregroundStyle(on ? PT.ink : PT.sub)
                             .frame(maxWidth: .infinity).frame(height: 34)
                             .background { if on { Capsule().fill(Theme.adaptive("#FFFFFF", "#636366")).shadow(color: .black.opacity(0.08), radius: 4, y: 2) } }
                     }
@@ -1636,14 +1692,14 @@ struct SoundPage: View {
                             TileIcon(icon: "pp_snd", bg: Pastel.at(i), size: 20)
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(spacing: 6) {
-                                    Text(it.name).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                                    Text(it.name).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
                                     if it.n == def {
-                                        Text("默认").font(.system(size: 10.5)).foregroundStyle(PT.sub)
+                                        Text("默认").font(.app(size: 10.5)).foregroundStyle(PT.sub)
                                             .padding(.horizontal, 6).padding(.vertical, 1)
                                             .background(RoundedRectangle(cornerRadius: 6).fill(Color(red: 118/255, green: 118/255, blue: 128/255).opacity(0.14)))
                                     }
                                 }
-                                Text(it.desc).font(.system(size: 12.5)).foregroundStyle(PT.faint).lineLimit(1)
+                                Text(it.desc).font(.app(size: 12.5)).foregroundStyle(PT.faint).lineLimit(1)
                             }
                             Spacer(minLength: 0)
                             Circle().strokeBorder(on ? Color(hex: "#007AFF") : PT.faint, lineWidth: on ? 7 : 1.6).frame(width: 22, height: 22)
@@ -1659,11 +1715,11 @@ struct SoundPage: View {
             .opacity(P.sound ? 1 : 0.45)
             HStack(spacing: 8) {
                 Image("pp_mute").renderingMode(.template).resizable().frame(width: 22, height: 22).foregroundStyle(PT.ink)
-                Text("没有声音？").font(.system(size: 17, weight: .bold)).foregroundStyle(PT.ink)
+                Text("没有声音？").font(.app(size: 17, weight: .bold)).foregroundStyle(PT.ink)
             }
             .padding(.horizontal, 4).padding(.top, 22).padding(.bottom, 6)
             Text("先看看手机侧边的静音键有没有打开，再把媒体音量调大一些；「设置」里的「按键声音」也要开着。")
-                .font(.system(size: 13)).foregroundStyle(PT.faint).lineSpacing(4).padding(.horizontal, 4)
+                .font(.app(size: 13)).foregroundStyle(PT.faint).lineSpacing(4).padding(.horizontal, 4)
         }
     }
 }

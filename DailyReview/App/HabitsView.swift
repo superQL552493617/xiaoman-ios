@@ -50,7 +50,7 @@ struct HabitsView: View {
                         }
                     }
                     if store.s.cards.isEmpty {
-                        Text("还没有习惯，点右上角的 + 新建一个吧。").font(.system(size: 14)).foregroundStyle(PT.faint)
+                        Text("还没有习惯，点右上角的 + 新建一个吧。").font(.app(size: 14)).foregroundStyle(PT.faint)
                             .padding(.horizontal, 6).padding(.vertical, 8)
                     }
                 }
@@ -97,17 +97,17 @@ struct HabitsView: View {
         HStack(alignment: .bottom, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(pick.map { "已选 \($0.count) 个" } ?? "我的习惯")
-                    .font(.system(size: 26, weight: .heavy)).foregroundStyle(Theme.adaptive("#232326", "#F2EDE4"))
+                    .font(.app(size: 26, weight: .heavy)).foregroundStyle(Theme.adaptive("#232326", "#F2EDE4"))
                     .contentTransition(.numericText())
                 Text(pick == nil ? "\(all.count) 个习惯 · 按住可以拖动换位置" : "点一下选中，再点取消")
-                    .font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                    .font(.app(size: 12.5)).foregroundStyle(PT.faint)
             }
             Spacer(minLength: 0)
             Button {
                 Feedback.tap()
                 pick = pick == nil ? [] : nil
             } label: {
-                Text(pick == nil ? "整理" : "完成").font(.system(size: 14, weight: .semibold))
+                Text(pick == nil ? "整理" : "完成").font(.app(size: 14, weight: .semibold))
                     .foregroundStyle(pick == nil ? Theme.adaptive("#5E544A", "#E5E0D6") : Theme.adaptive("#FFFFFF", "#1B1B1A"))
                     .padding(.horizontal, 14).frame(height: 34)
                     .background(Capsule().fill(pick == nil ? Theme.adaptive("#F2EDE3", "#2F2E2B") : Theme.adaptive("#4A3F45", "#F2EDE4")))
@@ -117,7 +117,7 @@ struct HabitsView: View {
                 pick = nil
                 designer = DesignerTarget(group: ["all", ""].contains(grp) ? nil : grp)
             } label: {
-                Image(systemName: "plus").font(.system(size: 17, weight: .medium)).foregroundStyle(Color(hex: "#4A3F45"))
+                Image(systemName: "plus").font(.app(size: 17, weight: .medium)).foregroundStyle(Color(hex: "#4A3F45"))
                     .frame(width: 38, height: 38)
                     .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color(hex: "#FFE7A3")))
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5))
@@ -151,8 +151,8 @@ struct HabitsView: View {
             withAnimation(.easeOut(duration: 0.2)) { grp = id }
         } label: {
             HStack(alignment: .top, spacing: 2) {
-                Text(name).font(.system(size: 15, weight: .semibold))
-                if let n { Text("\(n)").font(.system(size: 10, weight: .semibold)).opacity(0.8).offset(y: -1) }
+                Text(name).font(.app(size: 15, weight: .semibold))
+                if let n { Text("\(n)").font(.app(size: 10, weight: .semibold)).opacity(0.8).offset(y: -1) }
             }
             .foregroundStyle(on ? Theme.adaptive("#3E3532", "#F2EDE4") : Color(hex: "#A39888"))
             .padding(.vertical, 4)
@@ -171,7 +171,7 @@ struct HabitsView: View {
 
     private func secHead(_ t: String) -> some View {
         HStack(spacing: 8) {
-            Text(t).font(.system(size: 13, weight: .bold)).foregroundStyle(Color(hex: "#8F857A"))
+            Text(t).font(.app(size: 13, weight: .bold)).foregroundStyle(Color(hex: "#8F857A"))
             Rectangle().fill(Theme.adaptive("#EDE6DA", "#33312D")).frame(height: 1)
         }
         .padding(.horizontal, 4).padding(.top, 14).padding(.bottom, 8)
@@ -215,10 +215,10 @@ struct HabitsView: View {
                 Feedback.tap()
                 pick = P.count == allIds.count ? [] : allIds
             }
-            .font(.system(size: 15, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+            .font(.app(size: 15, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
             Spacer()
             Button { if !P.isEmpty { confirmBatch = true } } label: {
-                Text(P.isEmpty ? "删除" : "删除 (\(P.count))").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                Text(P.isEmpty ? "删除" : "删除 (\(P.count))").font(.app(size: 15, weight: .semibold)).foregroundStyle(.white)
                     .padding(.horizontal, 18).frame(height: 38)
                     .background(Capsule().fill(Color(hex: "#FF3B30")))
             }
@@ -302,7 +302,7 @@ struct HabitTileProto: View {
                         Circle().strokeBorder(Color(hex: "#CFC6B8"), lineWidth: 2).opacity(picked ? 0 : 1)
                         if picked {
                             Circle().fill(Color(hex: "#4A3F45"))
-                            Image(systemName: "checkmark").font(.system(size: 10, weight: .heavy)).foregroundStyle(.white)
+                            Image(systemName: "checkmark").font(.app(size: 10, weight: .heavy)).foregroundStyle(.white)
                         }
                     }
                     .frame(width: 22, height: 22)
@@ -310,7 +310,7 @@ struct HabitTileProto: View {
                 } else if ap != nil {
                     // 暂停中的卡片：右上角一个小小的「恢复」，卡片高度和其它卡片一样
                     Button(action: onResume) {
-                        Text(apNow ? "恢复" : "取消暂停").font(.system(size: 12, weight: .bold))
+                        Text(apNow ? "恢复" : "取消暂停").font(.app(size: 12, weight: .bold))
                             .foregroundStyle(Theme.adaptive("#4A453F", "#E5E0D6"))
                             .padding(.horizontal, 10).frame(height: 26)
                             .background(Capsule().fill(Theme.adaptive("#FFFFFF", "#2F2E2B")))
@@ -324,7 +324,7 @@ struct HabitTileProto: View {
             Text(c.name).font(PT.cardFont(c.font, size: 16, weight: .bold))
                 .foregroundStyle(Theme.adaptive("#3E3532", "#F2EDE4")).lineLimit(1)
                 .padding(.top, 2)
-            Text(sub(c, ap, apNow)).font(.system(size: 11.5, weight: ap != nil ? .semibold : .regular))
+            Text(sub(c, ap, apNow)).font(.app(size: 11.5, weight: ap != nil ? .semibold : .regular))
                 .foregroundStyle(ap != nil ? Color(hex: "#8C877F") : Color(hex: "#A39888")).lineLimit(1)
             HStack(spacing: 6) {
                 HStack(spacing: 4) {
@@ -337,13 +337,13 @@ struct HabitTileProto: View {
                     }
                 }
                 Spacer(minLength: 0)
-                Text("\(hs.w7)/7").font(.system(size: 11, weight: .bold)).monospacedDigit()
+                Text("\(hs.w7)/7").font(.app(size: 11, weight: .bold)).monospacedDigit()
                     .foregroundStyle(cmix(b, 0.55, "#5E554C"))
             }
             .padding(.top, 10)
             stats(hs, b).padding(.top, 12)
             Text("\(hs.best > 1 ? "最长连续 \(hs.best) 天 · " : "")上次 \(hs.last)")
-                .font(.system(size: 10.5)).foregroundStyle(cmix(b, 0.35, "#8F857A")).lineLimit(1)
+                .font(.app(size: 10.5)).foregroundStyle(cmix(b, 0.35, "#8F857A")).lineLimit(1)
                 .padding(.top, 8)
         }
         .padding(.horizontal, 14).padding(.top, 14).padding(.bottom, 12)
@@ -378,7 +378,7 @@ struct HabitTileProto: View {
         return HStack(spacing: 0) {
             stat(Text("\(hs.cur)"), "连续天", color: dark ? cmix(b, 0.7, "#F2EDE4") : cmix(b, 0.7, "#3E3532"))
             sep.frame(width: 1, height: 34)
-            stat(hs.rate.map { Text("\($0)") + Text("%").font(.system(size: 10.5, weight: .heavy)) } ?? Text("—"), "本月",
+            stat(hs.rate.map { Text("\($0)") + Text("%").font(.app(size: 10.5, weight: .heavy)) } ?? Text("—"), "本月",
                  color: Theme.adaptive("#3E3532", "#F2EDE4"))
             sep.frame(width: 1, height: 34)
             stat(Text("\(hs.total)"), "累计天", color: Theme.adaptive("#3E3532", "#F2EDE4"))
@@ -390,8 +390,8 @@ struct HabitTileProto: View {
 
     private func stat(_ v: Text, _ l: String, color: Color) -> some View {
         VStack(spacing: 1) {
-            v.font(.system(size: 16, weight: .heavy)).monospacedDigit().foregroundStyle(color)
-            Text(l).font(.system(size: 10.5)).foregroundStyle(Color(hex: "#A39888"))
+            v.font(.app(size: 16, weight: .heavy)).monospacedDigit().foregroundStyle(color)
+            Text(l).font(.app(size: 10.5)).foregroundStyle(Color(hex: "#A39888"))
         }
         .frame(maxWidth: .infinity)
     }
@@ -442,7 +442,7 @@ struct OrganizeSheet: View {
                         HStack {
                             Text(g.name).foregroundStyle(Theme.text)
                             Spacer()
-                            Text("\(store.s.cards.filter { $0.group == g.id }.count) 个").font(.system(size: 13)).foregroundStyle(Theme.text3)
+                            Text("\(store.s.cards.filter { $0.group == g.id }.count) 个").font(.app(size: 13)).foregroundStyle(Theme.text3)
                         }
                         .contentShape(Rectangle())
                         .onTapGesture { renaming = g; renameText = g.name }
@@ -470,7 +470,7 @@ struct OrganizeSheet: View {
                             HabitCircle(card: c, checked: true, size: 30)
                             Text(c.name).foregroundStyle(Theme.text)
                             Spacer()
-                            Text(groupName(c)).font(.system(size: 12.5)).foregroundStyle(Theme.text3)
+                            Text(groupName(c)).font(.app(size: 12.5)).foregroundStyle(Theme.text3)
                         }
                     }
                     .onMove { from, to in store.s.cards.move(fromOffsets: from, toOffset: to); store.save() }

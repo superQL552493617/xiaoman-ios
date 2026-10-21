@@ -31,7 +31,7 @@ struct WarmButtonStyle: ButtonStyle {
     var disabled = false
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: size, weight: weight))
+            .font(.app(size: size, weight: weight))
             .foregroundStyle(disabled ? Color(hex: "#9A9AA3") : WT.yellowInk)
             .frame(height: height)
             .background(RoundedRectangle(cornerRadius: radius, style: .continuous).fill(disabled ? Color(hex: "#EEEEF0") : WT.yellow))
@@ -115,11 +115,11 @@ struct CheckDialogOverlay: View {
             if mode == "pause" {
                 pauseBox.padding(.horizontal, 2).padding(.top, 10)
             } else {
-                Text("打卡日志").font(.system(size: 14, weight: .bold)).foregroundStyle(WT.brown)
+                Text("打卡日志").font(.app(size: 14, weight: .bold)).foregroundStyle(WT.brown)
                     .padding(.leading, 6).padding(.top, 16).padding(.bottom, 6)
                 ZStack(alignment: .topLeading) {
                     if note.isEmpty {
-                        Text("添加打卡日志…").font(.system(size: 16.4)).foregroundStyle(Color(hex: "#B5AEA4"))
+                        Text("添加打卡日志…").font(.app(size: 16.4)).foregroundStyle(Color(hex: "#B5AEA4"))
                             .padding(.horizontal, 14).padding(.vertical, 12)
                     }
                     TextEditor(text: $note)
@@ -138,12 +138,12 @@ struct CheckDialogOverlay: View {
                 .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(WT.line, lineWidth: 1))
                 .padding(.horizontal, 2)
                 HStack {
-                    if note.count >= 4000 { Text("\(note.count) / 5000").font(.system(size: 9)).foregroundStyle(PT.muted) }
+                    if note.count >= 4000 { Text("\(note.count) / 5000").font(.app(size: 9)).foregroundStyle(PT.muted) }
                     Spacer()
                     Button { fullEditor = true } label: {
                         HStack(spacing: 4) {
                             Image("dg_full").renderingMode(.template).resizable().frame(width: 12, height: 12)
-                            Text("全屏").font(.system(size: 14, weight: .medium))
+                            Text("全屏").font(.app(size: 14, weight: .medium))
                         }
                         .foregroundStyle(WT.brown).padding(.horizontal, 4).frame(height: 30)
                     }
@@ -170,14 +170,14 @@ struct CheckDialogOverlay: View {
             Text(c.name).font(PT.cardFont(c.font, size: 19, weight: .bold)).foregroundStyle(WT.ink).lineLimit(1)
                 .overlay(alignment: .trailing) {
                     if archived {
-                        Text("已删除").font(.system(size: 11, weight: .semibold)).foregroundStyle(WT.brown).offset(x: 46)
+                        Text("已删除").font(.app(size: 11, weight: .semibold)).foregroundStyle(WT.brown).offset(x: 46)
                     }
                 }
             Spacer(minLength: 4)
             HStack(spacing: 6) {
                 Image("dg_cal").resizable().frame(width: 20, height: 20)
                 Text("\(DK.month(d))月\(DK.day(d))日  \(String(format: "%02d:%02d", comps.hour ?? 0, comps.minute ?? 0))")
-                    .font(.system(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#1C1C1E"))
+                    .font(.app(size: 13.5, weight: .semibold)).foregroundStyle(Color(hex: "#1C1C1E"))
             }
             .padding(.leading, 8).padding(.trailing, 12).frame(height: 34)
             .background(Capsule().fill(Color(hex: "#D3EFD9")))
@@ -204,7 +204,7 @@ struct CheckDialogOverlay: View {
         } label: {
             HStack(spacing: 4) {
                 Image(icon).resizable().frame(width: 19, height: 19)
-                Text(title).font(.system(size: 14, weight: .semibold))
+                Text(title).font(.app(size: 14, weight: .semibold))
             }
             .foregroundStyle(on ? WT.ink : WT.brown)
             .frame(maxWidth: .infinity).frame(height: 38)
@@ -217,7 +217,7 @@ struct CheckDialogOverlay: View {
     private var pauseBox: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("暂停期间，该习惯不出现在打卡主页，也不计入应打卡次数和完成率，可自定义恢复时间或在「我的习惯」中手动恢复。")
-                .font(.system(size: 13)).foregroundStyle(WT.pzInk).lineSpacing(3)
+                .font(.app(size: 13)).foregroundStyle(WT.pzInk).lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
             RangeCalendar(from: DK.today) { r in range = r }
                 .modifier(Shake(trigger: shake))
@@ -262,7 +262,7 @@ struct CheckDialogOverlay: View {
     private func footAct(_ icon: String, _ title: String, _ color: Color) -> some View {
         HStack(spacing: 5) {
             Image(icon).renderingMode(.template).resizable().frame(width: 17, height: 17)
-            Text(title).font(.system(size: 13.5, weight: .semibold))
+            Text(title).font(.app(size: 13.5, weight: .semibold))
         }
         .foregroundStyle(color)
         .padding(.horizontal, 10).frame(height: 42)
@@ -318,7 +318,7 @@ struct RangeCalendar: View {
         VStack(alignment: .leading, spacing: 0) {
             (Text("从 ") + Text(from == DK.today ? "今天" : DK.md(from)).fontWeight(.semibold).foregroundColor(WT.pzDeep)
              + Text(" 开始暂停。再点一个结束日期，或者不选结束日期、点「手动恢复」"))
-                .font(.system(size: 12.5)).foregroundStyle(Theme.adaptive("#5E554C", "#CFC6BA")).lineSpacing(2)
+                .font(.app(size: 12.5)).foregroundStyle(Theme.adaptive("#5E554C", "#CFC6BA")).lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 6)
             HStack(spacing: 6) {
@@ -329,14 +329,14 @@ struct RangeCalendar: View {
             HStack {
                 navBtn("‹", enabled: month > DK.monthStart(DK.date(from))) { shift(-1) }
                 Spacer()
-                Text(verbatim: "\(DK.year(month))年\(DK.month(month))月").font(.system(size: 15.5, weight: .bold)).foregroundStyle(WT.pzDeep)
+                Text(verbatim: "\(DK.year(month))年\(DK.month(month))月").font(.app(size: 15.5, weight: .bold)).foregroundStyle(WT.pzDeep)
                 Spacer()
                 navBtn("›", enabled: true) { shift(1) }
             }
             .padding(.horizontal, 4).padding(.bottom, 4)
             HStack(spacing: 0) {
                 ForEach(["一", "二", "三", "四", "五", "六", "日"], id: \.self) { w in
-                    Text(w).font(.system(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).frame(maxWidth: .infinity)
+                    Text(w).font(.app(size: 11.5)).foregroundStyle(Color(hex: "#A39888")).frame(maxWidth: .infinity)
                 }
             }
             .padding(.top, 2).padding(.bottom, 6)
@@ -355,7 +355,7 @@ struct RangeCalendar: View {
                 if manual { end = nil }
                 emit()
             } label: {
-                Text("手动恢复").font(.system(size: 13, weight: .semibold))
+                Text("手动恢复").font(.app(size: 13, weight: .semibold))
                     .foregroundStyle(manual ? .white : WT.pzInk)
                     .padding(.horizontal, 14).frame(height: 30)
                     .background(Capsule().fill(manual ? Color(hex: "#7C6FA8") : Theme.adaptive("#EFEDF3", "#3A3644")))
@@ -373,13 +373,13 @@ struct RangeCalendar: View {
         HStack(spacing: 6) {
             RoundedRectangle(cornerRadius: 3).fill(fill).frame(width: 12, height: 12)
                 .overlay(RoundedRectangle(cornerRadius: 3).strokeBorder(ring, lineWidth: 1))
-            Text(t).font(.system(size: 11.5)).foregroundStyle(Color(hex: "#A39888"))
+            Text(t).font(.app(size: 11.5)).foregroundStyle(Color(hex: "#A39888"))
         }
     }
 
     private func navBtn(_ t: String, enabled: Bool, _ a: @escaping () -> Void) -> some View {
         Button(action: a) {
-            Text(t).font(.system(size: 22)).foregroundStyle(Color(hex: "#5E544A")).frame(width: 34, height: 34)
+            Text(t).font(.app(size: 22)).foregroundStyle(Color(hex: "#5E544A")).frame(width: 34, height: 34)
         }
         .buttonStyle(.plain).disabled(!enabled).opacity(enabled ? 1 : 0.25)
     }
@@ -400,7 +400,7 @@ struct RangeCalendar: View {
             emit()
         } label: {
             Text("\(DK.day(DK.date(k)))")
-                .font(.system(size: 14, weight: isStart ? .heavy : (isEnd ? .bold : .regular)))
+                .font(.app(size: 14, weight: isStart ? .heavy : (isEnd ? .bold : .regular)))
                 .foregroundStyle(past ? Color(hex: "#D6CEC0") : isStart ? Color(hex: "#5A4410") : isEnd ? Color(hex: "#2F5A27") : Theme.adaptive("#3E3532", "#F2EDE4"))
                 .frame(width: 32, height: 32)
                 .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
@@ -428,14 +428,14 @@ struct DeleteHabitSheet: View {
     var onCancel: () -> Void
     var body: some View {
         VStack(spacing: 0) {
-            Text("删除习惯「\(name)」？").font(.system(size: 17, weight: .bold)).foregroundStyle(WT.ink)
+            Text("删除习惯「\(name)」？").font(.app(size: 17, weight: .bold)).foregroundStyle(WT.ink)
                 .multilineTextAlignment(.center).padding(.top, 26).padding(.bottom, 8)
             Text("删除后这张卡片不再出现在打卡页，以前的打卡记录和日志会保留在统计里。")
-                .font(.system(size: 14)).foregroundStyle(WT.gray).lineSpacing(4).multilineTextAlignment(.center)
+                .font(.app(size: 14)).foregroundStyle(WT.gray).lineSpacing(4).multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 6).padding(.bottom, 18)
             Button { onDelete() } label: {
-                Text("删除").font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Color(hex: "#C9463D"))
+                Text("删除").font(.app(size: 16.5, weight: .semibold)).foregroundStyle(Color(hex: "#C9463D"))
                     .frame(maxWidth: .infinity).frame(height: 52)
                     .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(hex: "#FBD3D3")))
                     .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color(hex: "#C9463D"), lineWidth: 1.5))
@@ -443,7 +443,7 @@ struct DeleteHabitSheet: View {
             }
             .buttonStyle(PressScale(scale: 0.98))
             Button { onCancel() } label: {
-                Text("取消").font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#5B4F45", "#E8E0D2"))
+                Text("取消").font(.app(size: 16.5, weight: .semibold)).foregroundStyle(Theme.adaptive("#5B4F45", "#E8E0D2"))
                     .frame(maxWidth: .infinity).frame(height: 52)
                     .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#2C2A26")))
                     .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Theme.adaptive("#EEE7DA", "#3A3732"), lineWidth: 1.5))
@@ -469,13 +469,13 @@ struct FullLogEditor: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(title).font(.system(size: 17, weight: .bold)).foregroundStyle(WT.ink)
+                Text(title).font(.app(size: 17, weight: .bold)).foregroundStyle(WT.ink)
                 Spacer()
-                Button("完成", action: onDone).font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+                Button("完成", action: onDone).font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
             }
             .padding(.horizontal, 18).frame(height: 54)
             TextEditor(text: $text)
-                .font(.system(size: 17)).lineSpacing(6)
+                .font(.app(size: 17)).lineSpacing(6)
                 .scrollContentBackground(.hidden)
                 .focused($focused)
                 .padding(.horizontal, 14)
@@ -498,10 +498,10 @@ struct PauseSheet: View {
             HStack {
                 Button("取消") { dismiss() }.foregroundStyle(WT.gray)
                 Spacer()
-                Text("暂停习惯").font(.system(size: 17, weight: .bold)).foregroundStyle(WT.ink)
+                Text("暂停习惯").font(.app(size: 17, weight: .bold)).foregroundStyle(WT.ink)
                 Spacer()
                 Button("确定") { if let r = range { onConfirm(r.from, r.to) } }
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.app(size: 16, weight: .semibold))
                     .foregroundStyle(range == nil ? PT.faint : Color(hex: "#007AFF"))
                     .disabled(range == nil)
             }
@@ -509,7 +509,7 @@ struct PauseSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("暂停期间，该习惯不出现在打卡主页，也不计入应打卡次数和完成率，可自定义恢复时间或在「我的习惯」中手动恢复。")
-                        .font(.system(size: 13)).foregroundStyle(WT.pzInk).lineSpacing(3)
+                        .font(.app(size: 13)).foregroundStyle(WT.pzInk).lineSpacing(3)
                     RangeCalendar(from: DK.today) { range = $0 }
                 }
                 .padding(12)

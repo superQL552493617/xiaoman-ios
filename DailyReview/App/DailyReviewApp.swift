@@ -57,8 +57,8 @@ struct AppRoot: View {
     @EnvironmentObject var store: Store
     var body: some View {
         if uiMode == "native" {
-            // 个性化里的「圆体」：所有页面（包括弹出页）一起换
-            RootView().fontDesign(store.s.prefs.appFont == "round" ? .rounded : .default)
+            // 个性化里的「APP 字体」：没有单独设字体的文字也跟着换
+            RootView().font(.app(size: 17))
         } else { WebRootView() }
     }
 }

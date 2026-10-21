@@ -174,9 +174,36 @@ struct Mood: Identifiable, Hashable {
 
 // MARK: - 字体
 
+extension Font {
+    /// App 里所有文字都用它：选了内置字体就换成那款字体（等宽数字仍用系统字体）
+    static func app(size: CGFloat, weight: Font.Weight? = nil, design: Font.Design? = nil) -> Font {
+        if design != .monospaced, let ps = AppFont.face(AppFont.current).ps {
+            let f = Font.custom(ps, fixedSize: size)
+            if let weight, weight != .regular { return f.weight(weight) }
+            return f
+        }
+        return .system(size: size, weight: weight, design: design)
+    }
+}
+
 enum AppFont {
+    /// 个性化 → APP 字体（sys 系统默认，其余是内置的开源字体）；Store 读到偏好时同步
+    static var current = "sys"
+
+    struct Face: Identifiable { let id: String; let name: String; let ps: String?; let desc: String; let sample: String }
+    static let all: [Face] = [
+        Face(id: "sys", name: "系统默认", ps: nil, desc: "清清爽爽，最好读", sample: "今天也要好好生活"),
+        Face(id: "kose", name: "小赖手写", ps: "XMKose-Regular", desc: "像认真写下的小字，圆滚滚的", sample: "早起喝一杯温水"),
+        Face(id: "kuaile", name: "快乐体", ps: "ZCOOLKuaiLe-Regular", desc: "胖嘟嘟的卡通字，看着就开心", sample: "今天也元气满满"),
+        Face(id: "butter", name: "黄油体", ps: "XMButter-Regular", desc: "厚厚软软，像刚出炉的黄油饼干", sample: "坚持一点点就好"),
+        Face(id: "kai", name: "温柔楷", ps: "XMKai-Regular", desc: "清秀的手写楷书，读起来很舒服", sample: "慢慢来，比较快"),
+        Face(id: "pixel", name: "像素体", ps: "BoutiqueBitmap9x9_1.93_R", desc: "复古游戏机里的小方块字", sample: "打卡成功，经验加一")
+    ]
+    static func face(_ id: String) -> Face { all.first { $0.id == id } ?? all[0] }
+    static func name(_ id: String) -> String { face(id).name }
+
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .rounded)
+        .app(size: size, weight: weight, design: .rounded)
     }
     /// 笔记字体：sys 系统 / round 圆体 / kai 楷体（衬线）
     static func note(_ id: String?, size: CGFloat) -> Font {

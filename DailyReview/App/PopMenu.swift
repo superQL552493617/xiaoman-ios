@@ -71,7 +71,7 @@ struct PopMenuLayer: View {
     private func menu(_ st: PopMenuState) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if let t = st.title {
-                Text(t).font(.system(size: 12)).foregroundStyle(Color(hex: "#A39888"))
+                Text(t).font(.app(size: 12)).foregroundStyle(Color(hex: "#A39888"))
                     .padding(.horizontal, 10).padding(.top, 4).padding(.bottom, 6)
             }
             ForEach(st.items) { it in
@@ -83,11 +83,11 @@ struct PopMenuLayer: View {
                         if let ic = it.icon {
                             iconView(ic, red: it.red).frame(width: 24, height: 24)
                         }
-                        Text(it.label).font(.system(size: 15))
+                        Text(it.label).font(.app(size: 15))
                             .foregroundStyle(it.red ? Color(hex: "#D2554A") : Theme.adaptive("#3E3532", "#F2EDE4"))
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        if let s = it.sub { Text(s).font(.system(size: 11)).foregroundStyle(Color(hex: "#A39888")).lineLimit(1) }
-                        if it.on { Text("✓").font(.system(size: 15, weight: .heavy)).foregroundStyle(Color(hex: "#5E9E52")) }
+                        if let s = it.sub { Text(s).font(.app(size: 11)).foregroundStyle(Color(hex: "#A39888")).lineLimit(1) }
+                        if it.on { Text("✓").font(.app(size: 15, weight: .heavy)).foregroundStyle(Color(hex: "#5E9E52")) }
                     }
                     .padding(.horizontal, 10).padding(.vertical, 8)
                     .frame(minHeight: 42)
@@ -109,7 +109,7 @@ struct PopMenuLayer: View {
         switch ic {
         case .asset(let n): Image(n).resizable().scaledToFit().frame(width: 22, height: 22)
         case .template(let n): Image(n).renderingMode(.template).resizable().scaledToFit().frame(width: 19, height: 19).foregroundStyle(tint)
-        case .symbol(let n): Image(systemName: n).font(.system(size: 16, weight: .medium)).foregroundStyle(tint)
+        case .symbol(let n): Image(systemName: n).font(.app(size: 16, weight: .medium)).foregroundStyle(tint)
         }
     }
 
@@ -167,7 +167,7 @@ struct JournalCardView: View {
             } label: {
                 VStack(spacing: 4) {
                     Image("dg_trash").renderingMode(.template).resizable().frame(width: 20, height: 20)
-                    Text("删除").font(.system(size: 13, weight: .semibold))
+                    Text("删除").font(.app(size: 13, weight: .semibold))
                 }
                 .foregroundStyle(.white)
                 .frame(width: max(reveal - 8, -dx - 8))
@@ -180,14 +180,14 @@ struct JournalCardView: View {
 
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text(entry.displayTitle).font(.system(size: 14.5, weight: .medium))
+                    Text(entry.displayTitle).font(.app(size: 14.5, weight: .medium))
                         .foregroundStyle(untitled ? PT.sub : PT.ink).lineLimit(1)
                         .padding(.horizontal, 10).padding(.vertical, 4)
                         .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(PT.jrPill))
                     Spacer(minLength: 8)
                     Button { Feedback.tap(); onMore(moreFrame) } label: {
                         Image(systemName: "ellipsis").rotationEffect(.degrees(90))
-                            .font(.system(size: 13, weight: .bold)).foregroundStyle(PT.jrMore)
+                            .font(.app(size: 13, weight: .bold)).foregroundStyle(PT.jrMore)
                             .frame(width: 30, height: 30).background(Circle().fill(PT.jrPill))
                             .frame(width: 40, height: 34).contentShape(Rectangle())
                     }
@@ -196,8 +196,8 @@ struct JournalCardView: View {
                     .accessibilityLabel("更多")
                 }
                 .frame(height: 34)
-                Text(Self.fullDT(entry.c)).font(.system(size: 12)).foregroundStyle(PT.jrTime).padding(.top, 6).padding(.bottom, 2)
-                Text(shown.isEmpty ? " " : shown).font(.system(size: 14.5)).foregroundStyle(PT.ink)
+                Text(Self.fullDT(entry.c)).font(.app(size: 12)).foregroundStyle(PT.jrTime).padding(.top, 6).padding(.bottom, 2)
+                Text(shown.isEmpty ? " " : shown).font(.app(size: 14.5)).foregroundStyle(PT.ink)
                     .lineLimit(lines).multilineTextAlignment(.leading)
             }
             .padding(.leading, 14).padding(.trailing, 8).padding(.top, 10).padding(.bottom, 9)

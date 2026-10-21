@@ -55,7 +55,7 @@ struct MeView: View {
                                 Image(t.icon).resizable().scaledToFit().frame(width: 26, height: 26)
                                     .frame(width: 46, height: 46)
                                     .background(Circle().fill(dark ? Color.white.opacity(0.08) : Color(red: 118/255, green: 118/255, blue: 128/255).opacity(0.1)))
-                                Text(t.name).font(.system(size: 14, weight: .medium)).foregroundStyle(PT.body)
+                                Text(t.name).font(.app(size: 14, weight: .medium)).foregroundStyle(PT.body)
                             }
                             .frame(maxWidth: .infinity)
                             .contentShape(Rectangle())
@@ -69,7 +69,7 @@ struct MeView: View {
                         Text("当前版本 V\(DeviceInfo.appVersion)（测试版 \(DeviceInfo.build)）").foregroundStyle(PT.faint)
                         Text("检查更新").fontWeight(.semibold).foregroundStyle(PT.sub).underline(color: PT.chipLine)
                     }
-                    .font(.system(size: 12.5))
+                    .font(.app(size: 12.5))
                     .padding(.horizontal, 14).padding(.vertical, 8)
                 }
                 .buttonStyle(.plain)
@@ -151,7 +151,7 @@ struct MeView: View {
 
     private var top: some View {
         ZStack {
-            Text("我的").font(.system(size: 18, weight: .bold)).foregroundStyle(PT.body)
+            Text("我的").font(.app(size: 18, weight: .bold)).foregroundStyle(PT.body)
             HStack {
                 Button { Feedback.tap(); page = .feedback } label: {
                     Image("mt_help").resizable().frame(width: 24, height: 24).frame(width: 40, height: 40).contentShape(Rectangle())
@@ -194,15 +194,15 @@ struct MeView: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("账号与头像")
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(P.nick.isEmpty ? "我" : P.nick).font(.system(size: 22, weight: .semibold)).foregroundStyle(PT.body).lineLimit(1)
+                    Text(P.nick.isEmpty ? "我" : P.nick).font(.app(size: 22, weight: .semibold)).foregroundStyle(PT.body).lineLimit(1)
                     Text(!P.bio.isEmpty ? P.bio : st.days > 0 ? "已经记录了 \(st.days) 天" : "从今天开始记录吧")
-                        .font(.system(size: 12.5)).foregroundStyle(PT.muted).lineLimit(1)
+                        .font(.app(size: 12.5)).foregroundStyle(PT.muted).lineLimit(1)
                 }
                 Spacer(minLength: 4)
                 Button { Feedback.tap(); router.vip = true } label: {
                     HStack(spacing: 5) {
                         Image("mt_crown").renderingMode(.template).resizable().frame(width: 16, height: 16)
-                        Text(purchases.isVIP ? (purchases.plan == "life" ? "永久会员" : "年会员") : "开通会员").font(.system(size: 14.5, weight: .bold))
+                        Text(purchases.isVIP ? (purchases.plan == "life" ? "永久会员" : "年会员") : "开通会员").font(.app(size: 14.5, weight: .bold))
                     }
                     .foregroundStyle(Color(hex: "#1C1C1E"))
                     .padding(.horizontal, 16).frame(height: 38)
@@ -241,8 +241,8 @@ struct MeView: View {
 
     private func num(_ v: Int, _ l: String) -> some View {
         VStack(spacing: 3) {
-            Text("\(v)").font(.system(size: 21, weight: .semibold)).monospacedDigit().foregroundStyle(PT.body)
-            Text(l).font(.system(size: 12)).foregroundStyle(PT.muted)
+            Text("\(v)").font(.app(size: 21, weight: .semibold)).monospacedDigit().foregroundStyle(PT.body)
+            Text(l).font(.app(size: 12)).foregroundStyle(PT.muted)
         }
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
@@ -269,7 +269,7 @@ struct ModulesPage: View {
                 Image("mo_grip").renderingMode(.template).resizable().frame(width: 13, height: 13)
                 Text(" 拖动排序，关闭开关的模块不会出现在“我的”页面。")
             }
-            .font(.system(size: 12.5)).foregroundStyle(PT.sub)
+            .font(.app(size: 12.5)).foregroundStyle(PT.sub)
             .padding(.horizontal, 6).padding(.bottom, 12)
             VStack(spacing: gap) {
                 ForEach(Array(order.enumerated()), id: \.element.id) { i, m in
@@ -282,8 +282,8 @@ struct ModulesPage: View {
                 SheetRow {
                     TileIcon(icon: "mo_modules", bg: Pastel.at(order.count), size: 20)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("模块设置").font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                        Text("始终显示，方便找回隐藏的模块").font(.system(size: 12)).foregroundStyle(PT.faint)
+                        Text("模块设置").font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
+                        Text("始终显示，方便找回隐藏的模块").font(.app(size: 12)).foregroundStyle(PT.faint)
                     }
                     Spacer(minLength: 0)
                 }
@@ -294,7 +294,7 @@ struct ModulesPage: View {
                 order = MeView.modList(store.s.prefs)
                 toaster.show("已恢复默认顺序")
             } label: {
-                Text("恢复默认顺序").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+                Text("恢复默认顺序").font(.app(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
                     .frame(maxWidth: .infinity).frame(height: 50)
                     .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#262624")))
                     .contentShape(Rectangle())
@@ -309,7 +309,7 @@ struct ModulesPage: View {
         let meta = MeView.modules.first { $0.id == m.id }
         return SheetRow {
             TileIcon(icon: Self.icons[m.id] ?? "mo_cards", bg: Pastel.at(i), size: 20)
-            Text(meta?.name ?? m.id).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
+            Text(meta?.name ?? m.id).font(.app(size: 16, weight: .medium)).foregroundStyle(PT.body)
             Spacer(minLength: 0)
             ProtoSwitch(on: m.on) {
                 guard let k = order.firstIndex(where: { $0.id == m.id }) else { return }
@@ -421,12 +421,12 @@ struct AccountSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ZStack {
-                    Text("账号").font(.system(size: 18, weight: .bold)).foregroundStyle(PT.body)
+                    Text("账号").font(.app(size: 18, weight: .bold)).foregroundStyle(PT.body)
                     HStack {
-                        Button("取消") { dismiss() }.font(.system(size: 16)).foregroundStyle(Theme.adaptive("#6B6B70", "#A1A1A6"))
+                        Button("取消") { dismiss() }.font(.app(size: 16)).foregroundStyle(Theme.adaptive("#6B6B70", "#A1A1A6"))
                         Spacer()
                         Button { save() } label: {
-                            Text("保存").font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#2A2724"))
+                            Text("保存").font(.app(size: 16, weight: .bold)).foregroundStyle(Theme.adaptive("#3E3532", "#2A2724"))
                                 .padding(.horizontal, 14).frame(height: 34)
                                 .background(Capsule().fill(Theme.adaptive("#FFE7A3", "#F5C542")))
                         }
@@ -442,7 +442,7 @@ struct AccountSheet: View {
                     .accessibilityLabel("更换头像")
                     Spacer(minLength: 12)
                     TextField("昵称", text: $nick)
-                        .font(.system(size: 17, weight: .semibold)).multilineTextAlignment(.center).foregroundStyle(PT.body)
+                        .font(.app(size: 17, weight: .semibold)).multilineTextAlignment(.center).foregroundStyle(PT.body)
                         .fixedSize()
                         .frame(minWidth: 16).frame(height: 40).padding(.horizontal, 14)
                         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#1E1E1D")))
@@ -454,11 +454,11 @@ struct AccountSheet: View {
 
                 HStack(spacing: 8) {
                     if bio.isEmpty {
-                        Text("+").font(.system(size: 15, weight: .medium)).foregroundStyle(.white)
+                        Text("+").font(.app(size: 15, weight: .medium)).foregroundStyle(.white)
                             .frame(width: 18, height: 18).background(Circle().fill(Color(hex: "#BDBDC2")))
                     }
                     TextField("", text: $bio, prompt: Text("添加个人介绍").foregroundStyle(Color(hex: "#B5B5BA")))
-                        .font(.system(size: 16)).foregroundStyle(PT.body)
+                        .font(.app(size: 16)).foregroundStyle(PT.body)
                         .onChange(of: bio) { _, v in if v.count > 40 { bio = String(v.prefix(40)) } }
                 }
                 .padding(.horizontal, 14).frame(height: 46)
@@ -471,7 +471,7 @@ struct AccountSheet: View {
                             ForEach([("f", "女"), ("m", "男")], id: \.0) { g in
                                 let on = gender == g.0
                                 Button { Feedback.tap(); gender = g.0 } label: {
-                                    Text(g.1).font(.system(size: 14.5, weight: .semibold))
+                                    Text(g.1).font(.app(size: 14.5, weight: .semibold))
                                         .foregroundStyle(on ? Theme.adaptive("#FFFFFF", "#1B1B1A") : Theme.adaptive("#9A9AA3", "#8E8E93"))
                                         .frame(minWidth: 52).frame(height: 32)
                                         .background { if on { RoundedRectangle(cornerRadius: 9, style: .continuous).fill(Theme.adaptive("#1C1C1E", "#F2F2F7")) } }
@@ -487,15 +487,15 @@ struct AccountSheet: View {
                     }
                 }
                 Text(avatar == nil ? "还没有设置头像，默认头像会跟着性别变化。" : "你设置了自己的头像，切换性别不会改变它。")
-                    .font(.system(size: 12)).foregroundStyle(Color(hex: "#A39888"))
+                    .font(.app(size: 12)).foregroundStyle(Color(hex: "#A39888"))
                     .padding(.horizontal, 8).padding(.top, -10).padding(.bottom, 14)
 
                 sec("用户类型")
                 list {
-                    row("当前账号") { Text("本机账号（未登录）").font(.system(size: 15, weight: .medium)).foregroundStyle(PT.body) }
-                    row("本机 ID") { Text(store.s.prefs.localId ?? "—").font(.system(size: 14)).foregroundStyle(PT.muted).textSelection(.enabled) }
+                    row("当前账号") { Text("本机账号（未登录）").font(.app(size: 15, weight: .medium)).foregroundStyle(PT.body) }
+                    row("本机 ID") { Text(store.s.prefs.localId ?? "—").font(.app(size: 14)).foregroundStyle(PT.muted).textSelection(.enabled) }
                     Button { onPlan() } label: {
-                        row("类型") { Text("\(planName) ›").font(.system(size: 15, weight: .medium)).foregroundStyle(PT.body) }
+                        row("类型") { Text("\(planName) ›").font(.app(size: 15, weight: .medium)).foregroundStyle(PT.body) }
                     }
                     .buttonStyle(.plain)
                 }
@@ -504,9 +504,9 @@ struct AccountSheet: View {
                     Button { onBackup() } label: {
                         HStack(spacing: 10) {
                             Image("ac_cloud").renderingMode(.template).resizable().scaledToFit().frame(width: 22, height: 22).foregroundStyle(Color(hex: "#AEAEB2"))
-                            Text("备份 / 恢复数据").font(.system(size: 15.5, weight: .semibold)).foregroundStyle(PT.body)
+                            Text("备份 / 恢复数据").font(.app(size: 15.5, weight: .semibold)).foregroundStyle(PT.body)
                             Spacer()
-                            Text("›").font(.system(size: 15, weight: .medium)).foregroundStyle(PT.body)
+                            Text("›").font(.app(size: 15, weight: .medium)).foregroundStyle(PT.body)
                         }
                         .padding(.horizontal, 16).frame(minHeight: 50).contentShape(Rectangle())
                     }
@@ -559,7 +559,7 @@ struct AccountSheet: View {
     }
 
     private func sec(_ t: String) -> some View {
-        Text(t).font(.system(size: 13, weight: .semibold)).foregroundStyle(secInk).padding(.horizontal, 8).padding(.bottom, 8)
+        Text(t).font(.app(size: 13, weight: .semibold)).foregroundStyle(secInk).padding(.horizontal, 8).padding(.bottom, 8)
     }
 
     private func list<C: View>(@ViewBuilder _ c: () -> C) -> some View {
@@ -572,7 +572,7 @@ struct AccountSheet: View {
 
     private func row<C: View>(_ t: String, @ViewBuilder _ c: () -> C) -> some View {
         HStack(spacing: 12) {
-            Text(t).font(.system(size: 15.5, weight: .semibold)).foregroundStyle(PT.body)
+            Text(t).font(.app(size: 15.5, weight: .semibold)).foregroundStyle(PT.body)
             Spacer(minLength: 0)
             c().lineLimit(1)
         }
@@ -597,7 +597,7 @@ struct CardManageView: View {
                             HabitCircle(card: c, checked: true, size: 34)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(c.name).foregroundStyle(Theme.text)
-                                Text(c.isNote ? "记录卡片" : store.s.daysLabel(c)).font(.system(size: 12)).foregroundStyle(Theme.text3)
+                                Text(c.isNote ? "记录卡片" : store.s.daysLabel(c)).font(.app(size: 12)).foregroundStyle(Theme.text3)
                             }
                         }
                     }
@@ -652,7 +652,7 @@ struct EventsView: View {
                             Image(systemName: icon(e.type)).foregroundStyle(color(e.type)).frame(width: 22)
                             Text(e.text).foregroundStyle(Theme.text)
                             Spacer()
-                            Text(DK.hm(e.ts)).font(.system(size: 12)).foregroundStyle(Theme.text3)
+                            Text(DK.hm(e.ts)).font(.app(size: 12)).foregroundStyle(Theme.text3)
                         }
                     }
                 }
@@ -694,7 +694,7 @@ struct DocView: View {
     var body: some View {
         ScrollView {
             Text(LocalizedStringKey(text))
-                .font(.system(size: 15)).foregroundStyle(Theme.text).lineSpacing(5)
+                .font(.app(size: 15)).foregroundStyle(Theme.text).lineSpacing(5)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(18)
         }

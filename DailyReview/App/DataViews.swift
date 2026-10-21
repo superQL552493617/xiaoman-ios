@@ -42,7 +42,7 @@ struct BackupView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(snapName(u)).foregroundStyle(Theme.text)
-                            Text(sizeText(u)).font(.system(size: 12)).foregroundStyle(Theme.text3)
+                            Text(sizeText(u)).font(.app(size: 12)).foregroundStyle(Theme.text3)
                         }
                         Spacer()
                         Button("恢复") { restoreURL = u }.buttonStyle(.borderless).foregroundStyle(Theme.text)

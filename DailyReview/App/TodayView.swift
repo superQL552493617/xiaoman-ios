@@ -108,17 +108,17 @@ struct TodayView: View {
             VStack(spacing: 2) {
                 HStack(spacing: 6) {
                     Text(dayLabel).tracking(0.2)
-                    Text("•").font(.system(size: 16, weight: .semibold))
+                    Text("•").font(.app(size: 16, weight: .semibold))
                     Text("周" + DK.wdName[DK.weekday(sel)]).tracking(0.2)
                     Image(systemName: "chevron.down")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.app(size: 10, weight: .bold))
                         .foregroundStyle(PT.faint)
                         .rotationEffect(.degrees(stripOpen ? 180 : 0))
                         .padding(.leading, 1)
                 }
-                .font(.system(size: 16.5, weight: .semibold))
+                .font(.app(size: 16.5, weight: .semibold))
                 .foregroundStyle(PT.ink)
-                Text("今天想坚持的几件事").font(.system(size: 10)).foregroundStyle(PT.sub)
+                Text("今天想坚持的几件事").font(.app(size: 10)).foregroundStyle(PT.sub)
             }
             .padding(.horizontal, 10).padding(.vertical, 4)
             .contentShape(Rectangle())
@@ -144,7 +144,7 @@ struct TodayView: View {
                 trayHead.padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 14).zIndex(2)
                 groupsView(width: width)
                 Text(isToday ? "今天的都完成了，真不错" : "这一天的都完成了，真不错")
-                    .font(.system(size: 13))
+                    .font(.app(size: 13))
                     .foregroundStyle(PT.cheer)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 88)
@@ -198,7 +198,7 @@ struct TodayView: View {
         VStack(spacing: 2) {
             ForEach(Array(word.enumerated()), id: \.offset) { _, ch in Text(String(ch)) }
         }
-        .font(.system(size: 13, weight: .medium))
+        .font(.app(size: 13, weight: .medium))
         .foregroundStyle(go ? Theme.adaptive("#5E6B5A", "#CFE0C8") : PT.faint)
         .padding(.vertical, 12).padding(.horizontal, 5)
         .background(
@@ -215,7 +215,7 @@ struct TodayView: View {
 
     private var trayHead: some View {
         HStack(spacing: 8) {
-            Text("日常打卡").font(.system(size: 16.5, weight: .semibold)).tracking(0.2).foregroundStyle(PT.ink)
+            Text("日常打卡").font(.app(size: 16.5, weight: .semibold)).tracking(0.2).foregroundStyle(PT.ink)
             Button {
                 store.updatePrefs { $0.flat.toggle() }
                 Feedback.tap()
@@ -255,9 +255,9 @@ struct TodayView: View {
                 }
                 .overlay { SparkleBurst(trigger: sparkle) }
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text("\(doneCount)").font(.system(size: 14, weight: .bold)).foregroundStyle(PT.ink)
-                Text("/").font(.system(size: 14, weight: .medium)).foregroundStyle(PT.faint).opacity(0.75).padding(.horizontal, 1.5)
-                Text("\(countable.count)").font(.system(size: 14, weight: .semibold)).foregroundStyle(PT.faint)
+                Text("\(doneCount)").font(.app(size: 14, weight: .bold)).foregroundStyle(PT.ink)
+                Text("/").font(.app(size: 14, weight: .medium)).foregroundStyle(PT.faint).opacity(0.75).padding(.horizontal, 1.5)
+                Text("\(countable.count)").font(.app(size: 14, weight: .semibold)).foregroundStyle(PT.faint)
             }
             .monospacedDigit()
         }
@@ -291,11 +291,11 @@ struct TodayView: View {
         if bs.isEmpty || visible.isEmpty {
             VStack(spacing: 8) {
                 if store.s.cards.isEmpty {
-                    Text("从一个小习惯开始吧").font(.system(size: 15, weight: .semibold)).foregroundStyle(PT.ink)
+                    Text("从一个小习惯开始吧").font(.app(size: 15, weight: .semibold)).foregroundStyle(PT.ink)
                     Text("点「日常打卡」旁边的 +，种下第一张打卡卡片。每天点亮一次，日子会慢慢亮起来。")
-                        .font(.system(size: 13)).foregroundStyle(PT.sub).multilineTextAlignment(.center)
+                        .font(.app(size: 13)).foregroundStyle(PT.sub).multilineTextAlignment(.center)
                 } else {
-                    Text("这一天没有安排打卡，给自己放个假吧。").font(.system(size: 13)).foregroundStyle(PT.sub)
+                    Text("这一天没有安排打卡，给自己放个假吧。").font(.app(size: 13)).foregroundStyle(PT.sub)
                 }
             }
             .frame(maxWidth: .infinity).padding(.vertical, 30).padding(.horizontal, 20)
@@ -327,10 +327,10 @@ struct TodayView: View {
                 withAnimation(.easeInOut(duration: 0.25)) { store.toggleGroupCollapsed(b.id) }
             } label: {
                 HStack(spacing: 5) {
-                    Text(b.name).font(.system(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
-                    if cnt > 0 { Text("• \(left)").font(.system(size: 12.5, weight: .medium)).foregroundStyle(PT.muted) }
+                    Text(b.name).font(.app(size: 13, weight: .semibold)).foregroundStyle(PT.ink)
+                    if cnt > 0 { Text("• \(left)").font(.app(size: 12.5, weight: .medium)).foregroundStyle(PT.muted) }
                     Image(systemName: "chevron.down")
-                        .font(.system(size: 7.5, weight: .heavy))
+                        .font(.app(size: 7.5, weight: .heavy))
                         .foregroundStyle(PT.cvInk)
                         .rotationEffect(.degrees(b.collapsed ? -90 : 0))
                         .frame(width: 17, height: 17)
@@ -356,7 +356,7 @@ struct TodayView: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { action() }
         } label: {
             Image(systemName: up ? "chevron.up" : "chevron.down")
-                .font(.system(size: 11, weight: .bold))
+                .font(.app(size: 11, weight: .bold))
                 .foregroundStyle(PT.faint)
                 .frame(width: 30, height: 30)
                 .contentShape(Rectangle())
@@ -480,7 +480,7 @@ struct BackTodayButton: View {
     @State private var breathe = false
     var body: some View {
         Button(action: action) {
-            Text("回到今日").font(.system(size: 12, weight: .medium)).foregroundStyle(Color(hex: "#7BB37A"))
+            Text("回到今日").font(.app(size: 12, weight: .medium)).foregroundStyle(Color(hex: "#7BB37A"))
                 .padding(.horizontal, 10).frame(height: 26)
                 .overlay(Capsule().strokeBorder(Color(hex: "#9CCB9A"), style: StrokeStyle(lineWidth: 1, dash: [3, 2])))
                 .opacity(breathe ? 0.9 : 0.28)
@@ -556,10 +556,10 @@ struct DateStrip: View {
         let first = DK.day(d) == 1
         VStack(spacing: 5) {
             Text(first ? "\(DK.month(d))月" : "周" + DK.wdName[DK.weekday(d)])
-                .font(.system(size: 10.5, weight: first ? .semibold : .regular))
+                .font(.app(size: 10.5, weight: first ? .semibold : .regular))
                 .foregroundStyle(isSel ? (t.classic ? Color.white.opacity(0.7) : Color(hex: "#1C1C1E").opacity(0.6)) : (first ? Color(hex: "#007AFF") : PT.faint))
             Text("\(DK.day(d))")
-                .font(.system(size: 17.5, weight: isSel ? .bold : .semibold))
+                .font(.app(size: 17.5, weight: isSel ? .bold : .semibold))
                 .foregroundStyle(isSel ? (t.classic ? (scheme == .dark ? Color(hex: "#1C1C1E") : .white) : Color(hex: "#1C1C1E")) : PT.ink)
         }
         .frame(width: 42, height: 62)
@@ -620,7 +620,7 @@ struct QuickRow: View {
                     if let m = store.s.moodOf(day) { icon(m.asset); Text(m.name) } else { icon("q_mood"); Text("心情") }
                 }
             }
-            .font(.system(size: 13, weight: .medium)).tracking(0.2)
+            .font(.app(size: 13, weight: .medium)).tracking(0.2)
             .foregroundStyle(PT.quickInk)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
@@ -670,8 +670,8 @@ struct JournalStrip: View {
                     withAnimation(.easeInOut(duration: 0.3)) { store.updatePrefs { $0.jrFold.toggle() } }
                 } label: {
                     HStack(spacing: 6) {
-                        Text("笔记").font(.system(size: 16.5, weight: .semibold)).tracking(0.2).foregroundStyle(PT.ink)
-                        Image(systemName: "chevron.down").font(.system(size: 8, weight: .heavy)).foregroundStyle(.white)
+                        Text("笔记").font(.app(size: 16.5, weight: .semibold)).tracking(0.2).foregroundStyle(PT.ink)
+                        Image(systemName: "chevron.down").font(.app(size: 8, weight: .heavy)).foregroundStyle(.white)
                             .rotationEffect(.degrees(folded ? -90 : 0))
                             .frame(width: 18, height: 18).background(Circle().fill(PT.cvBg))
                     }

@@ -25,7 +25,7 @@ struct ToastView: View {
     let gray: Bool
     var body: some View {
         Text(text)
-            .font(.system(size: 14, weight: .medium))
+            .font(.app(size: 14, weight: .medium))
             .foregroundStyle(gray ? Theme.text : .white)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 16).padding(.vertical, 10)
@@ -138,7 +138,7 @@ struct FloatingTabBar: View {
                         }
                     }
                 if showLabels {
-                    Text(t.title).font(.system(size: 10.5, weight: .semibold))
+                    Text(t.title).font(.app(size: 10.5, weight: .semibold))
                         .foregroundStyle(on ? Color(hex: t.onHex) : (scheme == .dark ? Color(hex: "#636366") : Color(hex: "#C2C2C7")))
                 }
             }
@@ -170,7 +170,7 @@ struct PrimaryButtonStyle: ButtonStyle {
     var enabled = true
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 16, weight: .bold))
+            .font(.app(size: 16, weight: .bold))
             .frame(maxWidth: .infinity).frame(height: 50)
             .foregroundStyle(enabled ? Theme.adaptive("#FFFFFF", "#2A2724") : Theme.text3)
             .background(RoundedRectangle(cornerRadius: 25, style: .continuous).fill(enabled ? Theme.text : Theme.tile))
@@ -182,7 +182,7 @@ struct PrimaryButtonStyle: ButtonStyle {
 struct YellowButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 15, weight: .bold))
+            .font(.app(size: 15, weight: .bold))
             .foregroundStyle(Theme.ink)
             .padding(.horizontal, 16).frame(height: 36)
             .background(Capsule().fill(Color(hex: "#FFE7A3")))
@@ -198,7 +198,7 @@ struct SheetHeader<L: View, R: View>: View {
     @ViewBuilder var trailing: () -> R
     var body: some View {
         ZStack {
-            Text(title).font(.system(size: 17, weight: .bold)).foregroundStyle(Theme.text)
+            Text(title).font(.app(size: 17, weight: .bold)).foregroundStyle(Theme.text)
             HStack {
                 leading()
                 Spacer()
@@ -213,7 +213,7 @@ struct CloseButton: View {
     var action: () -> Void
     var body: some View {
         Button(action: action) {
-            Image(systemName: "xmark").font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.text)
+            Image(systemName: "xmark").font(.app(size: 15, weight: .semibold)).foregroundStyle(Theme.text)
                 .frame(width: 36, height: 36).background(Circle().fill(Theme.tile))
         }
         .buttonStyle(.plain)
@@ -244,11 +244,11 @@ struct RowLabel: View {
     var sub: String? = nil
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).font(.system(size: 16, weight: .medium)).foregroundStyle(tint)
+            Image(systemName: icon).font(.app(size: 16, weight: .medium)).foregroundStyle(tint)
                 .frame(width: 32, height: 32).background(RoundedRectangle(cornerRadius: 10).fill(Theme.tile))
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 15.5)).foregroundStyle(Theme.text)
-                if let sub { Text(sub).font(.system(size: 12)).foregroundStyle(Theme.text3) }
+                Text(title).font(.app(size: 15.5)).foregroundStyle(Theme.text)
+                if let sub { Text(sub).font(.app(size: 12)).foregroundStyle(Theme.text3) }
             }
             Spacer(minLength: 0)
         }
@@ -260,8 +260,8 @@ struct SectionTitle: View {
     var sub: String? = nil
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(text).font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.text)
-            if let sub { Text(sub).font(.system(size: 12)).foregroundStyle(Theme.text3) }
+            Text(text).font(.app(size: 18, weight: .bold)).foregroundStyle(Theme.text)
+            if let sub { Text(sub).font(.app(size: 12)).foregroundStyle(Theme.text3) }
             Spacer()
         }
     }

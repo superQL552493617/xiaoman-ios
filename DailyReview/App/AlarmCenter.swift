@@ -278,16 +278,16 @@ struct AlarmRingView: View {
             VStack(spacing: 0) {
                 Spacer()
                 Text(String(format: "%02d:%02d", Calendar.current.component(.hour, from: now), Calendar.current.component(.minute, from: now)))
-                    .font(.system(size: 64, weight: .light)).monospacedDigit().kerning(-1.2).foregroundStyle(ink)
-                Text(dateLine).font(.system(size: 15)).foregroundStyle(gray).padding(.top, 2).padding(.bottom, 34)
+                    .font(.app(size: 64, weight: .light)).monospacedDigit().kerning(-1.2).foregroundStyle(ink)
+                Text(dateLine).font(.app(size: 15)).foregroundStyle(gray).padding(.top, 2).padding(.bottom, 34)
                 avatar.modifier(AlarmShake(on: shake))
-                Text(title).font(.system(size: 24, weight: .heavy)).foregroundStyle(ink).padding(.top, 20)
+                Text(title).font(.app(size: 24, weight: .heavy)).foregroundStyle(ink).padding(.top, 20)
                     .lineLimit(1).minimumScaleFactor(0.7)
-                Text("到时间啦，做完记得打个卡").font(.system(size: 14)).foregroundStyle(gray).padding(.top, 6)
+                Text("到时间啦，做完记得打个卡").font(.app(size: 14)).foregroundStyle(gray).padding(.top, 6)
                 VStack(spacing: 10) {
                     if !ring.test && card != nil {
                         Button { onAct(.go) } label: {
-                            Text("去打卡").font(.system(size: 17, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
+                            Text("去打卡").font(.app(size: 17, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
                                 .frame(maxWidth: .infinity).frame(height: 52)
                                 .background(Capsule().fill(Color(hex: "#FFE7A3")))
                                 .overlay(Capsule().strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5))
@@ -295,14 +295,14 @@ struct AlarmRingView: View {
                         .buttonStyle(.plain)
                     }
                     Button { onAct(.snooze) } label: {
-                        Text("10 分钟后再提醒").font(.system(size: 17, weight: .bold))
+                        Text("10 分钟后再提醒").font(.app(size: 17, weight: .bold))
                             .foregroundStyle(dark ? Color(hex: "#ECE6DA") : Color(hex: "#4A3F45"))
                             .frame(maxWidth: .infinity).frame(height: 52)
                             .background(Capsule().fill(Color.white.opacity(dark ? 0.1 : 0.75)))
                     }
                     .buttonStyle(.plain)
                     Button { onAct(.off) } label: {
-                        Text("关闭").font(.system(size: 17, weight: .bold)).foregroundStyle(gray)
+                        Text("关闭").font(.app(size: 17, weight: .bold)).foregroundStyle(gray)
                             .frame(maxWidth: .infinity).frame(height: 44).contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
@@ -336,7 +336,7 @@ struct AlarmRingView: View {
         if let c = card {
             ProtoDot(card: c, on: true, shape: "circle", line: "solid", size: 92)
         } else {
-            Text("⏰").font(.system(size: 44)).frame(width: 92, height: 92).background(Circle().fill(Color(hex: "#F5C542")))
+            Text("⏰").font(.app(size: 44)).frame(width: 92, height: 92).background(Circle().fill(Color(hex: "#F5C542")))
         }
     }
 

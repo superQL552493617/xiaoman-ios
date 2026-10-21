@@ -4,7 +4,7 @@ import WidgetKit
 
 @MainActor
 final class Store: ObservableObject {
-    @Published var s: AppState
+    @Published var s: AppState { didSet { if oldValue.prefs.appFont != s.prefs.appFont { AppFont.current = s.prefs.appFont } } }
     @Published var vip = false
     private var saveTask: Task<Void, Never>?
     private var loadedAt = Date()
@@ -17,6 +17,7 @@ final class Store: ObservableObject {
             s = AppState.seeded()
         }
         if s.prefs.localId == nil { s.prefs.localId = "L" + String(UUID().uuidString.prefix(6)) }
+        AppFont.current = s.prefs.appFont
     }
 
     // MARK: 保存

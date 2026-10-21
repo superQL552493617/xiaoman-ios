@@ -44,6 +44,15 @@ struct WebRootView: View {
                         .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { bridge.feedback = nil } } }
                 }
             }
+            .sheet(isPresented: Binding(get: { bridge.doc != nil }, set: { if !$0 { bridge.doc = nil } })) {
+                NavigationStack {
+                    DocView(title: bridge.doc == "privacy" ? "隐私政策" : "用户协议", text: bridge.doc == "privacy" ? LegalText.privacy : LegalText.terms)
+                        .toolbar { ToolbarItem(placement: .topBarLeading) { Button("关闭") { bridge.doc = nil } } }
+                }
+            }
+            .onAppear { bridge.purchases = purchases }
+            .onChange(of: purchases.plan) { _, _ in bridge.syncVip() }
+            .onChange(of: purchases.loaded) { _, _ in bridge.syncVip() }
             .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in askSwitch = true }
             .onChange(of: phase) { _, p in
                 if p == .active { bridge.reloadIfChangedOutside() }
@@ -126,7 +135,10 @@ final class LocalSchemeHandler: NSObject, WKURLSchemeHandler {
         var name = url.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         if name.isEmpty || name == "index.html" { name = "xiaoman.html" }
         let base = (name as NSString).deletingPathExtension, ext = (name as NSString).pathExtension
-        guard let file = Bundle.main.url(forResource: base, withExtension: ext), let data = try? Data(contentsOf: file) else {
+        // 资源打包时会放到同一层（比如 fonts/xm_kai.ttf 实际在包的根目录）
+        let flat = ((name as NSString).lastPathComponent as NSString).deletingPathExtension
+        guard let file = Bundle.main.url(forResource: base, withExtension: ext) ?? Bundle.main.url(forResource: flat, withExtension: ext),
+              let data = try? Data(contentsOf: file) else {
             let r = HTTPURLResponse(url: url, statusCode: 404, httpVersion: "HTTP/1.1", headerFields: [:])!
             task.didReceive(r); task.didFinish(); return
         }
@@ -137,10 +149,12 @@ final class LocalSchemeHandler: NSObject, WKURLSchemeHandler {
         case "css": mime = "text/css"
         case "png": mime = "image/png"
         case "json", "webmanifest": mime = "application/json"
+        case "ttf": mime = "font/ttf"
+        case "otf": mime = "font/otf"
         default: mime = "application/octet-stream"
         }
         let r = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1",
-                                headerFields: ["Content-Type": mime, "Content-Length": "\(data.count)", "Cache-Control": "no-store"])!
+                                headerFields: ["Content-Type": mime, "Content-Length": "\(data.count)", "Cache-Control": ext == "ttf" ? "max-age=31536000" : "no-store"])!
         task.didReceive(r)
         task.didReceive(data)
         task.didFinish()
@@ -156,6 +170,9 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     weak var webView: WKWebView?
     @Published var feedback: FeedbackFields?
     @Published var ready = false
+    /// 会员页里点开的条款：terms / privacy
+    @Published var doc: String?
+    weak var purchases: Purchases?
     private var postTask: Task<Void, Never>?
     private var lastWrite = Date.distantPast
 
@@ -227,6 +244,33 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
                 DispatchQueue.main.async { replyHandler(ok, nil) }
             }
+        case "vip":
+            // 会员：价格、购买、恢复购买、查看条款（网页版的会员页）
+            let op = body["op"] as? String ?? "info"
+            guard let p = purchases else { replyHandler(["plan": "free", "offers": [String: Any]()] as [String: Any], nil); return }
+            switch op {
+            case "buy":
+                let kind = body["kind"] as? String ?? "year"
+                Task { @MainActor in
+                    _ = await p.buy(kind: kind)
+                    var r = self.vipInfo(p); r["msg"] = p.message ?? ""; p.message = nil
+                    replyHandler(r, nil)
+                }
+            case "restore":
+                Task { @MainActor in
+                    await p.restore()
+                    var r = self.vipInfo(p); r["msg"] = p.message ?? ""; p.message = nil
+                    replyHandler(r, nil)
+                }
+            case "doc":
+                doc = (body["doc"] as? String) == "privacy" ? "privacy" : "terms"
+                replyHandler(true, nil)
+            default:
+                Task { @MainActor in
+                    if p.products.isEmpty { await p.loadProducts() }
+                    replyHandler(self.vipInfo(p), nil)
+                }
+            }
         case "alarm":
             // 网页里的响铃页：去打卡 / 10 分钟后再提醒 / 关闭 / 没人理自己停
             if let ring = AlarmRing(web: body), let act = AlarmCenter.Act(rawValue: (body["act"] as? String) ?? "") {
@@ -236,6 +280,25 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         default:
             replyHandler(nil, nil)
         }
+    }
+
+    /// 会员页要显示的内容（价格以 App Store 为准）
+    func vipInfo(_ p: Purchases) -> [String: Any] {
+        var offers: [String: Any] = [:]
+        for k in Purchases.kinds {
+            let o = p.offer(k), c = p.cta(k)
+            offers[k] = ["title": o.title, "price": o.price, "note": o.note, "badge": o.badge ?? "", "trial": o.trial,
+                         "cta": c.title, "ctaSub": c.sub, "ctaOn": c.enabled]
+        }
+        var exp = ""
+        if let e = p.expires { exp = "\(DK.year(e))年\(DK.month(e))月\(DK.day(e))日" }
+        return ["plan": p.plan, "name": p.planName, "expires": exp, "offers": offers]
+    }
+
+    /// 把 App Store 里的会员状态告诉网页（网页里的会员功能以它为准）
+    func syncVip() {
+        guard let p = purchases, p.loaded, ready else { return }
+        webView?.evaluateJavaScript("window.__xmVipSync&&__xmVipSync({plan:'\(p.plan)'})")
     }
 
     /// 网页保存后：刷新小组件、重排提醒（稍等一下，连续修改只做一次）
@@ -324,6 +387,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         // 网页读完数据再把排队的响铃交给它（点通知冷启动时会先排队）
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
             AlarmCenter.shared.attachWeb { js in self?.webView?.evaluateJavaScript(js) }
+            self?.syncVip()
         }
     }
 

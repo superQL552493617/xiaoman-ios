@@ -160,7 +160,7 @@ struct ProtoCell: View {
                 .padding(.horizontal, 6)
                 .padding(.top, PT.nameGap(layout))
             Text(sub(on) ?? " ")
-                .font(.system(size: 9.5))
+                .font(.app(size: 9.5))
                 .foregroundStyle(PT.sub)
                 .padding(.top, 1)
         }
