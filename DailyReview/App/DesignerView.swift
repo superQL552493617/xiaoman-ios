@@ -205,7 +205,7 @@ struct DesignerView: View {
         let known = store.s.groups.contains { $0.id == c.group }
         let on = id == nil ? !known : c.group == id
         return Button { Feedback.tap(); c.group = id } label: {
-            Text(name).font(.system(size: 14, weight: on ? .semibold : .regular)).foregroundStyle(Color(hex: "#1C1C1E"))
+            Text(name).font(.system(size: 14, weight: on ? .semibold : .regular)).foregroundStyle(on ? Color(hex: "#1C1C1E") : PT.body)
                 .padding(.horizontal, 14).frame(height: 34)
                 .background(Capsule().fill(on ? WT.orange : WT.chipOff))
         }
