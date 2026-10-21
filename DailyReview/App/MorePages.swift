@@ -676,7 +676,7 @@ struct ExportPage: View {
 
     var body: some View {
         let R = rows
-        NavPage("导出数据") {
+        NavPage("导入导出") {
             VStack(spacing: 4) {
                 Image("ex_hero").renderingMode(.template).resizable().frame(width: 30, height: 30).foregroundStyle(.white)
                     .frame(width: 60, height: 60).background(Circle().fill(Color(hex: "#1C1C1E")))

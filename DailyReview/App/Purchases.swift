@@ -86,13 +86,18 @@ final class Purchases: ObservableObject {
         var trial: Bool
     }
 
+    /// 价格文字：人民币去掉多余的 .00（¥18、¥3.5），美元保持 $2.90 这样的写法
+    func priceText(_ p: Product) -> String {
+        p.priceFormatStyle.currencyCode == "CNY" ? p.price.formatted(p.priceFormatStyle.precision(.fractionLength(0...2))) : p.displayPrice
+    }
+
     func offer(_ kind: String) -> Offer {
         let fallbackYear = cn ? "¥18" : "$2.90", fallbackMonth = cn ? "¥3.5" : "$1.90", fallbackLife = cn ? "¥35" : "$9.90"
         let perMonthFallback = cn ? "¥1.5" : "$0.24"
         switch kind {
         case "year":
             let p = product("year")
-            let full = p?.displayPrice ?? fallbackYear
+            let full = p.map(priceText) ?? fallbackYear
             let per = p.map { ($0.price / 12).formatted($0.priceFormatStyle.precision(.fractionLength(0...2))) } ?? perMonthFallback
             let hasTrial = p.map { $0.subscription?.introductoryOffer?.paymentMode == .freeTrial } ?? true
             let trial = trialEligible && hasTrial && plan == "free"
@@ -100,10 +105,10 @@ final class Purchases: ObservableObject {
             return Offer(kind: kind, title: "年度卡", price: "\(full)/年",
                          note: trial ? "先免费用 3 天，约 \(per)/月" : "约 \(per)/月，每年自动续费", badge: "推荐", trial: trial)
         case "month":
-            let full = product("month")?.displayPrice ?? fallbackMonth
+            let full = product("month").map(priceText) ?? fallbackMonth
             return Offer(kind: kind, title: "月度卡", price: "\(full)/月", note: "每月 \(full)，随时可取消", badge: nil, trial: false)
         default:
-            let full = product("life")?.displayPrice ?? fallbackLife
+            let full = product("life").map(priceText) ?? fallbackLife
             return Offer(kind: kind, title: "永久会员", price: full, note: "付一次，一直能用", badge: "买断", trial: false)
         }
     }
@@ -114,7 +119,7 @@ final class Purchases: ObservableObject {
         if plan == kind { return ("当前正在使用", kind == "month" ? "每月自动续费，可随时在系统设置里取消" : "每年自动续费，可随时在系统设置里取消", false) }
         switch kind {
         case "year":
-            let full = product("year")?.displayPrice ?? (cn ? "¥18" : "$2.90")
+            let full = product("year").map(priceText) ?? (cn ? "¥18" : "$2.90")
             return offer("year").trial ? ("免费试用 3 天", "3 天后按 \(full)/年续费，试用期间取消不扣费", true) : ("开通年度卡", "每年 \(full) 自动续费，可随时在系统设置里取消", true)
         case "month": return ("开通月度卡", "每月自动续费，可随时在系统设置里取消", true)
         default: return (plan == "free" ? "买断永久会员" : "升级为永久会员", "一次购买，不会自动续费", true)

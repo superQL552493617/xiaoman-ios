@@ -27,15 +27,25 @@ enum Backup {
         let d = try JSONDecoder().decode(AppState.self, from: data)
         var nc = 0, nr = 0, nj = 0
         var known = Set(S.cards.map { $0.id } + S.archived.map { $0.id })
-        for c in d.cards where !known.contains(c.id) { S.cards.append(c); known.insert(c.id); nc += 1 }
+        for c in d.cards where !S.cards.contains(where: { $0.id == c.id }) {
+            // 这里删掉了、备份里还在的习惯：恢复回来
+            S.archived.removeAll { $0.id == c.id }
+            S.cards.append(c); known.insert(c.id); nc += 1
+        }
         for c in d.archived where !known.contains(c.id) { S.archived.append(c); known.insert(c.id) }
         for (k, day) in d.records where isKey(k) {
             var cur = S.records[k] ?? [:]
             for (id, inc) in day {
-                if let old = cur[id] {
-                    // 只替换「打开过但没打卡也没写日志」的空记录
-                    if !old.checked && !old.hasNote && (inc.checked || inc.hasNote) { cur[id] = inc; nr += 1 }
-                } else { cur[id] = inc; nr += 1 }
+                if var old = cur[id] {
+                    // 这里没打卡、备份里打了卡：补上打卡；日志只补空的，不覆盖已有内容
+                    var ch = false
+                    if inc.checked && !old.checked { old.checked = true; old.plan = false; old.t = inc.t ?? old.t; ch = true }
+                    if inc.hasNote && !old.hasNote { old.note = inc.note; ch = true }
+                    if ch { cur[id] = old; nr += 1 }
+                } else {
+                    cur[id] = inc
+                    if inc.checked || inc.hasNote { nr += 1 }
+                }
             }
             S.records[k] = cur
         }

@@ -24,7 +24,7 @@ struct MeView: View {
     /// 模块（和网页版 MODULES 一样）
     static let modules: [(id: String, icon: String, name: String)] = [
         ("cards", "mt_cards", "习惯管理"), ("memory", "mt_memory", "回忆"), ("backup", "mt_backup", "备份"), ("events", "mt_events", "新事件"),
-        ("personal", "mt_personal", "个性化"), ("widget", "mt_widget", "小组件"), ("export", "mt_export", "导出数据"), ("feedback", "mt_feedback", "意见反馈")
+        ("personal", "mt_personal", "个性化"), ("widget", "mt_widget", "小组件"), ("export", "mt_export", "导入导出"), ("feedback", "mt_feedback", "意见反馈")
     ]
     static func modList(_ p: Prefs) -> [ModulePref] {
         let ids = modules.map(\.id)

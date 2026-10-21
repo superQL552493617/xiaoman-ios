@@ -165,7 +165,7 @@ struct ExportView: View {
         }
         .scrollContentBackground(.hidden)
         .pageBackground()
-        .navigationTitle("导出数据")
+        .navigationTitle("导入导出")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .sheet(item: $share) { s in ShareSheet(items: [s.url]).presentationDetents([.medium, .large]) }

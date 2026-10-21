@@ -3763,25 +3763,57 @@ function backupData(){return {app:'daily-review',version:2,exportedAt:new Date()
 const isKey=k=>/^\d{4}-\d{2}-\d{2}$/.test(k);
 function normCard(c){if(!c||typeof c!=='object'||typeof c.id!=='string'||typeof c.name!=='string')return null;
 c.type=c.type==='note'?'note':'check';c.slot=c.slot||'全天';if(!Array.isArray(c.days))c.days=[1,2,3,4,5,6,0];if(!c.createdAt)c.createdAt=TODAY();return c}
-/* merge a backup into the current data: nothing that exists here is overwritten, except an empty
-   placeholder record (opened but never checked) which a real record from the backup replaces */
+/* 把备份合并进来（按唯一编号，不会重复）：
+   · 习惯：这里没有的加上；这里删掉了、备份里还在的恢复回来
+   · 打卡：这里没有的加上；这里没打卡、备份里打了卡的补上打卡；日志、数量只补空的，不覆盖已有内容
+   · 笔记：按编号补上缺少的（旧版本没有编号的笔记也能导入）
+   返回明细，导入后逐项告诉用户加了什么 */
 function importBackup(d){
 if(!d||typeof d!=='object'||Array.isArray(d))throw new Error('bad');
-let nc=0,nr=0,nj=0;const has=id=>cardById(id)||(S.archived||[]).some(x=>x.id===id);
-(Array.isArray(d.cards)?d.cards:[]).forEach(c=>{c=normCard(c);if(c&&!has(c.id)){S.cards.push(c);nc++}});
-(Array.isArray(d.archived)?d.archived:[]).forEach(c=>{c=normCard(c);if(c&&!has(c.id)){(S.archived=S.archived||[]).push(c)}});
-const R=d.records&&typeof d.records==='object'?d.records:{};
-for(const k in R){if(!isKey(k)||!R[k]||typeof R[k]!=='object')continue;for(const id in R[k]){const inc=R[k][id];if(!inc||typeof inc!=='object')continue;
-S.records[k]=S.records[k]||{};const cur=S.records[k][id];
-if(!cur||(!cur.checked&&!cur.note&&cur.qty==null&&(inc.checked||inc.note))){S.records[k][id]=inc;nr++}}}
-const J=d.journal&&typeof d.journal==='object'?d.journal:{};
-for(const k in J){if(!isKey(k)||!Array.isArray(J[k]))continue;S.journal[k]=S.journal[k]||[];
-J[k].forEach(e=>{if(e&&e.id&&!S.journal[k].some(x=>x.id===e.id)){S.journal[k].push(e);nj++}});if(!S.journal[k].length)delete S.journal[k]}
+const res={nc:0,nr:0,nj:0,added:[],restored:[],days:new Set(),notes:[]};
+const arch=id=>(S.archived||[]).find(x=>x.id===id);
 if(Array.isArray(d.groups)){S.groups=S.groups||[];d.groups.forEach(g=>{if(g&&g.id&&!S.groups.some(x=>x.id===g.id))S.groups.push({id:g.id,name:String(g.name||'未命名')})})}
+(Array.isArray(d.cards)?d.cards:[]).forEach(c=>{c=normCard(JSON.parse(JSON.stringify(c)));if(!c||cardById(c.id))return;
+const {archivedAt,...card}=c;
+if(arch(c.id)){S.archived=S.archived.filter(x=>x.id!==c.id);S.cards.push(card);res.restored.push(c.name);res.nc++}
+else{S.cards.push(card);res.added.push(c.name);res.nc++}});
+(Array.isArray(d.archived)?d.archived:[]).forEach(c=>{c=normCard(c);if(c&&!cardById(c.id)&&!arch(c.id))(S.archived=S.archived||[]).push(c)});
+const R=d.records&&typeof d.records==='object'?d.records:{};
+for(const k in R){if(!isKey(k)||!R[k]||typeof R[k]!=='object')continue;
+for(const id in R[k]){const inc=R[k][id];if(!inc||typeof inc!=='object')continue;
+S.records[k]=S.records[k]||{};const cur=S.records[k][id];
+if(!cur){S.records[k][id]=Object.assign({checked:false,plan:false,note:'',qty:null,t:0},inc);if(inc.checked||inc.note){res.nr++;res.days.add(k)}continue}
+let ch=false;
+if(inc.checked&&!cur.checked){cur.checked=true;cur.plan=false;cur.t=inc.t||cur.t||Date.now();ch=true}
+if(inc.note&&!cur.note){cur.note=inc.note;ch=true}
+if(inc.qty!=null&&cur.qty==null){cur.qty=inc.qty;ch=true}
+if(ch){res.nr++;res.days.add(k)}}
+if(!Object.keys(S.records[k]).length)delete S.records[k]}
+const J=d.journal&&typeof d.journal==='object'?d.journal:{};S.journal=S.journal||{};
+for(const k in J){if(!isKey(k))continue;let list=J[k];
+if(list&&!Array.isArray(list))list=list.text?[{title:'',text:list.text,c:list.c||list.t||Date.now(),t:list.t||Date.now()}]:[];
+if(!Array.isArray(list))continue;
+const cur=S.journal[k]=S.journal[k]||[];
+list.forEach(e=>{if(!e||typeof e!=='object'||!(String(e.text||'').trim()||String(e.title||'').trim()))return;
+if(e.id&&cur.some(x=>x.id===e.id))return;
+if(!e.id&&cur.some(x=>x.text===e.text&&x.title===e.title))return;
+cur.push(Object.assign({},e,{id:e.id||'j-'+uid(),c:e.c||Date.now(),t:e.t||e.c||Date.now()}));res.nj++;res.notes.push(String(e.title||e.text).trim().slice(0,14))});
+if(!cur.length)delete S.journal[k]}
 if(d.mood&&typeof d.mood==='object'){S.mood=S.mood||{};for(const k in d.mood)if(isKey(k)&&!S.mood[k])S.mood[k]=d.mood[k]}
 if(d.alarms&&typeof d.alarms==='object'){S.alarms=S.alarms||{};for(const k in d.alarms)if(isKey(k)&&!S.alarms[k])S.alarms[k]=d.alarms[k]}
 if(Array.isArray(d.events)){S.events=S.events||[];const sig=e=>e.type+'|'+e.id+'|'+e.ts;const seen=new Set(S.events.map(sig));d.events.forEach(e=>{if(e&&e.type&&!seen.has(sig(e))){S.events.push(e);seen.add(sig(e))}})}
-return {nc,nr,nj};
+return res;
+}
+/* 导入结果：逐项列出加了什么 */
+function importReport(res){
+const L=[],nm=a=>a.slice(0,6).map(x=>`「${esc(x)}」`).join('、')+(a.length>6?` 等 ${a.length} 个`:'');
+if(res.added.length)L.push(`新增习惯 ${res.added.length} 个：${nm(res.added)}`);
+if(res.restored.length)L.push(`恢复删掉的习惯 ${res.restored.length} 个：${nm(res.restored)}`);
+if(res.nr){const ds=[...res.days].sort();L.push(`补上打卡 ${res.nr} 次（${ds.length===1?md(ds[0]):md(ds[0])+' 至 '+md(ds[ds.length-1])}）`)}
+if(res.nj)L.push(`新增笔记 ${res.nj} 篇：${nm(res.notes)}`);
+const {al,close}=openAlert(L.length?`<div class="up-ic ok">${mi('check',30,2)}</div><h3>导入完成</h3><ul class="up-notes im-res">${L.map(x=>`<li>${x}</li>`).join('')}</ul><p class="up-sub">你原来的记录都保留着，没有被覆盖。</p><button class="al-btn" id="imOk">去看看</button>`
+:`<div class="up-ic ok">${mi('check',30,2)}</div><h3>没有需要导入的新内容</h3><p>备份里的习惯、打卡和笔记，这台手机上都已经有了。</p><button class="al-btn" id="imOk">好的</button>`,'neutral up-al');
+$('#imOk',al).onclick=()=>{close();if(L.length){tab='today';sel=TODAY();render();scrollTo(0,0)}};
 }
 function openExport(){
 const data=backupData();
@@ -3799,6 +3831,7 @@ const {sh,close}=openSheet(`
 <textarea class="inp" id="imText" rows="4" placeholder="把备份内容粘贴到这里"></textarea>
 <button class="btn sec" id="imGo" style="margin-top:10px">导入并合并</button>
 <p class="hint" style="margin:10px 6px 0">导入时按唯一编号合并：已有的习惯和记录保持不变，只补上缺少的，不会出现重复。导出和导入都免费。</p>`);
+sh.classList.add('exs');
 const done=()=>{S.lastBackup=TODAY();save();if(tab==='me')renderMe()};
 $('#exX',sh).onclick=close;
 $('#exCopy',sh).onclick=async()=>{try{await navigator.clipboard.writeText(json);done();toast('备份内容已复制')}catch(e){$('#imText',sh).value=json;done();toast('已放到下方文本框，请手动全选复制')}};
@@ -3807,8 +3840,7 @@ const doImport=text=>{
 let d;try{d=JSON.parse(text)}catch(e){toast('内容格式不对，请使用完整的备份文件或内容');return}
 if(!d||d.app!=='daily-review'&&!Array.isArray(d.cards)){toast('这不是小满的备份内容');return}
 let res;try{res=importBackup(d)}catch(e){toast('这不是小满的备份内容');return}
-const {nc,nr,nj}=res;
-saveNow();close();render();toast(nc||nr||nj?`已合并：新增 ${nc} 个习惯、${nr} 条打卡、${nj} 篇笔记`:'没有需要合并的新内容');
+saveNow();close();render();setTimeout(()=>importReport(res),dur(380));
 };
 $('#imGo',sh).onclick=()=>doImport($('#imText',sh).value);
 $('#imFile',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;try{doImport(await f.text())}catch(err){toast('读取文件失败，请重试')}e.target.value=''};
@@ -4240,7 +4272,7 @@ const saveMsg=(r,what)=>r==='shared'?`${what}已导出`:r==='download'?(IN_PREVI
 function renderExport(){
 const isJson=exType==='json',rows=isJson?null:exRows();
 const types=[['records','table','打卡记录','日期、习惯、状态、打卡时间和日志（CSV）'],['notes','pen','笔记','日期、时间、标题、内容和当天心情（CSV）'],['cards','cards','习惯列表','每个习惯的重复规则、提醒和累计次数（CSV）'],['json','code','完整备份','全部卡片、打卡、笔记、分组和心情，可以用来恢复数据（JSON）']];
-$('#view').innerHTML=`${pgTop('导出数据')}
+$('#view').innerHTML=`${pgTop('导入导出')}
 <div class="ex-hero"><span>${mi('out',30,2)}</span><b>导出你的数据</b><small>保存到手机的“文件”或 iCloud 云盘，导出永久免费</small></div>
 ${secH('table','选择数据类型')}
 <div class="list glass">${types.map(([k,ic,n,d])=>`<button class="li ex-t" data-t="${k}"><span class="row-ic">${mi(ic,20,2)}</span><span class="t">${n}<small>${d}</small></span><span class="radio${exType===k?' on':''}"></span></button>`).join('')}</div>
@@ -4252,7 +4284,8 @@ ${secH('eye','数据预览',isJson?'':`<small class="sec-note">共 ${rows.length
 :rows.length>1?`<table><thead><tr>${rows[0].map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.slice(1,6).map(r=>`<tr>${r.map(v=>`<td>${esc(String(v))}</td>`).join('')}</tr>`).join('')}</tbody></table>`
 :'<p>这个时间范围里没有数据</p>'}</div>
 <button class="btn ex-go" id="exGo" ${!isJson&&rows.length<2?'disabled':''}>${mi('out',18,2.2)}导出${isJson?' JSON':' CSV'}</button>
-<button class="li-link" id="exBackup">${mi('cloud',18,2)}备份与恢复（导入）›</button>`;
+${secH('cloud','导入数据')}
+<div class="list glass ex-im"><button class="li" id="exBackup"><span class="row-ic">${mi('cloud',20,2)}</span><span class="t">从备份导入<small>选择 .json 备份文件，或粘贴备份内容，按编号合并、不会重复</small></span><span class="ar">›</span></button></div>`;
 backToMe();
 $$('.ex-t').forEach(b=>b.onclick=()=>{exType=b.dataset.t;renderExport()});
 $$('.ex-ranges button').forEach(b=>b.onclick=()=>{exRange=b.dataset.r;renderExport()});
@@ -4271,7 +4304,7 @@ $('#exBackup').onclick=openExport;
 /* ---- 模块设置: reorder and hide the tiles on 我的 ---- */
 const MODULES=[
 ['cards','cards','习惯管理'],['memory','calendar','回忆'],['backup','cloud','备份'],['events','events','新事件'],['personal','shirt','个性化'],
-['widget','widget','小组件'],['export','out','导出数据'],
+['widget','widget','小组件'],['export','out','导入导出'],
 ['feedback','msg','意见反馈']];
 function modList(){
 const saved=S.prefs.modules||[],ids=MODULES.map(m=>m[0]);
@@ -5631,6 +5664,14 @@ body.dark .vp2-foot{box-shadow:0 -8px 18px -12px rgba(0,0,0,.6)}
 /* 会员主题：小小的 VIP 角标 */
 .tg-card.vip-lk b::after{content:'VIP';display:inline-block;margin-left:4px;padding:0 4px;border-radius:4px;background:#F5C542;color:#4A3000;font-size:9px;font-weight:900;line-height:15px;vertical-align:2px}
 .pp-pick small::after{content:''}
+
+/* 数据管理（导入导出）：浅色模式下框的边界清楚一点 */
+body:not(.dark) .sheet.exs .list.glass{background:transparent!important;box-shadow:none!important}
+body:not(.dark) .sheet.exs .list.glass .li{background:#FFFFFF!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.18)!important}
+body:not(.dark) .ex-im{background:#F5F1E8!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.14)!important}
+body:not(.dark) .sheet.exs .inp{background:#F5F1E8!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.2)!important}
+body:not(.dark) .sheet.exs .btn.sec{background:#EAE3D5!important;box-shadow:inset 0 0 0 1px rgba(70,55,30,.16)!important;color:#3E3532}
+.im-res li{margin-bottom:4px;line-height:1.5}
 </style>
 </body>
 </html>

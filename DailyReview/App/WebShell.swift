@@ -10,6 +10,14 @@ import UserNotifications
 /// 界面模式：web 网页版（默认，和原型完全一致）/ native 原生版（测试中）
 enum UIMode {
     static let key = "uiMode"
+    /// 测试包（Xcode 调试、TestFlight）里允许摇一摇切换界面；App Store 下载的正式版不显示
+    static var canSwitch: Bool {
+        #if DEBUG
+        return true
+        #else
+        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        #endif
+    }
     static var current: String { UserDefaults.standard.string(forKey: key) ?? "web" }
 }
 
@@ -53,11 +61,9 @@ struct WebRootView: View {
             .onAppear { bridge.purchases = purchases }
             .onChange(of: purchases.plan) { _, _ in bridge.syncVip() }
             .onChange(of: purchases.loaded) { _, _ in bridge.syncVip() }
-            // 上架版用网页界面；摇一摇切到原生版的测试入口只在调试版里保留
+            // 摇一摇切到原生版：TestFlight 测试包里可以用，App Store 正式下载的版本里关闭
             .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in
-                #if DEBUG
-                askSwitch = true
-                #endif
+                if UIMode.canSwitch { askSwitch = true }
             }
             .onChange(of: phase) { _, p in
                 if p == .active { bridge.reloadIfChangedOutside() }
