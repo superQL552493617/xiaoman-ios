@@ -16,6 +16,7 @@ struct DailyReviewApp: App {
                 .preferredColorScheme(UIMode.current != "native" ? nil : store.s.prefs.mode == "light" ? .light : store.s.prefs.mode == "dark" ? .dark : nil)
                 .tint(Theme.text)
                 .task {
+                    lock.start(enabled: UIMode.current == "native" && store.s.prefs.lockOn)
                     await purchases.start()
                     store.vip = purchases.isVIP
                     Notifier.shared.rescheduleAll(Persistence.load() ?? store.s)
@@ -31,7 +32,7 @@ struct DailyReviewApp: App {
                         // 网页版自己保存；这里只在原生版时写入，避免旧数据覆盖网页版的修改
                         if UIMode.current == "native" { store.saveNow() }
                         Persistence.dailySnapshot(store.s)
-                        lock.appWentBackground()
+                        lock.appWentBackground(enabled: UIMode.current == "native" && store.s.prefs.lockOn)
                     default: break
                     }
                 }

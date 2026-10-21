@@ -125,16 +125,16 @@ struct FloatingTabBar: View {
                         v.scaleEffect(x: q.sx, y: q.sy, anchor: UnitPoint(x: 0.5, y: 0.9)).offset(y: q.y)
                     } keyframes: { _ in
                         KeyframeTrack(\.y) {
-                            CubicKeyframe(-6, duration: 0.161); CubicKeyframe(0, duration: 0.124)
-                            CubicKeyframe(-2, duration: 0.092); CubicKeyframe(0, duration: 0.083)
+                            CubicKeyframe(-6, duration: 0.11); CubicKeyframe(0, duration: 0.085)
+                            CubicKeyframe(-2, duration: 0.065); CubicKeyframe(0, duration: 0.055)
                         }
                         KeyframeTrack(\.sx) {
-                            CubicKeyframe(1.08, duration: 0.161); CubicKeyframe(1.1, duration: 0.124)
-                            CubicKeyframe(0.98, duration: 0.092); CubicKeyframe(1, duration: 0.083)
+                            CubicKeyframe(1.08, duration: 0.11); CubicKeyframe(1.1, duration: 0.085)
+                            CubicKeyframe(0.98, duration: 0.065); CubicKeyframe(1, duration: 0.055)
                         }
                         KeyframeTrack(\.sy) {
-                            CubicKeyframe(1.16, duration: 0.161); CubicKeyframe(0.9, duration: 0.124)
-                            CubicKeyframe(1.03, duration: 0.092); CubicKeyframe(1, duration: 0.083)
+                            CubicKeyframe(1.16, duration: 0.11); CubicKeyframe(0.9, duration: 0.085)
+                            CubicKeyframe(1.03, duration: 0.065); CubicKeyframe(1, duration: 0.055)
                         }
                     }
                 if showLabels {

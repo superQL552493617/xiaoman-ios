@@ -163,6 +163,6 @@ struct LockScreen: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.pageBg.ignoresSafeArea())
-        .onAppear { lock.unlock() }
+        .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { lock.promptIfNeeded() } }
     }
 }

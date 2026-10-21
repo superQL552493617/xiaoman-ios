@@ -43,3 +43,40 @@ struct ToggleHabitIntent: AppIntent {
         return .result()
     }
 }
+
+/// 小组件里没打卡的习惯放不下时，点右上角的「›」翻到下一页（小组件本身不能滑动）
+struct WidgetNextPageIntent: AppIntent {
+    static var title: LocalizedStringResource = "下一页"
+    static var description = IntentDescription("显示小组件里的下一组习惯")
+    static var isDiscoverable: Bool = false
+
+    init() {}
+
+    func perform() async throws -> some IntentResult {
+        let d = UserDefaults(suiteName: Persistence.appGroup)
+        d?.set((d?.integer(forKey: "widgetPage") ?? 0) + 1, forKey: "widgetPage")
+        WidgetCenter.shared.reloadAllTimelines()
+        return .result()
+    }
+}
+
+/// 页面主题在小组件上的底色（和「个性化 → 主题」一致；深色模式下统一用深灰）
+enum ThemeFill {
+    static func colors(_ id: String) -> (top: String, base: String) {
+        switch id {
+        case "cream": return ("#FAF7F0", "#FAF7F0")
+        case "mist": return ("#F3F4F6", "#F3F4F6")
+        case "sky": return ("#E6F0FC", "#F2F7FD")
+        case "sage": return ("#E5F1E6", "#F3F8F3")
+        case "peach": return ("#FBE9DA", "#FDF6F0")
+        case "dots": return ("#FBFBFA", "#FBFBFA")
+        case "grid": return ("#FCFCFA", "#FCFCFA")
+        case "dream": return ("#E9DED2", "#DCE9EE")
+        case "fog": return ("#FBF8F2", "#F6EBDD")
+        case "beach": return ("#F8F7F2", "#EEF1EA")
+        case "plaid": return ("#FAFCFE", "#EEF4FA")
+        case "forest": return ("#F7F7F2", "#ECF0E6")
+        default: return ("#FFFFFF", "#FFFFFF")
+        }
+    }
+}

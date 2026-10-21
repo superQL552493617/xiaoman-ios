@@ -172,24 +172,55 @@ final class Notifier {
 
 // MARK: - 密码锁（面容 ID / 触控 ID / 设备密码）
 
+/// 规则：冷启动时上锁；退到后台超过 30 秒再回来上锁；在前台时（包括面容 ID 弹窗、控制中心）都不会再要求验证
 @MainActor
 final class AppLock: ObservableObject {
     @Published var locked = false
     private var wentBackground: Date?
+    private var started = false
+    /// 正在验证：系统的面容 ID 弹窗会让 App 短暂失去焦点，这期间不能再触发一次
+    private var evaluating = false
+    /// 只在启动、从后台回来时自动弹一次验证；取消后停在锁屏页，点「解锁」再试
+    private var autoPrompt = false
+
+    /// App 启动时调用一次
+    func start(enabled: Bool) {
+        guard !started else { return }
+        started = true
+        if enabled { locked = true; autoPrompt = true; promptIfNeeded() }
+    }
 
     func appBecameActive(enabled: Bool) {
         guard enabled else { locked = false; return }
-        if wentBackground == nil || Date().timeIntervalSince(wentBackground!) > 30 { locked = true }
+        if let t = wentBackground {
+            wentBackground = nil
+            if Date().timeIntervalSince(t) > 30 { locked = true; autoPrompt = true }
+        }
+        promptIfNeeded()
     }
 
-    func appWentBackground() { wentBackground = Date() }
+    func appWentBackground(enabled: Bool) {
+        guard enabled, !evaluating else { return }
+        wentBackground = Date()
+    }
+
+    func promptIfNeeded() {
+        guard locked, autoPrompt, !evaluating, UIApplication.shared.applicationState == .active else { return }
+        autoPrompt = false
+        unlock()
+    }
 
     func unlock() {
+        guard !evaluating else { return }
         let ctx = LAContext()
         var err: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) else { locked = false; return }
+        evaluating = true
         ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
-            Task { @MainActor in if ok { self.locked = false } }
+            Task { @MainActor in
+                self.evaluating = false
+                if ok { withAnimation(.easeOut(duration: 0.25)) { self.locked = false } }
+            }
         }
     }
 

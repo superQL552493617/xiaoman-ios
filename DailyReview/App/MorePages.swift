@@ -424,9 +424,12 @@ struct WidgetPage: View {
     ]
 
     private var o: WidgetPrefs { store.s.prefs.widget ?? WidgetPrefs() }
-    private var bg: Color {
-        if let h = o.bgHex { return Color(hex: h) }
-        return scheme == .dark ? Color(hex: "#262624") : .white
+    /// 和桌面上一样：默认跟随页面主题
+    private var bg: LinearGradient {
+        if let h = o.bgHex { return LinearGradient(colors: [Color(hex: h)], startPoint: .top, endPoint: .bottom) }
+        if scheme == .dark { return LinearGradient(colors: [Color(hex: "#262624")], startPoint: .top, endPoint: .bottom) }
+        let c = ThemeFill.colors(store.s.prefs.pageBg)
+        return LinearGradient(colors: [Color(hex: c.top), Color(hex: c.base)], startPoint: .top, endPoint: .bottom)
     }
 
     var body: some View {
@@ -487,11 +490,11 @@ struct WidgetPage: View {
                     let on = o.bg == b.id
                     Button { Feedback.tap(); set { $0.bg = b.id } } label: {
                         VStack(spacing: 5) {
-                            Circle().fill(b.hex.isEmpty ? Theme.adaptive("#FFFFFF", "#262624") : Color(hex: b.hex))
+                            Circle().fill(b.hex.isEmpty ? (scheme == .dark ? Color(hex: "#262624") : Color(hex: ThemeFill.colors(store.s.prefs.pageBg).top)) : Color(hex: b.hex))
                                 .frame(width: 40, height: 40)
                                 .overlay(Circle().strokeBorder(Color.black.opacity(0.1), lineWidth: 1))
                                 .overlay { if on { Circle().stroke(PT.ink, lineWidth: 2).padding(-3) } }
-                            Text(b.name).font(.system(size: 11.5, weight: on ? .semibold : .regular)).foregroundStyle(on ? PT.ink : PT.sub)
+                            Text(b.id == "default" ? "跟随主题" : b.name).font(.system(size: 11.5, weight: on ? .semibold : .regular)).foregroundStyle(on ? PT.ink : PT.sub)
                         }
                     }
                     .buttonStyle(.plain)
@@ -514,7 +517,7 @@ struct WidgetPage: View {
                     }
                 }
             }
-            Text(kind == "check" ? "预览里是示例图标。放到桌面后，小组件会显示你当天还没打卡的习惯，打完的自动消失。\(o.tap ? "可以点一下图标，看看打卡效果。" : "")" : "放到桌面后，点小组件就能直接写当天的笔记。")
+            Text(kind == "check" ? "预览里是示例图标。放到桌面后，小组件会显示你当天还没打卡的习惯，打完的自动消失；一页放不下时，点右上角的「›」翻到下一组。\(o.tap ? "可以点一下图标，看看打卡效果。" : "")" : "放到桌面后，点小组件就能直接写当天的笔记。")
                 .font(.system(size: 12.5)).foregroundStyle(PT.sub).lineSpacing(3).padding(.horizontal, 6).padding(.top, 12)
         }
         .onAppear { custom = Color(hex: o.custom) }
@@ -573,7 +576,7 @@ struct WidgetPage: View {
                     } label: {
                         VStack(spacing: 2) {
                             ProtoDot(card: Card(id: "wg\(j)", name: it.1, icon: it.0, hex: it.2), on: popped.contains(key),
-                                     shape: CardShapes.normalize(store.s.prefs.shape), line: store.s.prefs.line, size: [48, 42, 46][i])
+                                     shape: CardShapes.normalize(store.s.prefs.shape), line: store.s.prefs.line, size: [40, 36, 38][i])
                             if i > 0 { Text(it.1).font(.system(size: 10)).foregroundStyle(ink).lineLimit(1) }
                         }
                         .frame(maxWidth: .infinity)

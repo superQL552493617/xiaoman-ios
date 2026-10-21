@@ -91,10 +91,11 @@ struct PageBG: View {
         }
     }
 
+    /// 顶部一段渐变。用 GeometryReader 按可用高度算，不给缩略图一个固定高度（否则缩略图会被撑变形）
     private func topFade(_ a: String, _ b: String) -> some View {
-        VStack(spacing: 0) {
-            LinearGradient(colors: [Color(hex: a), Color(hex: b)], startPoint: .top, endPoint: .bottom).frame(height: preview ? 160 : 420)
-            Spacer(minLength: 0)
+        GeometryReader { g in
+            LinearGradient(colors: [Color(hex: a), Color(hex: b)], startPoint: .top, endPoint: .bottom)
+                .frame(width: g.size.width, height: preview ? g.size.height : min(420, g.size.height))
         }
     }
 }

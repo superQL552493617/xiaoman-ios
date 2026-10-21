@@ -254,64 +254,104 @@ struct MeView: View {
 struct ModulesPage: View {
     @EnvironmentObject var store: Store
     @EnvironmentObject var toaster: Toaster
-    @Environment(\.dismiss) private var dismiss
+    @State private var order: [ModulePref] = []
+    @State private var dragId: String?
+    @State private var dragY: CGFloat = 0
+
+    private let rowH: CGFloat = 62, gap: CGFloat = 8
+    static let icons: [String: String] = ["cards": "mo_cards", "memory": "mo_memory", "backup": "mo_backup", "events": "mo_events",
+                                          "personal": "mo_personal", "widget": "mo_widget", "export": "mo_export", "feedback": "mo_feedback"]
 
     var body: some View {
-        let list = MeView.modList(store.s.prefs)
-        List {
-            Section {
-                ForEach(list, id: \.id) { m in
-                    let meta = MeView.modules.first { $0.id == m.id }!
-                    HStack(spacing: 12) {
-                        Image(meta.icon).resizable().frame(width: 22, height: 22)
-                            .frame(width: 34, height: 34)
-                            .background(RoundedRectangle(cornerRadius: 11, style: .continuous).fill(PT.chip))
-                        Text(meta.name).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                        Spacer()
-                        ProtoSwitch(on: m.on) {
-                            var L = MeView.modList(store.s.prefs)
-                            if let i = L.firstIndex(where: { $0.id == m.id }) { L[i].on.toggle() }
-                            Feedback.tap()
-                            store.updatePrefs { $0.modules = L }
-                        }
-                    }
-                    .padding(.vertical, 4)
-                    .opacity(m.on ? 1 : 0.6)
+        NavPage("模块设置") {
+            HStack(spacing: 0) {
+                Text("按住右侧 ")
+                Image("mo_grip").renderingMode(.template).resizable().frame(width: 13, height: 13)
+                Text(" 拖动排序，关闭开关的模块不会出现在“我的”页面。")
+            }
+            .font(.system(size: 12.5)).foregroundStyle(PT.sub)
+            .padding(.horizontal, 6).padding(.bottom, 12)
+            VStack(spacing: gap) {
+                ForEach(Array(order.enumerated()), id: \.element.id) { i, m in
+                    row(m, i)
+                        .offset(y: dragId == m.id ? dragY : 0)
+                        .zIndex(dragId == m.id ? 1 : 0)
+                        .scaleEffect(dragId == m.id ? 1.02 : 1)
+                        .shadow(color: .black.opacity(dragId == m.id ? 0.15 : 0), radius: 10, y: 6)
                 }
-                .onMove { from, to in
-                    var L = MeView.modList(store.s.prefs)
-                    L.move(fromOffsets: from, toOffset: to)
-                    store.updatePrefs { $0.modules = L }
-                    toaster.show("顺序已保存")
-                }
-                HStack(spacing: 12) {
-                    Image("mt_modules").resizable().frame(width: 22, height: 22)
-                        .frame(width: 34, height: 34)
-                        .background(RoundedRectangle(cornerRadius: 11, style: .continuous).fill(PT.chip))
+                SheetRow {
+                    TileIcon(icon: "mo_modules", bg: Pastel.at(order.count), size: 20)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("模块设置").font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
-                        Text("始终显示，方便找回隐藏的模块").font(.system(size: 12.5)).foregroundStyle(PT.faint)
+                        Text("始终显示，方便找回隐藏的模块").font(.system(size: 12)).foregroundStyle(PT.faint)
                     }
+                    Spacer(minLength: 0)
                 }
-                .padding(.vertical, 4)
-                .moveDisabled(true)
-            } header: {
-                Text("按住右侧 ≡ 拖动排序，关闭开关的模块不会出现在“我的”页面。").font(.system(size: 12.5)).foregroundStyle(PT.sub).textCase(nil)
             }
-            Section {
-                Button("恢复默认顺序") {
-                    store.updatePrefs { $0.modules = nil }
-                    toaster.show("已恢复默认顺序")
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundStyle(Color(hex: "#007AFF"))
+            Button {
+                Feedback.tap()
+                store.updatePrefs { $0.modules = nil }
+                order = MeView.modList(store.s.prefs)
+                toaster.show("已恢复默认顺序")
+            } label: {
+                Text("恢复默认顺序").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#007AFF"))
+                    .frame(maxWidth: .infinity).frame(height: 50)
+                    .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.adaptive("#FFFFFF", "#262624")))
+                    .contentShape(Rectangle())
             }
+            .buttonStyle(PressScale(scale: 0.98))
+            .padding(.top, 14)
         }
-        .environment(\.editMode, .constant(.active))
-        .scrollContentBackground(.hidden)
-        .background(Theme.adaptive("#FFFFFF", "#1E1E1D").ignoresSafeArea())
-        .safeAreaInset(edge: .top, spacing: 0) { PageTop(title: "模块设置", back: { dismiss() }) }
-        .toolbar(.hidden, for: .navigationBar)
+        .onAppear { order = MeView.modList(store.s.prefs) }
+    }
+
+    private func row(_ m: ModulePref, _ i: Int) -> some View {
+        let meta = MeView.modules.first { $0.id == m.id }
+        return SheetRow {
+            TileIcon(icon: Self.icons[m.id] ?? "mo_cards", bg: Pastel.at(i), size: 20)
+            Text(meta?.name ?? m.id).font(.system(size: 16, weight: .medium)).foregroundStyle(PT.body)
+            Spacer(minLength: 0)
+            ProtoSwitch(on: m.on) {
+                guard let k = order.firstIndex(where: { $0.id == m.id }) else { return }
+                order[k].on.toggle()
+                Feedback.tap()
+                persist()
+            }
+            Image("mo_grip").renderingMode(.template).resizable().frame(width: 20, height: 20).foregroundStyle(PT.faint)
+                .frame(width: 34, height: 40).contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { v in
+                            if dragId == nil { dragId = m.id; Feedback.tap() }
+                            dragY = v.translation.height - offsetUsed
+                            let step = rowH + gap
+                            guard let k = order.firstIndex(where: { $0.id == m.id }) else { return }
+                            if dragY > step / 2, k < order.count - 1 {
+                                withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) { order.swapAt(k, k + 1) }
+                                offsetUsed += step; dragY -= step; Feedback.tap()
+                            } else if dragY < -step / 2, k > 0 {
+                                withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) { order.swapAt(k, k - 1) }
+                                offsetUsed -= step; dragY += step; Feedback.tap()
+                            }
+                        }
+                        .onEnded { _ in
+                            withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) { dragId = nil; dragY = 0 }
+                            offsetUsed = 0
+                            persist()
+                            toaster.show("顺序已保存", gray: true)
+                        }
+                )
+                .accessibilityLabel("拖动排序")
+        }
+        .frame(height: rowH)
+        .opacity(m.on ? 1 : 0.55)
+    }
+
+    @State private var offsetUsed: CGFloat = 0
+
+    private func persist() {
+        let L = order
+        store.updatePrefs { $0.modules = L }
     }
 }
 

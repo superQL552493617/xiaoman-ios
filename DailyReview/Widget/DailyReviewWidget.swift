@@ -12,6 +12,8 @@ struct HabitEntry: TimelineEntry {
     let line: String
     let opts: WidgetPrefs
     let journal: [JournalEntry]
+    var pageBg = "white"
+    var page = 0
 
     var total: Int { cards.count }
     var doneCount: Int { cards.filter { done.contains($0.id) }.count }
@@ -24,8 +26,9 @@ struct HabitEntry: TimelineEntry {
         let k = DK.key(date)
         let cs = s.checkCards.filter { s.scheduled($0, k) }
         let done = Set(cs.filter { s.isChecked(k, $0.id) }.map { $0.id })
+        let page = UserDefaults(suiteName: Persistence.appGroup)?.integer(forKey: "widgetPage") ?? 0
         return HabitEntry(date: date, cards: cs, done: done, shape: CardShapes.normalize(s.prefs.shape), line: s.prefs.line,
-                          opts: s.prefs.widget ?? WidgetPrefs(), journal: s.journalList(k))
+                          opts: s.prefs.widget ?? WidgetPrefs(), journal: s.journalList(k), pageBg: s.prefs.pageBg, page: page)
     }
 
     static var sample: HabitEntry {
@@ -80,14 +83,28 @@ struct HabitWidgetView: View {
 
     private var n: Int { family == .systemSmall ? 4 : family == .systemMedium ? 8 : 16 }
     private var cols: Int { family == .systemSmall ? 2 : 4 }
-    private var dot: CGFloat { family == .systemLarge ? 44 : 40 }
+    private var dot: CGFloat { family == .systemLarge ? 38 : 36 }
+    /// 放不下时分页：右上角「›」翻到下一组
+    private var pages: Int { max(1, Int(ceil(Double(entry.left.count) / Double(n)))) }
+    private var page: Int { entry.page % pages }
 
     var body: some View {
         VStack(spacing: 6) {
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .center, spacing: 6) {
                 Text("今日打卡").font(.system(size: 12.5, weight: .semibold))
                 Spacer()
                 Text("\(entry.doneCount)/\(entry.total)").font(.system(size: 12.5)).monospacedDigit().opacity(0.6)
+                if pages > 1 && !entry.allDone {
+                    Button(intent: WidgetNextPageIntent()) {
+                        HStack(spacing: 1) {
+                            Text("\(page + 1)/\(pages)").font(.system(size: 10, weight: .semibold)).monospacedDigit()
+                            Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold))
+                        }
+                        .padding(.horizontal, 6).frame(height: 20)
+                        .background(Capsule().fill(Color.primary.opacity(0.08)))
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             .foregroundStyle(Theme.adaptive("#1C1C1E", "#F2F2F7"))
             if entry.cards.isEmpty || entry.allDone {
@@ -98,7 +115,7 @@ struct HabitWidgetView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                let items = Array(entry.left.prefix(n))
+                let items = Array(entry.left.dropFirst(page * n).prefix(n))
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: cols), spacing: 4) {
                     ForEach(items) { c in item(c) }
                 }
@@ -129,7 +146,7 @@ struct DailyReviewWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: HabitProvider()) { entry in
             HabitWidgetView(entry: entry)
-                .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex) }
+                .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex, theme: entry.pageBg) }
                 .widgetURL(URL(string: "xiaoman://today"))
         }
         .configurationDisplayName("今日打卡")
@@ -138,10 +155,18 @@ struct DailyReviewWidget: Widget {
     }
 }
 
+/// 默认背景跟随 App 的页面主题；在「小组件」页选了颜色就用选的颜色
 struct WidgetBG: View {
     var hex: String?
+    var theme: String = "white"
+    @Environment(\.colorScheme) private var scheme
     var body: some View {
-        if let hex { Color(hex: hex) } else { Theme.adaptive("#FFFFFF", "#262624") }
+        if let hex { Color(hex: hex) }
+        else if scheme == .dark { Color(hex: "#262624") }
+        else {
+            let c = ThemeFill.colors(theme)
+            LinearGradient(colors: [Color(hex: c.top), Color(hex: c.base)], startPoint: .top, endPoint: .bottom)
+        }
     }
 }
 
@@ -226,7 +251,7 @@ struct JournalWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: HabitProvider()) { entry in
             JournalWidgetView(entry: entry)
-                .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex) }
+                .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex, theme: entry.pageBg) }
                 .widgetURL(URL(string: "xiaoman://journal"))
         }
         .configurationDisplayName("笔记")
