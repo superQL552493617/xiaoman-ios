@@ -1,0 +1,7 @@
+exit 0
+Test Case '-[DailyReviewTests.PurchaseFlowTests testCancelledPurchaseKeepsFree]' passed (2.028 seconds).
+Test Case '-[DailyReviewTests.PurchaseFlowTests testChinaStore]' passed (2.353 seconds).
+Test Case '-[DailyReviewTests.PurchaseFlowTests testUSStoreMonthlyExpire]' passed (3.405 seconds).
+Test Case '-[DailyReviewUITests.VipUITests test1WebVip]' passed (26.022 seconds).
+Test Case '-[DailyReviewUITests.VipUITests test2NativeVip]' passed (20.206 seconds).
+Test Case '-[DailyReviewUITests.VipUITests test3Feedback]' passed (21.833 seconds).

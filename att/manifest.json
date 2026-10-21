@@ -1,0 +1,65 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "291E4B86-C951-41A7-8327-84BF0304D0A9",
+        "deviceName" : "iPhone 16 Pro",
+        "exportedFileName" : "CD81A2D5-14DD-415A-9544-A8972CAE7D84.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "2-web-after-buy_0_63A111D6-70F2-4536-B01D-B8080952CAA6.png",
+        "timestamp" : 1792571298.164
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "291E4B86-C951-41A7-8327-84BF0304D0A9",
+        "deviceName" : "iPhone 16 Pro",
+        "exportedFileName" : "AF92C72E-3ED4-46F7-9663-25BAB012A712.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "1-web-vip_0_58934691-9953-4F04-8B38-03D5EB5774E0.png",
+        "timestamp" : 1792571288.621
+      }
+    ],
+    "testIdentifier" : "VipUITests/test1WebVip()",
+    "testIdentifierURL" : "test://com.apple.xcode/DailyReview/DailyReviewUITests/VipUITests/test1WebVip"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "291E4B86-C951-41A7-8327-84BF0304D0A9",
+        "deviceName" : "iPhone 16 Pro",
+        "exportedFileName" : "6A0C9AAC-A184-431E-8BBC-D5D3A59464BE.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "4-native-after-buy_0_139721EA-8BCF-4EF9-8499-B4E61782FFC4.png",
+        "timestamp" : 1792571318.625
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "291E4B86-C951-41A7-8327-84BF0304D0A9",
+        "deviceName" : "iPhone 16 Pro",
+        "exportedFileName" : "C6BF92C1-22D0-4DC1-BBF3-3B97BD41764D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "3-native-vip_0_F7EA6FB6-54B3-4015-A1B1-C7D23B7E442D.png",
+        "timestamp" : 1792571311.799
+      }
+    ],
+    "testIdentifier" : "VipUITests/test2NativeVip()",
+    "testIdentifierURL" : "test://com.apple.xcode/DailyReview/DailyReviewUITests/VipUITests/test2NativeVip"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "291E4B86-C951-41A7-8327-84BF0304D0A9",
+        "deviceName" : "iPhone 16 Pro",
+        "exportedFileName" : "D6526F29-63B0-4F2B-B66E-5271CFA446C2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "5-feedback_0_33C81E93-5E4E-454A-93C9-AA59C2B818C2.png",
+        "timestamp" : 1792571340.313
+      }
+    ],
+    "testIdentifier" : "VipUITests/test3Feedback()",
+    "testIdentifierURL" : "test://com.apple.xcode/DailyReview/DailyReviewUITests/VipUITests/test3Feedback"
+  }
+]

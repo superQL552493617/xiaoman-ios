@@ -1,0 +1,150 @@
+2026-10-21 08:27:26.665374+0000 DailyReview[4714:19758] [Default] Received error that does not have a corresponding StoreKit Error: Error Domain=ASDErrorDomain Code=9999 "Received failure in response from Xcode" UserInfo={NSDebugDescription=Received failure in response from Xcode, NSUnderlyingError=0x600000d02070 {Error Domain=AMSErrorDomain Code=305 "Server Error The server encountered an error" UserInfo={AMSURL=http://localhost:49474/WebObjects/MZBuy.woa/wa/inAppBuy, AMSDescription=Server Error, NSDebugDescription=Server Error The server encountered an error, AMSServerErrorCode=9999, AMSStatusCode=200, AMSServerPayload={
+    "app-list" =     (
+                {
+            "app-item-id" = 0;
+            bid = "site.xiaomanhabit.app";
+            environment = Xcode;
+            "offer-name" = "site.xiaomanhabit.app.vip.life";
+            "original-purchase-date" = "2026-10-21 08:27:26 +0000";
+            "purchase-date" = "2026-10-21 08:27:26 +0000";
+            quantity = 1;
+            "transaction-id" = 0;
+            "transaction-receipt" = "eyJ4NWMiOlsiTUlJQnlqQ0NBWEdnQXdJQkFnSUJBVEFLQmdncWhrak9QUVFEQWpCSU1TSXdJQVlEVlFRREV4bFRkRzl5WlV0cGRDQlVaWE4wYVc1bklHbHVJRmhqYjJSbE1TSXdJQVlEVlFRS0V4bFRkRzl5WlV0cGRDQlVaWE4wYVc1bklHbHVJRmhqYjJSbE1CNFhEVEkyTVRBeU1UQTRNamN5TmxvWERUSTNNVEF5TVRBNE1qY3lObG93U0RFaU1DQUdBMVVFQXhNWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRFaU1DQUdBMVVFQ2hNWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQk1SdXVTRFJaVjZCNzYxeFFzT0tHRXhEZ3Q3OWJWcTFtR2U2b2h1RUI4bmdLT3VXNVBuS1M0REhaajZcL1EyalwvRnJoVlg5UTdjWmEydit3SlNxOGNISktqVERCS01CSUdBMVVkRXdFQlwvd1FJTUFZQkFmOENBUUF3SkFZRFZSMFJCQjB3RzRFWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRBT0JnTlZIUThCQWY4RUJBTUNCNEF3Q2dZSUtvWkl6ajBFQXdJRFJ3QXdSQUlnU3B6ZUp1SngrSlVIZG1iMXVcL2s1eTAyMUE5VFdVaVpkZ1hndUw5djNQSXNDSURUd0RmUjF1VmpnRUtoc3dQYlR3cmZJMTdmVlwvclJBQVNrSHFWeWhkSW9yIl0sImFsZyI6IkVTMjU2IiwidHlwIjoiSldUIiwia2lkIjoiQXBwbGVfWGNvZGVfS2V5In0.eyJkZXZpY2VWZXJpZmljYXRpb24iOiJsaEhNUWVibmg1UG9XbGNHUUcyRTBPTlBWUko0ZzdJOUNDYzFnQTBEdmJrTzZvcFpobzRmSVgwSFFvYyt3djJHIiwiYXBwVHJhbnNhY3Rpb25JZCI6IjAiLCJ0cmFuc2FjdGlvbklkIjoiMCIsInNpZ25lZERhdGUiOjE3OTI1NzEyNDY0ODcsImJ1bmRsZUlkIjoic2l0ZS54aWFvbWFuaGFiaXQuYXBwIiwicHVyY2hhc2VEYXRlIjoxNzkyNTcxMjQ2NDg2LCJzdG9yZWZyb250IjoiQ0hOIiwiY3VycmVuY3kiOiJDTlkiLCJlbnZpcm9ubWVudCI6Ilhjb2RlIiwiaW5BcHBPd25lcnNoaXBUeXBlIjoiUFVSQ0hBU0VEIiwidHlwZSI6Ik5vbi1Db25zdW1hYmxlIiwib3JpZ2luYWxUcmFuc2FjdGlvbklkIjoiMCIsInRyYW5zYWN0aW9uUmVhc29uIjoiUFVSQ0hBU0UiLCJwcmljZSI6MzUwMDAsImRldmljZVZlcmlmaWNhdGlvbk5vbmNlIjoiMThkZjYxZmEtMWRhNy00ZGI3LTkxNjYtZmQyNzVlNDBkY2UxIiwicHJvZHVjdElkIjoic2l0ZS54aWFvbWFuaGFiaXQuYXBwLnZpcC5saWZlIiwicXVhbnRpdHkiOjEsInN0b3JlZnJvbnRJZCI6IjE0MzQ2NSIsIm9yaWdpbmFsUHVyY2hhc2VEYXRlIjoxNzkyNTcxMjQ2NDg2fQ.RDQOE3pfv7I8OaUBlxmYyLTnb--2W1nrnKY0zm9eZR-__LcUZdchtTFuOCifKP0F935tSVfZXL5En7e7BPE2zQ";
+        }
+    );
+    "cancel-purchase-batch" = 1;
+    "download-queue-item-count" = 1;
+    dsid = 17322632127;
+    failureType = 9999;
+    jingleAction = inAppBuy;
+    jingleDocType = inAppSuccess;
+    pings =     (
+    );
+}, AMSFailureReason=The server encountered an error}}}
+2026-10-21 08:27:26.747747+0000 DailyReview[4714:19758] [Default] Purchase did not return a transaction: Error Domain=ASDErrorDomain Code=9999 "Received failure in response from Xcode" UserInfo={NSDebugDescription=Received failure in response from Xcode, NSUnderlyingError=0x600000d02070 {Error Domain=AMSErrorDomain Code=305 "Server Error The server encountered an error" UserInfo={AMSURL=http://localhost:49474/WebObjects/MZBuy.woa/wa/inAppBuy, AMSDescription=Server Error, NSDebugDescription=Server Error The server encountered an error, AMSServerErrorCode=9999, AMSStatusCode=200, AMSServerPayload={
+    "app-list" =     (
+                {
+            "app-item-id" = 0;
+            bid = "site.xiaomanhabit.app";
+            environment = Xcode;
+            "offer-name" = "site.xiaomanhabit.app.vip.life";
+            "original-purchase-date" = "2026-10-21 08:27:26 +0000";
+            "purchase-date" = "2026-10-21 08:27:26 +0000";
+            quantity = 1;
+            "transaction-id" = 0;
+            "transaction-receipt" = "eyJ4NWMiOlsiTUlJQnlqQ0NBWEdnQXdJQkFnSUJBVEFLQmdncWhrak9QUVFEQWpCSU1TSXdJQVlEVlFRREV4bFRkRzl5WlV0cGRDQlVaWE4wYVc1bklHbHVJRmhqYjJSbE1TSXdJQVlEVlFRS0V4bFRkRzl5WlV0cGRDQlVaWE4wYVc1bklHbHVJRmhqYjJSbE1CNFhEVEkyTVRBeU1UQTRNamN5TmxvWERUSTNNVEF5TVRBNE1qY3lObG93U0RFaU1DQUdBMVVFQXhNWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRFaU1DQUdBMVVFQ2hNWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQk1SdXVTRFJaVjZCNzYxeFFzT0tHRXhEZ3Q3OWJWcTFtR2U2b2h1RUI4bmdLT3VXNVBuS1M0REhaajZcL1EyalwvRnJoVlg5UTdjWmEydit3SlNxOGNISktqVERCS01CSUdBMVVkRXdFQlwvd1FJTUFZQkFmOENBUUF3SkFZRFZSMFJCQjB3RzRFWlUzUnZjbVZMYVhRZ1ZHVnpkR2x1WnlCcGJpQllZMjlrWlRBT0JnTlZIUThCQWY4RUJBTUNCNEF3Q2dZSUtvWkl6ajBFQXdJRFJ3QXdSQUlnU3B6ZUp1SngrSlVIZG1iMXVcL2s1eTAyMUE5VFdVaVpkZ1hndUw5djNQSXNDSURUd0RmUjF1VmpnRUtoc3dQYlR3cmZJMTdmVlwvclJBQVNrSHFWeWhkSW9yIl0sImFsZyI6IkVTMjU2IiwidHlwIjoiSldUIiwia2lkIjoiQXBwbGVfWGNvZGVfS2V5In0.eyJkZXZpY2VWZXJpZmljYXRpb24iOiJsaEhNUWVibmg1UG9XbGNHUUcyRTBPTlBWUko0ZzdJOUNDYzFnQTBEdmJrTzZvcFpobzRmSVgwSFFvYyt3djJHIiwiYXBwVHJhbnNhY3Rpb25JZCI6IjAiLCJ0cmFuc2FjdGlvbklkIjoiMCIsInNpZ25lZERhdGUiOjE3OTI1NzEyNDY0ODcsImJ1bmRsZUlkIjoic2l0ZS54aWFvbWFuaGFiaXQuYXBwIiwicHVyY2hhc2VEYXRlIjoxNzkyNTcxMjQ2NDg2LCJzdG9yZWZyb250IjoiQ0hOIiwiY3VycmVuY3kiOiJDTlkiLCJlbnZpcm9ubWVudCI6Ilhjb2RlIiwiaW5BcHBPd25lcnNoaXBUeXBlIjoiUFVSQ0hBU0VEIiwidHlwZSI6Ik5vbi1Db25zdW1hYmxlIiwib3JpZ2luYWxUcmFuc2FjdGlvbklkIjoiMCIsInRyYW5zYWN0aW9uUmVhc29uIjoiUFVSQ0hBU0UiLCJwcmljZSI6MzUwMDAsImRldmljZVZlcmlmaWNhdGlvbk5vbmNlIjoiMThkZjYxZmEtMWRhNy00ZGI3LTkxNjYtZmQyNzVlNDBkY2UxIiwicHJvZHVjdElkIjoic2l0ZS54aWFvbWFuaGFiaXQuYXBwLnZpcC5saWZlIiwicXVhbnRpdHkiOjEsInN0b3JlZnJvbnRJZCI6IjE0MzQ2NSIsIm9yaWdpbmFsUHVyY2hhc2VEYXRlIjoxNzkyNTcxMjQ2NDg2fQ.RDQOE3pfv7I8OaUBlxmYyLTnb--2W1nrnKY0zm9eZR-__LcUZdchtTFuOCifKP0F935tSVfZXL5En7e7BPE2zQ";
+        }
+    );
+    "cancel-purchase-batch" = 1;
+    "download-queue-item-count" = 1;
+    dsid = 17322632127;
+    failureType = 9999;
+    jingleAction = inAppBuy;
+    jingleDocType = inAppSuccess;
+    pings =     (
+    );
+}, AMSFailureReason=The server encountered an error}}}
+FLOW| 购买失败的情况：返回=false 状态=free 提示=购买没有完成：无法完成请求
+Test Case '-[DailyReviewTests.PurchaseFlowTests testCancelledPurchaseKeepsFree]' passed (2.028 seconds).
+Test Case '-[DailyReviewTests.PurchaseFlowTests testChinaStore]' started.
+FLOW| 大陆商店：取到 3 个商品，人民币=true
+FLOW| 大陆 年度卡：¥18/年 ｜ 先免费用 3 天，约 ¥1.5/月 ｜ 按钮「免费试用 3 天」3 天后按 ¥18/年续费，试用期间取消不扣费
+FLOW| 大陆 永久会员：¥35 ｜ 付一次，一直能用 ｜ 按钮「买断永久会员」一次购买，不会自动续费
+FLOW| 大陆 月度卡：¥3.5/月 ｜ 每月 ¥3.5，随时可取消 ｜ 按钮「开通月度卡」每月自动续费，可随时在系统设置里取消
+FLOW| 购买年度卡：成功 状态=year 提示=开通成功，谢谢你的支持
+FLOW| 年度卡交易：offerType=Optional(StoreKit.Transaction.OfferType(rawValue: 1)) 到期=Optional(2026-10-24 08:27:26 +0000)
+FLOW| 开通后：年度卡按钮「当前正在使用」，永久按钮「升级为永久会员」，试用资格=false
+FLOW| 网页版会员数据：{"name":"年度会员","plan":"year","expires":"2026年10月24日","offers":{"life":{"note":"付一次，一直能用","ctaOn":true,"trial":false,"price":"¥35","badge":"买断","cta":"升级为永久会员","ctaSub":"一次购买，不会自动续费","title":"永久会员"},"year":{"price":"¥18\/年","cta":"当前正在使用","badge":"推荐","note":"约 ¥1.5\/月，每年自动续费","trial":false,"ctaOn":false,"ctaSub":"每年自动续费，可随时在系统设置里取消","title":"年度卡"},"month":{"ctaSub":"每月自动续费，可随时在系统设置里取消","ctaOn":true,"title":"月度卡","note":"每月 ¥3.5，随时可取消","badge":"","cta":"开通月度卡","price":"¥3.5\/月","trial":false}}}
+FLOW| 升级永久会员：成功 状态=life
+Test Case '-[DailyReviewTests.PurchaseFlowTests testChinaStore]' passed (2.353 seconds).
+Test Case '-[DailyReviewTests.PurchaseFlowTests testUSStoreMonthlyExpire]' started.
+FLOW| 美国商店：取到 3 个商品，人民币=false
+FLOW| 美国 年度卡：$2.90/年 ｜ 先免费用 3 天，约 $0.24/月
+FLOW| 美国 永久会员：$9.90 ｜ 付一次，一直能用
+FLOW| 美国 月度卡：$1.90/月 ｜ 每月 $1.90，随时可取消
+FLOW| 购买月度卡：成功 状态=month
+FLOW| 月度卡到期后：状态=free 会员=false
+FLOW| 到期后年度卡：先免费用 3 天，约 $0.24/月 ｜ 按钮「免费试用 3 天」
+Test Case '-[DailyReviewTests.PurchaseFlowTests testUSStoreMonthlyExpire]' passed (3.405 seconds).
+Test Suite 'PurchaseFlowTests' passed at 2026-10-21 08:27:32.515.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 7.786 (7.788) seconds
+Test Suite 'DailyReviewTests.xctest' passed at 2026-10-21 08:27:32.516.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 7.786 (7.788) seconds
+Test Suite 'All tests' passed at 2026-10-21 08:27:32.516.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 7.786 (7.798) seconds
+2026-10-21 08:27:32.527712+0000 DailyReview[4714:19974] [ResourceLoadStatistics] WebContent[5112] Unable to hide query parameters from script (missing data)
+2026-10-21 08:27:32.538978+0000 DailyReview[4714:18259] [ResourceLoadStatistics] Failed to request allowed query parameters from WebPrivacy.
+2026-10-21 08:27:43.463612+0000 DailyReviewUITests-Runner[5433:21000] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-10-21 08:27:53.530.
+Test Suite 'DailyReviewUITests.xctest' started at 2026-10-21 08:27:53.531.
+Test Suite 'VipUITests' started at 2026-10-21 08:27:53.532.
+Test Case '-[DailyReviewUITests.VipUITests test1WebVip]' started.
+    t =     0.00s Start Test at 2026-10-21 08:27:53.533
+    t =     0.80s Set Up
+    t =     0.99s Open site.xiaomanhabit.app
+    t =     0.99s     Launch site.xiaomanhabit.app
+    t =     2.30s         Setting up automation session
+    t =     4.07s         Wait for site.xiaomanhabit.app to idle
+    t =    15.09s Added attachment named '1-web-vip'
+    t =    15.10s Waiting 6.0s for Button (First Match) to exist
+    t =    16.11s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    16.13s         Checking existence of `Button (First Match)`
+    t =    17.03s Tap Button (First Match)
+    t =    17.03s     Wait for site.xiaomanhabit.app to idle
+    t =    17.04s     Find the Button (First Match)
+    t =    17.54s     Check for interrupting elements affecting "免费试用 3 天" Button
+    t =    17.99s     Synthesize event
+    t =    18.46s     Wait for site.xiaomanhabit.app to idle
+    t =    24.63s Added attachment named '2-web-after-buy'
+    t =    24.63s Terminate site.xiaomanhabit.app:5672
+    t =    25.66s Tear Down
+Test Case '-[DailyReviewUITests.VipUITests test1WebVip]' passed (26.022 seconds).
+Test Case '-[DailyReviewUITests.VipUITests test2NativeVip]' started.
+    t =     0.00s Start Test at 2026-10-21 08:28:19.557
+    t =     0.05s Set Up
+    t =     0.11s Open site.xiaomanhabit.app
+    t =     0.11s     Launch site.xiaomanhabit.app
+    t =     1.10s         Setting up automation session
+    t =     2.68s         Wait for site.xiaomanhabit.app to idle
+    t =    12.24s Added attachment named '3-native-vip'
+    t =    12.25s Waiting 6.0s for Button (First Match) to exist
+    t =    13.30s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    13.30s         Checking existence of `Button (First Match)`
+    t =    13.45s Tap Button (First Match)
+    t =    13.45s     Wait for site.xiaomanhabit.app to idle
+    t =    13.46s     Find the Button (First Match)
+    t =    13.52s     Check for interrupting elements affecting "免费试用 3 天" Button
+    t =    13.62s     Synthesize event
+    t =    13.93s     Wait for site.xiaomanhabit.app to idle
+    t =    19.07s Added attachment named '4-native-after-buy'
+    t =    19.07s Terminate site.xiaomanhabit.app:6357
+    t =    20.10s Tear Down
+Test Case '-[DailyReviewUITests.VipUITests test2NativeVip]' passed (20.206 seconds).
+Test Case '-[DailyReviewUITests.VipUITests test3Feedback]' started.
+    t =     0.00s Start Test at 2026-10-21 08:28:39.764
+    t =     0.04s Set Up
+    t =     0.04s Open site.xiaomanhabit.app
+    t =     0.04s     Launch site.xiaomanhabit.app
+    t =     0.60s         Setting up automation session
+    t =     2.48s         Wait for site.xiaomanhabit.app to idle
+    t =    20.55s Added attachment named '5-feedback'
+    t =    20.55s Terminate site.xiaomanhabit.app:7605
+    t =    21.59s Tear Down
+Test Case '-[DailyReviewUITests.VipUITests test3Feedback]' passed (21.833 seconds).
+Test Suite 'VipUITests' passed at 2026-10-21 08:29:01.598.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 68.061 (68.066) seconds
+Test Suite 'DailyReviewUITests.xctest' passed at 2026-10-21 08:29:01.600.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 68.061 (68.069) seconds
+Test Suite 'All tests' passed at 2026-10-21 08:29:01.601.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 68.061 (68.070) seconds
+2026-10-21 08:29:02.647 xcodebuild[1475:7421] [MT] IDETestOperationsObserverDebug: 206.587 elapsed -- Testing started completed.
+2026-10-21 08:29:02.649 xcodebuild[1475:7421] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-21 08:29:02.649 xcodebuild[1475:7421] [MT] IDETestOperationsObserverDebug: 206.587 sec, +206.587 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/iap/Test.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
