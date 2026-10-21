@@ -4569,9 +4569,9 @@ const PLAN_NAME={free:'普通用户',month:'月度会员',year:'年度会员',li
 const planOf=()=>S.vip?(S.prefs.plan&&S.prefs.plan!=='free'?S.prefs.plan:'year'):'free';
 /* ---- 会员：年度卡（首次 3 天免费试用）/ 永久会员 / 月度卡。装在 App 里由 App Store 购买，网页预览里可以免费体验 ---- */
 const VIP_FREE_LIMIT=8,VIP_FREE_BG=['white','cream','mist'];
-const VIP_PERKS=[['cards','习惯不限个数',`想养多少个好习惯都行，免费版最多 ${VIP_FREE_LIMIT} 个`],['camera','照片做图标','拍一张或从相册选，做成独一无二的习惯图标'],
+const VIP_PERKS=[['cards','习惯不限个数',`想养多少个好习惯都行，免费版最多 ${VIP_FREE_LIMIT} 个`],['camera','照片做图标','拍一张或从相册选，做成独一无二的习惯图标'],['lockf','密码锁和面容 ID','打开小满先验证，日记和打卡只有你能看'],
 ['heart','支持小满走得更远','你的支持会变成更多好用的小功能']];
-const VIP_FREE_TEXT='打卡、闹钟提醒、统计、笔记、小组件、密码锁和数据备份，所有人都能免费用。';
+const VIP_FREE_TEXT='打卡、闹钟提醒、统计、笔记、小组件、主题背景和数据备份，所有人都能免费用。';
 const vipPost=m=>window.webkit.messageHandlers.native.postMessage(Object.assign({cmd:'vip'},m));
 /* App 告诉网页当前的会员状态（以 App Store 为准） */
 window.__xmVipSync=function(d,n){
@@ -5065,7 +5065,7 @@ function aiResultBody(r){return `<div class="ai-text">${r.paras.map(p=>`<p>${p}<
 /* ================= settings sheet (gear on 我的) + APP lock ================= */
 const LOCK_SVG='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.6"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/><path d="M12 14.6v2"/></svg>';
 const FACE_SVG='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8V6a2.5 2.5 0 0 1 2.5-2.5h2M16 3.5h2A2.5 2.5 0 0 1 20.5 6v2M20.5 16v2a2.5 2.5 0 0 1-2.5 2.5h-2M8 20.5H6A2.5 2.5 0 0 1 3.5 18v-2"/><path d="M8.5 9v1.2M15.5 9v1.2M12 9v3.6h-1"/><path d="M8.8 15.6a4.6 4.6 0 0 0 6.4 0"/></svg>';
-const LOCK_ENABLED=false;   // 网页版暂不提供密码锁；做成 App 后改为 true 并接入系统面容 ID
+const LOCK_ENABLED=true;   // App 里接系统面容 ID（会员功能：开启时需要会员，已经开着的不会被锁在外面）
 const lockCfg=()=>(S.prefs.lock=S.prefs.lock||{on:false,code:'',face:false});
 const codeHash=c=>{let h=5381;for(const ch of 'dr-'+c)h=((h<<5)+h+ch.charCodeAt(0))>>>0;return h.toString(36)};
 
@@ -5137,7 +5137,7 @@ const head=(t)=>`<div class="sheet-head"><button class="circle st-back" id="stBa
 const drawMain=()=>{const D=P.daily;
 return `<div class="sheet-head"><span style="width:36px"></span><h3>设置</h3><button class="circle ok" id="stOk" aria-label="完成">✓</button></div>
 <div class="list glass st-list">
-${LOCK_ENABLED?'':'<!--'}<button class="li" data-go="lock"><span class="st-ic">${mi('lockf',22,1.9)}</span><span class="t">密码锁定</span><span class="st-v">${lockCfg().on?'已开启':''}</span>${ar}</button>${LOCK_ENABLED?'':'-->'}
+${LOCK_ENABLED?'':'<!--'}<button class="li" data-go="lock"><span class="st-ic">${mi('lockf',22,1.9)}</span><span class="t">密码锁定 / 面容 ID${S.vip?'':'<em class="st-vip">VIP</em>'}</span><span class="st-v">${lockCfg().on?'已开启':''}</span>${ar}</button>${LOCK_ENABLED?'':'-->'}
 </div>
 <div class="list glass st-list">
 <button class="li" data-go="home"><span class="st-ic">${mi('home',22,1.9)}</span><span class="t">首页显示内容</span>${ar}</button>
@@ -5226,6 +5226,7 @@ $('#stQuit',sh)&&($('#stQuit',sh).onclick=()=>plainConfirm('注销账户？','�
 };
 const bindLock=()=>{const L=lockCfg();
 $('#lkSw',sh).onclick=()=>{
+if(!L.on&&!S.vip){vipGate('APP 密码锁和面容 ID 解锁是会员功能，开通后就能用。');return}
 if(!L.on) setPasscode('设置 4 位密码',code=>{L.on=true;L.code=codeHash(code);L.face=false;save();redraw();toast('APP 锁已开启');
 setTimeout(()=>plainConfirm('同时开启面容 ID？','打开 APP 时先用面容 ID 解锁，更快。','开启',()=>faceScan(()=>{L.face=true;save();redraw();toast('面容 ID 已开启')},'开启面容 ID')),dur(380))});
 else verifyPasscode('输入密码以关闭 APP 锁',()=>{L.on=false;L.code='';L.face=false;save();redraw();toast('APP 锁已关闭')});
@@ -5729,6 +5730,7 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .me-tic{width:56px!important;height:56px!important}
 .me-tic .mt-art{width:32px!important;height:32px!important}
 .me-tic>svg{width:28px;height:28px}
+.st-vip{display:inline-block;margin-left:6px;padding:0 5px;border-radius:5px;background:#F5C542;color:#4A3000;font-size:10px;font-weight:900;font-style:normal;line-height:16px;vertical-align:2px}
 </style>
 </body>
 </html>

@@ -256,10 +256,11 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             }
             replyHandler(true, nil)
         case "haptic":
+            // 网页自己按「按键震动」开关决定要不要震；这里只负责震，声音由网页自己放
             switch body["kind"] as? String {
-            case "success": Feedback.success()
-            case "medium": Feedback.check()
-            default: Feedback.tap()
+            case "success": UINotificationFeedbackGenerator().notificationOccurred(.success)
+            case "medium": UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            default: UIImpactFeedbackGenerator(style: .rigid).impactOccurred(intensity: 0.85)
             }
             replyHandler(true, nil)
         case "share":

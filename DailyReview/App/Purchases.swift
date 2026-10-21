@@ -186,9 +186,10 @@ enum VipPerks {
     static let list: [(web: String, asset: String, title: String, sub: String)] = [
         ("cards", "vp_list", "习惯不限个数", "想养多少个好习惯都行，免费版最多 \(freeLimit) 个"),
         ("camera", "vp_photo", "照片做图标", "拍一张或从相册选，做成独一无二的习惯图标"),
+        ("lockf", "sf:lock.fill", "密码锁和面容 ID", "打开小满先验证，日记和打卡只有你能看"),
         ("heart", "sf:heart.fill", "支持小满走得更远", "你的支持会变成更多好用的小功能")
     ]
-    static let free = "打卡、闹钟提醒、统计、笔记、小组件、密码锁和数据备份，所有人都能免费用。"
+    static let free = "打卡、闹钟提醒、统计、笔记、小组件、主题背景和数据备份，所有人都能免费用。"
     static let freeLimit = 8
     /// 免费可用的主题背景
     static let freeThemes: Set<String> = ["white", "cream", "mist"]

@@ -24,7 +24,7 @@ PLANS = {
     "life": dict(pid=BUNDLE + ".vip.life", name="永久会员", usd=["9.90", "9.99"], cny=["35.00", "35"],
                  zh=("永久会员", "一次购买，永久解锁全部会员功能"), en=("Lifetime", "One-time purchase, all premium features forever")),
 }
-REVIEW_NOTE = "会员解锁：不限习惯数量、用照片做习惯图标。入口：我的 → 开通会员。"
+REVIEW_NOTE = "会员解锁：不限习惯数量、用照片做习惯图标、App 密码锁和面容 ID 解锁。入口：我的 → 开通会员。"
 
 _tok = [None, 0]
 
