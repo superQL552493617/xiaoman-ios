@@ -90,7 +90,13 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     @Published var ringing: AlarmRing?
     /// 原生版：读卡片、去打卡
     weak var store: Store?
-    var openCheck: ((String) -> Void)?
+    var openCheck: ((String) -> Void)? {
+        didSet {
+            // 点通知上的「去打卡」冷启动时，页面还没准备好：等页面好了再打开
+            if let id = pendingGo, let f = openCheck { pendingGo = nil; DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { f(id) } }
+        }
+    }
+    private var pendingGo: String?
     /// 网页版：在网页里执行脚本（页面没准备好时先排队）
     private var web: ((String) -> Void)?
     private var pendingJS: [String] = []
@@ -161,14 +167,21 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
         return store?.s.card(r.cardId) ?? Persistence.load()?.card(r.cardId)
     }
 
-    private func show(_ ring: AlarmRing, card: Card? = nil) {
+    private func show(_ ring: AlarmRing, card: Card? = nil, tries: Int = 0) {
         testCard = ring.test ? card : nil
         hideTask?.cancel()
         ringing = ring
         guard window == nil else { return }
         guard let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene })
             .first(where: { $0.activationState == .foregroundActive }) ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first
-        else { return }
+        else {
+            // 点通知冷启动：界面还没出来，稍等再显示
+            if tries < 10 { DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+                guard let self, self.ringing == ring else { return }
+                self.show(ring, card: card, tries: tries + 1)
+            } }
+            return
+        }
         let host = UIHostingController(rootView: AlarmRingHost())
         host.view.backgroundColor = .clear
         let w = UIWindow(windowScene: scene)
@@ -204,7 +217,9 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
         switch act {
         case .go:
             if !fromWeb {
-                if UIMode.current == "native" { openCheck?(ring.cardId) }
+                if UIMode.current == "native" {
+                    if let f = openCheck { f(ring.cardId) } else { pendingGo = ring.cardId }
+                }
                 else { runJS("window.__xmAlarmGo&&__xmAlarmGo(\(ring.json))") }
             }
         case .snooze:

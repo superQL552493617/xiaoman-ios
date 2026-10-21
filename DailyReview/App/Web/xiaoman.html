@@ -4522,11 +4522,11 @@ const zh=/^zh/i.test(navigator.language||'zh');
 const local=()=>{const plan=planOf(),y=zh?'¥18':'$2.99',m=zh?'¥3.5':'$1.99',l=zh?'¥35':'$9.99',pm=zh?'¥1.5':'$0.25',trial=plan==='free';
 const cta=k=>{if(plan==='life')return['你已是永久会员','谢谢你一直支持小满',false];
 if(plan===k)return['当前正在使用',k==='month'?'每月自动续费，可随时在系统设置里取消':'每年自动续费，可随时在系统设置里取消',false];
-if(k==='year')return trial?['免费试用 3 天','试用结束前取消，不会扣费',true]:['开通年度卡','每年自动续费，可随时在系统设置里取消',true];
+if(k==='year')return trial?['免费试用 3 天',`3 天后按 ${y}/年续费，试用期间取消不扣费`,true]:['开通年度卡',`每年 ${y} 自动续费，可随时在系统设置里取消`,true];
 if(k==='month')return['开通月度卡','每月自动续费，可随时在系统设置里取消',true];
 return[plan==='free'?'买断永久会员':'升级为永久会员','一次购买，不会自动续费',true]};
 const o=(k,title,price,note,badge)=>{const c=cta(k);return{title,price,note,badge,cta:c[0],ctaSub:c[1],ctaOn:c[2]}};
-return{plan,name:PLAN_NAME[plan],expires:'',offers:{year:o('year','年度卡',pm+'/月',trial?`先免费用 3 天，之后 ${y}/年`:`每年 ${y}，自动续费`,'推荐'),
+return{plan,name:PLAN_NAME[plan],expires:'',offers:{year:o('year','年度卡',y+'/年',trial?`先免费用 3 天，约 ${pm}/月`:`约 ${pm}/月，每年自动续费`,'推荐'),
 life:o('life','永久会员',l,'付一次，一直能用','买断'),month:o('month','月度卡',m+'/月',`每月 ${m}，随时可取消`,'')}}};
 const I=()=>info||local();
 const card=k=>{const o=I().offers[k],on=pick===k,cur=I().plan===k;
