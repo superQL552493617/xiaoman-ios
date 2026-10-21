@@ -716,9 +716,9 @@ struct ThemePage: View {
                     .buttonStyle(.plain)
                 }
             }
-            PPHead(title: "自定义背景", sub: store.vip ? nil : "会员可以把背景换成自己的照片")
+            PPHead(title: "自定义背景")
             Group {
-                if store.vip {
+                if true {
                     PhotosPicker(selection: $pick, matching: .images) {
                 HStack(spacing: 14) {
                     Group {
@@ -776,7 +776,7 @@ struct ThemePage: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
                 ForEach(PageTheme.all, id: \.id) { t in
                     let on = P.pageBg == t.id
-                    let locked = !VipPerks.freeThemes.contains(t.id) && !store.vip
+                    let locked = false   // 主题背景全部免费
                     Button {
                         Feedback.tap()
                         if locked { VipGate.present(); return }
@@ -810,7 +810,7 @@ struct ThemePage: View {
         }
         .onChange(of: pick) { _, it in
             guard let it else { return }
-            if !store.vip { pick = nil; VipGate.present(); return }
+            
             Task {
                 if let d = try? await it.loadTransferable(type: Data.self), let ui = UIImage(data: d), let b = ImageData.base64(ui, maxSide: 1100, quality: 0.8) {
                     store.updatePrefs { $0.bgImg = "data:image/jpeg;base64," + b; $0.pageBg = "custom" }

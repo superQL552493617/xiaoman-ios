@@ -3559,7 +3559,7 @@ if(pTab==='theme')body=`<p class="pp-note">手机处于深色模式时，主题�
 <span class="t">从相册选择<small>${bg==='custom'?'正在使用 · 再选一张可替换':'选择图片后立即应用'}</small></span>${P.bgImg?`<button class="pp-x" id="bgDel" aria-label="移除自定义背景">移除</button>`:'<span class="ar">›</span>'}
 <input type="file" accept="image/*" id="bgPick" hidden></label>
 <h3 class="pp-h">主题</h3>
-<div class="tg-grid">${PAGE_BGS.map(([k,n,c,img])=>`<button class="tg-card${bg===k?' on':''}${!S.vip&&!VIP_FREE_BG.includes(k)?' vip-lk':''}" data-bg="${k}" aria-pressed="${bg===k}"><span class="tg-pv" style="background:${img?img+',':''}${c}"></span><b>${n}</b><span class="tg-dots"><i style="background:${c}"></i><i style="background:${THEME_DOT[k]||c}"></i></span></button>`).join('')}</div>`;
+<div class="tg-grid">${PAGE_BGS.map(([k,n,c,img])=>`<button class="tg-card${bg===k?' on':''}" data-bg="${k}" aria-pressed="${bg===k}"><span class="tg-pv" style="background:${img?img+',':''}${c}"></span><b>${n}</b><span class="tg-dots"><i style="background:${c}"></i><i style="background:${THEME_DOT[k]||c}"></i></span></button>`).join('')}</div>`;
 if(pTab==='quick'){const on=HOME().quick,IC={jr:NB_SVG,time:MEM2_SVG,mood:MOOD_EMPTY,rev:REV_SVG};
 body=`<div class="tb-card"><p class="tb-h">${mi('p_quick',20,1.9)}预览效果</p>
 <div class="qk-pv${on?'':' off'}">${on?quickRow(sel||TODAY()):'<p class="qk-none">顶部快捷栏已隐藏</p>'}</div></div>
@@ -3625,8 +3625,8 @@ const bk=$('#backMe');if(bk)bk.onclick=()=>{pTab=null;buzz();renderPersonal();sc
 const re=()=>{const y=scrollY;renderPersonal();scrollTo(0,y)};
 $$('#pMode button').forEach(b=>b.onclick=()=>{P.mode=b.dataset.m;save();applyTheme();re()});
 $$('[data-dc]').forEach(b=>b.onclick=()=>{P.dateColor=b.dataset.dc;save();applyDateColor();buzz();re()});
-$$('.tg-card[data-bg]').forEach(b=>b.onclick=()=>{const k=b.dataset.bg;if(!VIP_FREE_BG.includes(k)&&!S.vip){vipGate('这款主题背景是会员专属，开通后全部可用。',()=>{P.pageBg=k;save();applyPageBg();re()});return}P.pageBg=k;save();applyPageBg();buzz();re()});
-const bpl=$('.pp-pick');bpl&&bpl.addEventListener('click',e=>{if(S.vip||e.target.closest('#bgDel'))return;e.preventDefault();vipGate('把背景换成自己的照片是会员功能，开通后就能用。',()=>$('#bgPick').click())});
+$$('.tg-card[data-bg]').forEach(b=>b.onclick=()=>{const k=b.dataset.bg;P.pageBg=k;save();applyPageBg();buzz();re()});
+/* 主题背景和自定义背景都免费 */
 const bp=$('#bgPick');bp&&(bp.onchange=async e=>{const f=e.target.files[0];if(!f)return;P.bgImg=await compress(f,1100,false);P.pageBg='custom';save();applyPageBg();re();toast('已换成你的背景')});
 const bd=$('#bgDel');bd&&(bd.onclick=e=>{e.preventDefault();e.stopPropagation();delete P.bgImg;if(P.pageBg==='custom')P.pageBg='white';save();applyPageBg();re()});
 $$('button.tb-pick[data-slot]').forEach(b=>b.onclick=()=>tabSlotMenu(b,()=>{renderTabs();re()}));
@@ -4312,7 +4312,7 @@ const saveMsg=(r,what)=>r==='shared'?`${what}已导出`:r==='download'?(IN_PREVI
 function renderExport(){
 const isJson=exType==='json',rows=isJson?null:exRows();
 const types=[['records','table','打卡记录','日期、习惯、状态、打卡时间和日志（CSV）'],['notes','pen','笔记','日期、时间、标题、内容和当天心情（CSV）'],['cards','cards','习惯列表','每个习惯的重复规则、提醒和累计次数（CSV）'],['json','code','完整备份','全部卡片、打卡、笔记、分组和心情，可以用来恢复数据（JSON）']];
-$('#view').innerHTML=`${pgTop('导入导出')}
+$('#view').innerHTML=`${pgTop('导出数据')}
 <div class="ex-hero"><span>${mi('out',30,2)}</span><b>导出你的数据</b><small>保存到手机的“文件”或 iCloud 云盘，导出永久免费</small></div>
 ${secH('table','选择数据类型')}
 <div class="list glass">${types.map(([k,ic,n,d])=>`<button class="li ex-t" data-t="${k}"><span class="row-ic">${mi(ic,20,2)}</span><span class="t">${n}<small>${d}</small></span><span class="radio${exType===k?' on':''}"></span></button>`).join('')}</div>
@@ -4344,7 +4344,7 @@ $('#exBackup').onclick=openExport;
 /* ---- 模块设置: reorder and hide the tiles on 我的 ---- */
 const MODULES=[
 ['cards','cards','习惯管理'],['memory','calendar','回忆'],['backup','cloud','备份'],['events','events','新事件'],['personal','shirt','个性化'],
-['widget','widget','小组件'],['export','out','导入导出'],
+['widget','widget','小组件'],
 ['feedback','msg','意见反馈']];
 function modList(){
 const saved=S.prefs.modules||[],ids=MODULES.map(m=>m[0]);
@@ -4465,6 +4465,8 @@ $('#view').innerHTML=`${pgTop('备份')}
 <p class="sf-h">手动备份</p>
 <div class="sf-acts"><button id="bkExport">${SVG('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>导出到文件</b><small>可以存到「文件」或 iCloud 云盘</small></button>
 <button id="bkMan">${SVG('<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>从文件恢复</b><small>换手机时用</small></button></div>
+<p class="sf-h">导出表格</p>
+<div class="list glass ex-im"><button class="li" id="bkCsv"><span class="row-ic">${mi('table',20,2)}</span><span class="t">导出打卡记录、笔记、习惯列表<small>CSV 表格，可以用 Numbers、Excel、WPS 打开</small></span><span class="ar">›</span></button></div>
 <p class="sf-h">常见疑问</p>
 <div class="sf-qa">
 <details><summary>删掉 App，记录还在吗？</summary><p>不在了。删 App 会把手机里的记录一起删掉，删之前请先「导出到文件」。</p></details>
@@ -4472,7 +4474,7 @@ $('#view').innerHTML=`${pgTop('备份')}
 <details><summary>多久备份一次好？</summary><p>建议每个月导出一次，或者在换手机、刷机之前导出。导出和恢复都免费。</p></details></div>
 </div>`;
 backToMe();
-$('#bkExport').onclick=openExport;$('#bkMan').onclick=openExport;
+$('#bkExport').onclick=openExport;$('#bkMan').onclick=openExport;$('#bkCsv').onclick=()=>goPage('export');
 }
 function renderBackup(){
 if(IN_APP){renderBackupApp();return}
@@ -4566,7 +4568,7 @@ const planOf=()=>S.vip?(S.prefs.plan&&S.prefs.plan!=='free'?S.prefs.plan:'year')
 /* ---- 会员：年度卡（首次 3 天免费试用）/ 永久会员 / 月度卡。装在 App 里由 App Store 购买，网页预览里可以免费体验 ---- */
 const VIP_FREE_LIMIT=8,VIP_FREE_BG=['white','cream','mist'];
 const VIP_PERKS=[['cards','习惯不限个数',`想养多少个好习惯都行，免费版最多 ${VIP_FREE_LIMIT} 个`],['camera','照片做图标','拍一张或从相册选，做成独一无二的习惯图标'],
-['palette','全部主题背景','晴空、梦幻、格子夏日等十款背景，还能换成自己的照片'],['heart','支持小满走得更远','你的支持会变成更多好用的小功能']];
+['heart','支持小满走得更远','你的支持会变成更多好用的小功能']];
 const VIP_FREE_TEXT='打卡、闹钟提醒、统计、笔记、小组件、密码锁和数据备份，所有人都能免费用。';
 const vipPost=m=>window.webkit.messageHandlers.native.postMessage(Object.assign({cmd:'vip'},m));
 /* App 告诉网页当前的会员状态（以 App Store 为准） */
