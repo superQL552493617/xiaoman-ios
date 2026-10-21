@@ -193,6 +193,7 @@ enum AppFont {
     struct Face: Identifiable { let id: String; let name: String; let ps: String?; let desc: String; let sample: String }
     static let all: [Face] = [
         Face(id: "sys", name: "系统默认", ps: nil, desc: "清清爽爽，最好读", sample: "今天也要好好生活"),
+        Face(id: "round", name: "圆润体", ps: "XMRound-Regular", desc: "笔画圆圆的，软软的很耐看", sample: "今天也圆圆满满"),
         Face(id: "kose", name: "小赖手写", ps: "XMKose-Regular", desc: "像认真写下的小字，圆滚滚的", sample: "早起喝一杯温水"),
         Face(id: "kuaile", name: "快乐体", ps: "ZCOOLKuaiLe-Regular", desc: "胖嘟嘟的卡通字，看着就开心", sample: "今天也元气满满"),
         Face(id: "butter", name: "黄油体", ps: "XMButter-Regular", desc: "厚厚软软，像刚出炉的黄油饼干", sample: "坚持一点点就好"),
