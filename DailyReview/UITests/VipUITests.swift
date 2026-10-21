@@ -60,4 +60,14 @@ final class VipUITests: XCTestCase {
         shot(app, "4-native-after-buy")
         app.terminate()
     }
+
+    /// 意见反馈：打开兔小巢页面，看能不能正常加载（不提交内容）
+    func test3Feedback() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiMode", "web", "-shotJS", Data("openTxc()".utf8).base64EncodedString()]
+        app.launch()
+        sleep(16)
+        shot(app, "5-feedback")
+        app.terminate()
+    }
 }

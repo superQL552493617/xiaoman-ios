@@ -5411,7 +5411,7 @@ if(changed)save();
 const TXC_URL='https://support.qq.com/product/802265';
 function openTxc(){const {device,os}=devInfo(),P=S.prefs;
 const fields={openid:anonId(),nickname:(P.nick||'小满用户').slice(0,20),avatar:'https://txc.qq.com/static/desktop/img/products/def-product-logo.png',
-clientInfo:device,clientVersion:APP_VER(),os:'iOS',osVersion:os||'',customInfo:`build ${APP_BUILD}`};
+clientInfo:device,clientVersion:IN_APP?'V'+NV.v:APP_VER(),os:'iOS',osVersion:os||'',customInfo:IN_APP?`App ${NV.v}（${NV.b}）`:`build ${APP_BUILD}`};
 const f=document.createElement('form');f.method='POST';f.action=TXC_URL;f.target='_blank';f.style.display='none';
 Object.entries(fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;f.appendChild(i)});
 /* 从主屏幕打开的网页 App 里，弹新窗口的 POST 会被 iOS 静默拦截，所以在当前窗口打开；iOS 会用自带的浏览页显示，点左上角「完成」回到 App */
@@ -5720,6 +5720,11 @@ body:not(.dark) .sheet.acx .acx-card,body:not(.dark) .sheet.acx .acx-list{backgr
 body:not(.dark) .sheet.acx .acx-bio{border-color:#CFC7B8;background:#FAF8F3}
 body:not(.dark) .sheet.acx .acx-nick{background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(70,55,30,.14)}
 body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
+
+/* 我的：功能格子的图标大一点 */
+.me-tic{width:56px!important;height:56px!important}
+.me-tic .mt-art{width:32px!important;height:32px!important}
+.me-tic>svg{width:28px;height:28px}
 </style>
 </body>
 </html>
