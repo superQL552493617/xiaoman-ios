@@ -1,0 +1,20 @@
+App ID: 6824745672
+已更新说明 site.xiaomanhabit.app.vip.year
+已更新说明 site.xiaomanhabit.app.vip.month
+已更新说明 site.xiaomanhabit.app.vip.life
+== 订阅群组
+ - 小满会员 (22499168)
+   · site.xiaomanhabit.app.vip.year 年度卡 ONE_YEAR 状态=READY_TO_SUBMIT
+     价格 CHN: 18.0
+     价格 USA: 2.9
+     已设价格的地区数：175
+     推介促销：FREE_TRIAL THREE_DAYS × 175 个地区
+   · site.xiaomanhabit.app.vip.month 月度卡 ONE_MONTH 状态=READY_TO_SUBMIT
+     价格 CHN: 3.5
+     价格 USA: 1.9
+     已设价格的地区数：175
+== App 内购买项目
+ - site.xiaomanhabit.app.vip.life 永久会员 NON_CONSUMABLE 状态=READY_TO_SUBMIT
+✓ site.xiaomanhabit.app.vip.year
+✓ site.xiaomanhabit.app.vip.month
+✓ site.xiaomanhabit.app.vip.life
