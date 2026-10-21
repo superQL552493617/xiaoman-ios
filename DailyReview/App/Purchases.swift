@@ -24,6 +24,8 @@ final class Purchases: ObservableObject {
     @Published var message: String?
     /// 第一次读完购买记录（之前的 plan 还不可信）
     @Published var loaded = false
+    /// 测试包里送的会员（不是真的购买）
+    @Published var isTestVIP = false
 
     private var updates: Task<Void, Never>?
     /// 任何页面（包括弹出页里）都能打开会员页
@@ -66,6 +68,9 @@ final class Purchases: ObservableObject {
             let k = t.productID == Self.lifetime ? "life" : t.productID == Self.yearly ? "year" : t.productID == Self.monthly ? "month" : "free"
             if rank[k, default: 0] > rank[p, default: 0] { p = k; exp = t.expirationDate }
         }
+        // 测试包：没买也当作会员（摇一摇菜单可以关掉）
+        isTestVIP = p == "free" && TestMode.vip
+        if isTestVIP { p = "life"; exp = nil }
         plan = p
         expires = p == "life" ? nil : exp
         isVIP = p != "free"
@@ -115,6 +120,7 @@ final class Purchases: ObservableObject {
 
     /// 底部大按钮的文字
     func cta(_ kind: String) -> (title: String, sub: String, enabled: Bool) {
+        if isTestVIP { return ("测试包已是会员", "摇一摇手机，可以关掉测试会员来测购买", false) }
         if plan == "life" { return ("你已是永久会员", "谢谢你一直支持小满", false) }
         if plan == kind { return ("当前正在使用", kind == "month" ? "每月自动续费，可随时在系统设置里取消" : "每年自动续费，可随时在系统设置里取消", false) }
         switch kind {
@@ -126,7 +132,7 @@ final class Purchases: ObservableObject {
         }
     }
 
-    var planName: String { ["month": "月度会员", "year": "年度会员", "life": "永久会员"][plan] ?? "普通用户" }
+    var planName: String { isTestVIP ? "测试会员" : (["month": "月度会员", "year": "年度会员", "life": "永久会员"][plan] ?? "普通用户") }
 
     // MARK: 购买
 

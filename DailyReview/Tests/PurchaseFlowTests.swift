@@ -9,6 +9,7 @@ import StoreKitTest
 final class PurchaseFlowTests: XCTestCase {
 
     private func session(_ file: String, _ storefront: String) throws -> SKTestSession {
+        TestMode.setVip(false)   // 测购买流程：不要测试会员
         let s = try SKTestSession(configurationFileNamed: file)
         s.resetToDefaultState()
         s.disableDialogs = true

@@ -161,6 +161,12 @@ struct RootView: View {
         // 摇一摇：切回网页版（和网页版里摇一摇切到原生版对应）
         .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in askWeb = true }
         .confirmationDialog("界面模式", isPresented: $askWeb, titleVisibility: .visible) {
+            if UIMode.canSwitch {
+                Button(TestMode.vip ? "关闭测试会员（用来测购买流程）" : "开启测试会员") {
+                    TestMode.setVip(!TestMode.vip)
+                    Task { await purchases.refresh() }
+                }
+            }
             Button("切换到网页版界面") {
                 store.saveNow()
                 UserDefaults.standard.set("web", forKey: UIMode.key)

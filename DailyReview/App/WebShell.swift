@@ -8,6 +8,17 @@ import UserNotifications
 // MARK: - 网页版界面（把最终版网页原样装进 App，用原生能力补齐：存储、触感、分享导出、反馈、面容 ID、提醒、小组件）
 
 /// 界面模式：web 网页版（默认，和原型完全一致）/ native 原生版（测试中）
+/// 测试包专用：默认就是会员，方便测会员功能；摇一摇菜单里可以关掉，用来测购买流程
+enum TestMode {
+    static let vipKey = "testVIP"
+    static var vip: Bool {
+        guard UIMode.canSwitch else { return false }
+        let d = UserDefaults.standard
+        return d.object(forKey: vipKey) == nil ? true : d.bool(forKey: vipKey)
+    }
+    static func setVip(_ on: Bool) { UserDefaults.standard.set(on, forKey: vipKey) }
+}
+
 enum UIMode {
     static let key = "uiMode"
     /// 测试包（Xcode 调试、TestFlight）里允许摇一摇切换界面；App Store 下载的正式版不显示
@@ -69,8 +80,12 @@ struct WebRootView: View {
                 if p == .active { bridge.reloadIfChangedOutside() }
                 if p == .background { bridge.flush {} }
             }
-            .confirmationDialog("界面模式", isPresented: $askSwitch, titleVisibility: .visible) {
-                Button("切换到原生版界面（测试）") {
+            .confirmationDialog("测试菜单", isPresented: $askSwitch, titleVisibility: .visible) {
+                Button(TestMode.vip ? "关闭测试会员（用来测购买流程）" : "开启测试会员") {
+                    TestMode.setVip(!TestMode.vip)
+                    Task { await purchases.refresh() }
+                }
+                Button("切换到原生版界面") {
                     bridge.flush {
                         store.reloadFromDisk()
                         uiMode = "native"
@@ -78,7 +93,7 @@ struct WebRootView: View {
                 }
                 Button("取消", role: .cancel) {}
             } message: {
-                Text("当前是网页版界面。原生版还在测试中，数据两边共用。")
+                Text("当前是网页版界面（上架用的版本）。\(TestMode.vip ? "测试包里默认是会员。" : "测试会员已关闭，可以测购买。")这个菜单只在测试包里出现，数据两边共用。")
             }
     }
 }

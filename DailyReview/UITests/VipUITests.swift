@@ -31,7 +31,7 @@ final class VipUITests: XCTestCase {
     func test1WebVip() throws {
         let s = try session(); _ = s
         let app = XCUIApplication()
-        app.launchArguments = ["-uiMode", "web", "-shotJS", Data("S.vip=false;S.prefs.plan='free';save();openVip()".utf8).base64EncodedString()]
+        app.launchArguments = ["-testVIP", "NO", "-uiMode", "web", "-shotJS", Data("S.vip=false;S.prefs.plan='free';save();openVip()".utf8).base64EncodedString()]
         app.launch()
         sleep(9)
         shot(app, "1-web-vip")
@@ -50,7 +50,7 @@ final class VipUITests: XCTestCase {
     func test2NativeVip() throws {
         let s = try session(); _ = s
         let app = XCUIApplication()
-        app.launchArguments = ["-uiMode", "native", "-shotTab", "today", "-shotVip", "1"]
+        app.launchArguments = ["-testVIP", "NO", "-uiMode", "native", "-shotTab", "today", "-shotVip", "1"]
         app.launch()
         sleep(6)
         shot(app, "3-native-vip")
