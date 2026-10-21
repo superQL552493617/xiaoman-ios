@@ -1,5 +1,6 @@
 import AppIntents
 import WidgetKit
+import UserNotifications
 
 /// 小组件上点习惯图标直接打卡 / 取消打卡（iOS 17 起支持）
 struct ToggleHabitIntent: AppIntent {
@@ -40,6 +41,13 @@ struct ToggleHabitIntent: AppIntent {
             try? out.write(to: Persistence.file, options: [.atomic])
         }
         WidgetCenter.shared.reloadAllTimelines()
+        // 在小组件上打了卡：这张卡片今天还没响的闹钟取消（下次打开 App 会按最新数据重排）
+        if !was {
+            let center = UNUserNotificationCenter.current()
+            let prefix = "alm|\(k)|\(cardId)|"
+            let ids = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(prefix) }
+            center.removePendingNotificationRequests(withIdentifiers: ids)
+        }
         return .result()
     }
 }

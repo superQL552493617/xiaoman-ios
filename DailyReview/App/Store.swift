@@ -63,6 +63,8 @@ final class Store: ObservableObject {
         day[id] = r
         s.records[k] = day
         save()
+        // 今天打了卡：这张卡片今天剩下的闹钟不再响（取消打卡则补回来）
+        if k == DK.today && !(s.card(id)?.reminders ?? []).isEmpty { Notifier.shared.rescheduleSoon(self) }
     }
 
     func setChecked(_ id: String, on k: String, _ v: Bool) {
@@ -84,6 +86,8 @@ final class Store: ObservableObject {
         day[id] = r
         s.records[k] = day
         save()
+        // 今天打了卡：这张卡片今天剩下的闹钟不再响（取消打卡则补回来）
+        if k == DK.today && !(s.card(id)?.reminders ?? []).isEmpty { Notifier.shared.rescheduleSoon(self) }
     }
 
     // MARK: 卡片

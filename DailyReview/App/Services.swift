@@ -113,11 +113,14 @@ enum SFX {
 
 // MARK: - 提醒通知
 
-/// 每个习惯的提醒 + 每日提醒。iOS 最多保留 64 个待发通知，按「每天」或「每周几」的重复规则排。
+/// 闹钟提醒 + 每日提醒。
+/// 闹钟：每次提醒按 0、5、10 分钟排三条一次性通知（没人管就每 5 分钟响一次，最多 3 次），
+/// 处理过或打过卡就取消剩下的。iOS 最多保留 64 条待发通知，所以只排最近的 60 条，每次打开 App、保存、打卡时重排。
 @MainActor
 final class Notifier {
     static let shared = Notifier()
     private let center = UNUserNotificationCenter.current()
+    private var soon: Task<Void, Never>?
 
     func requestPermission() async -> Bool {
         (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
@@ -125,43 +128,108 @@ final class Notifier {
 
     func rescheduleAll(_ store: Store) { rescheduleAll(store.s) }
 
+    /// 连续打卡时只排一次
+    func rescheduleSoon(_ store: Store) {
+        soon?.cancel()
+        soon = Task { [weak self, weak store] in
+            try? await Task.sleep(nanoseconds: 800_000_000)
+            guard !Task.isCancelled, let self, let store else { return }
+            self.rescheduleAll(store.s)
+        }
+    }
+
     func rescheduleAll(_ s: AppState) {
         center.removeAllPendingNotificationRequests()
-        // iOS 26 起：闹钟提醒交给系统闹钟（锁屏全屏响铃、静音也会响），其余用通知
-        let useAlarm = HabitAlarms.ready
-        HabitAlarms.reschedule(s)
-        var count = 0
-        for c in s.cards where !c.isNote && s.activePause(c).map({ $0.from > DK.today }) ?? true {
-            for r in c.reminders ?? [] {
-                if useAlarm && (r.mode ?? "strong") == "strong" { continue }
-                let days = Set(r.days ?? c.days)
-                let snd = r.tone ?? 1
-                if days.count == 7 {
-                    add(id: "card-\(c.id)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: nil, tone: snd)
-                    count += 1
-                } else {
-                    for wd in days {
-                        add(id: "card-\(c.id)-\(wd)-\(r.h)-\(r.m)", title: c.name, body: "该打卡啦，完成后记得点一下", h: r.h, m: r.m, weekday: wd + 1, tone: snd)
-                        count += 1
+        // 以前版本排过的系统闹钟（会一直响到手动关掉）清掉，统一用下面的提醒规则
+        HabitAlarms.cancelAll()
+        let now = Date(), cal = Calendar.current, T = DK.today
+        var items: [(Date, UNNotificationRequest)] = []
+        for off in 0..<14 {
+            let date = DK.add(DK.todayDate, off), k = DK.key(date), wd = DK.weekday(date)
+            for c in s.cards where !c.isNote && !s.pausedOn(c, k) {
+                if k == T && s.isChecked(k, c.id) { continue }
+                for r in c.reminders ?? [] {
+                    let days = (r.days?.isEmpty == false ? r.days! : c.days)
+                    guard days.contains(wd) else { continue }
+                    let occ = AlarmRules.occ(day: k, card: c.id, h: r.h, m: r.m)
+                    if AlarmLog.isDone(occ) { continue }
+                    guard let t0 = cal.date(bySettingHour: r.h, minute: r.m, second: 0, of: date) else { continue }
+                    for i in 0..<AlarmRules.repeats {
+                        let at = t0.addingTimeInterval(Double(i) * AlarmRules.gap)
+                        if at <= now { continue }
+                        items.append((at, alarmRequest(occ: occ, name: c.name, card: c.id, h: r.h, m: r.m, tone: r.tone ?? 1, k: i, snooze: false, at: at)))
                     }
                 }
-                if count > 58 { break }
             }
         }
+        // 稍后提醒
+        for z in AlarmLog.snoozes {
+            guard let c = s.card(z.card), !AlarmLog.isDone(z.occ) else { continue }
+            let day = String(z.occ.split(separator: "|").first ?? "")
+            if s.isChecked(day, c.id) { continue }
+            for i in 0..<AlarmRules.repeats {
+                let at = Date(timeIntervalSince1970: z.t0 + Double(i) * AlarmRules.gap)
+                if at <= now { continue }
+                items.append((at, alarmRequest(occ: z.occ, name: c.name, card: c.id, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at)))
+            }
+        }
+        items.sort { $0.0 < $1.0 }
+        for (_, req) in items.prefix(60) { center.add(req) }
         if s.prefs.daily.on {
             add(id: "daily-review", title: "小满", body: "花一分钟，记录一下今天吧", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
         }
     }
 
-    private func add(id: String, title: String, body: String, h: Int, m: Int, weekday: Int?, tone: Int? = nil) {
+    /// 这次提醒处理过了：剩下没响的取消，通知中心里已经响过的也收起来
+    func cancel(_ occ: String) {
+        let ids = AlarmRules.ids(occ)
+        center.removePendingNotificationRequests(withIdentifiers: ids)
+        center.removeDeliveredNotifications(withIdentifiers: ids)
+    }
+
+    /// 10 分钟后再提醒（没人管同样每 5 分钟再响，最多 3 次）
+    func addSnooze(_ z: AlarmLog.Snooze, name: String) async {
+        for i in 0..<AlarmRules.repeats {
+            let at = Date(timeIntervalSince1970: z.t0 + Double(i) * AlarmRules.gap)
+            try? await center.add(alarmRequest(occ: z.occ, name: name, card: z.card, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at))
+        }
+    }
+
+    private func alarmRequest(occ: String, name: String, card: String, h: Int, m: Int, tone: Int, k: Int, snooze: Bool, at: Date) -> UNNotificationRequest {
+        let ct = UNMutableNotificationContent()
+        ct.title = name
+        if k == 0 {
+            ct.body = snooze ? "稍后提醒：到时间啦，做完记得打个卡" : "到时间啦，做完记得打个卡"
+        } else {
+            ct.body = "还没打卡哦 · 第 \(k + 1) 次提醒" + (k == AlarmRules.repeats - 1 ? "（今天最后一次）" : "")
+        }
+        ct.sound = Self.ringSound(tone)
+        ct.categoryIdentifier = AlarmRules.category
+        ct.threadIdentifier = occ
+        ct.interruptionLevel = .timeSensitive
+        ct.relevanceScore = 1
+        ct.userInfo = ["xmAlarm": 1, "occ": occ, "card": card, "h": h, "m": m, "tone": tone, "k": k, "snz": snooze]
+        let dc = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: at)
+        return UNNotificationRequest(identifier: "alm|\(occ)#\(k)", content: ct,
+                                     trigger: UNCalendarNotificationTrigger(dateMatching: dc, repeats: false))
+    }
+
+    /// 响铃声：约 28 秒的循环铃声（通知声音最长 30 秒）
+    static func ringSound(_ tone: Int) -> UNNotificationSound {
+        if Bundle.main.url(forResource: "alm_\(tone)", withExtension: "caf") != nil {
+            return UNNotificationSound(named: UNNotificationSoundName("alm_\(tone).caf"))
+        }
+        if Bundle.main.url(forResource: "tone_\(tone)", withExtension: "wav") != nil {
+            return UNNotificationSound(named: UNNotificationSoundName("tone_\(tone).wav"))
+        }
+        return .default
+    }
+
+    private func add(id: String, title: String, body: String, h: Int, m: Int, weekday: Int?) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
-        if let tone, Bundle.main.url(forResource: "tone_\(tone)", withExtension: "wav") != nil {
-            content.sound = UNNotificationSound(named: UNNotificationSoundName("tone_\(tone).wav"))
-        } else {
-            content.sound = .default
-        }
+        content.sound = .default
         var dc = DateComponents()
         dc.hour = h; dc.minute = m
         if let weekday { dc.weekday = weekday }

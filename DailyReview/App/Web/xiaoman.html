@@ -2764,46 +2764,87 @@ clearTimeout(w._t);w._t=setTimeout(()=>snap(w),120);
 },{passive:false});
 }
 
-/* ---------- alarm reminders: in-app engine (prototype). Native version: iOS AlarmKit / Android AlarmManager ---------- */
-const ALM={fired:new Set(),snz:[],open:false};
-function ringAlarm(c,r,test){
-if(ALM.open)return;ALM.open=true;
+/* ---------- alarm reminders ----------
+   到点响铃；没人管每 5 分钟再响一次，最多 3 次；去打卡、稍后提醒、关闭或已经打卡，当天这次就不再响。
+   装在 App 里：锁屏、后台由系统通知响铃；App 开着时原生把响铃交给这里（__xmAlarm），这里不再自己计时（XM_NATIVE_ALARM）。
+   在浏览器里（或没开通知权限）：页面开着时这里每 15 秒看一次。 */
+const ALM={fired:new Set(),snz:[],open:null,q:[],REP:3,GAP:5*60000,RING:60000};
+const almOcc=(T,c,r)=>`${T}|${c.id}|${r.h}:${r.m}`;
+function almDoneMap(){try{const o=JSON.parse(localStorage.getItem('xm_alm_done')||'{}'),now=Date.now();for(const k in o)if(now-o[k]>3*864e5)delete o[k];return o}catch(e){return{}}}
+function almMark(occ){if(!occ)return;try{const o=almDoneMap();o[occ]=Date.now();localStorage.setItem('xm_alm_done',JSON.stringify(o))}catch(e){}}
+function almPost(act,d){try{if(window.__XM_NATIVE__)window.webkit.messageHandlers.native.postMessage(Object.assign({cmd:'alarm',act},d)).catch(()=>{})}catch(e){}}
+function almGo(id){if(tab!=='today'||sel!==TODAY()){tab='today';sel=TODAY();render();scrollTo(0,0)}setTimeout(()=>openCheckDialog(id),320)}
+function ringAlarm(c,r,o={}){
+const test=!!o.test;
+if(ALM.open){if(test||ALM.open.occ===o.occ)return;ALM.q.push([c,r,o]);return}
+const d={occ:o.occ||'',card:c.id||'',h:r.h,m:r.m,tone:r.tone||1,k:o.k||0,snz:!!o.snz},k=d.k;
 const now=new Date(),col=COL(c);
+const tag=test?' · 试响':o.snz?(k?` · 稍后提醒 · 第 ${k+1} 次`:' · 稍后提醒'):k?` · 第 ${k+1} 次提醒`:'';
+const nm=(c.name||'').trim()||(test?'试响':'小满');
 const ov=document.createElement('div');ov.className='alm-ov';
-ov.innerHTML=`<div class="alm-box"><p class="alm-t">${pad(now.getHours())}:${pad(now.getMinutes())}</p><p class="alm-d">${now.getMonth()+1}月${now.getDate()}日 周${'日一二三四五六'[now.getDay()]}${test?' · 试响':''}</p>
+ov.innerHTML=`<div class="alm-box"><p class="alm-t">${pad(now.getHours())}:${pad(now.getMinutes())}</p><p class="alm-d">${now.getMonth()+1}月${now.getDate()}日 周${'日一二三四五六'[now.getDay()]}${tag}</p>
 <div class="alm-av">${c.id?avatarHTML(c,92):`<span class="alm-emo" style="background:${col.b}">⏰</span>`}</div>
-<b class="alm-n">${esc(c.name)}</b><small class="alm-s">到时间啦，做完记得打个卡</small>
-<div class="alm-btns">${c.id&&!test?'<button class="alm-go" id="almGo">去打卡</button>':''}<button class="alm-snz" id="almSnz">10 分钟后再提醒</button><button class="alm-off" id="almOff">关闭</button></div></div>`;
+<b class="alm-n">${esc(nm)}</b><small class="alm-s">到时间啦，做完记得打个卡</small>
+<div class="alm-btns">${c.id&&!test&&cardById(c.id)?'<button class="alm-go" id="almGo">去打卡</button>':''}<button class="alm-snz" id="almSnz">10 分钟后再提醒</button><button class="alm-off" id="almOff">关闭</button></div></div>`;
 document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
 const ring=()=>{try{TONE.play(r.tone||1)}catch(e){}try{navigator.vibrate&&navigator.vibrate([400,200,400])}catch(e){}buzz()};
 ring();const iv=setInterval(ring,4200);
-const stop=()=>{clearInterval(iv);ALM.open=false;ov.classList.remove('on');setTimeout(()=>ov.remove(),300)};
-$('#almOff',ov).onclick=stop;
-$('#almSnz',ov).onclick=()=>{stop();if(!test)ALM.snz.push({at:Date.now()+600000,id:c.id,r});toast(test?'正式提醒会在 10 分钟后再响':'10 分钟后再提醒你')};
-$('#almGo',ov)&&($('#almGo',ov).onclick=()=>{stop();if(typeof sel!=='undefined'&&sel!==TODAY()){sel=TODAY();render()}setTimeout(()=>openCheckDialog(c.id),320)});
+const auto=setTimeout(()=>done('timeout'),ALM.RING);   // 没人理：响 1 分钟自己停，5 分钟后再响
+function stop(){clearInterval(iv);clearTimeout(auto);ALM.open=null;ov.classList.remove('on');setTimeout(()=>{ov.remove();const n=ALM.q.shift();if(n)ringAlarm(...n)},300)}
+function done(act){
+stop();
+if(test){if(act==='snooze')toast('正式提醒会在 10 分钟后再响');return}
+if(act==='timeout'){almPost('timeout',d);return}
+almMark(d.occ);almPost(act,d);
+if(act==='snooze'){if(!window.XM_NATIVE_ALARM)ALM.snz.push({occ:d.occ.split('|z')[0]+'|z'+Math.floor(Date.now()/1000),id:c.id,r,t0:Date.now()+600000});toast('10 分钟后再提醒你')}
+if(act==='go')almGo(c.id);
+}
+ALM.open={occ:d.occ,stop};
+$('#almOff',ov).onclick=()=>done('off');
+$('#almSnz',ov).onclick=()=>done('snooze');
+$('#almGo',ov)&&($('#almGo',ov).onclick=()=>done('go'));
 }
 function alarmTick(){
-if(ALM.open||document.hidden)return;
-const now=new Date(),T=TODAY(),wd=now.getDay(),hm=now.getHours()*60+now.getMinutes();
-for(const c of S.cards){if(!c.reminders||!c.reminders.length)continue;
-c.reminders.forEach((r,i)=>{
-if(!r.days||!r.days.includes(wd))return;
-const at=r.h*60+r.m;if(hm<at||hm>at+1)return;     // ring within the minute (plus one minute grace)
-const key=`${T}|${c.id}|${i}|${at}`;if(ALM.fired.has(key))return;
-ALM.fired.add(key);
-const rec=S.records[T]&&S.records[T][c.id];if(rec&&rec.checked)return;   // already done today: stay quiet
-ringAlarm(c,r)});
-if(ALM.open)return}
-const due=ALM.snz.findIndex(x=>x.at<=Date.now());
-if(due>-1){const x=ALM.snz.splice(due,1)[0],c=cardById(x.id);if(c)ringAlarm(c,x.r)}
+if(window.XM_NATIVE_ALARM||document.hidden||!S||!S.cards)return;
+const now=Date.now(),d0=new Date(),T=TODAY(),wd=d0.getDay(),done=almDoneMap(),seqs=[];
+for(const c of S.cards){
+if(isNoteCard(c)||!c.reminders||!c.reminders.length||pausedOn(c,T))continue;
+c.reminders.forEach(r=>{
+const days=r.days&&r.days.length?r.days:(Array.isArray(c.days)?c.days:[0,1,2,3,4,5,6]);if(!days.includes(wd))return;
+const t=new Date(d0);t.setHours(r.h,r.m,0,0);seqs.push({c,r,occ:almOcc(T,c,r),t0:+t})});
+}
+ALM.snz=ALM.snz.filter(x=>x.t0+ALM.REP*ALM.GAP>now);
+ALM.snz.forEach(x=>{const c=cardById(x.id);if(c)seqs.push({c,r:x.r,occ:x.occ,t0:x.t0,snz:true})});
+for(const q of seqs){
+if(done[q.occ])continue;
+const rec=S.records[T]&&S.records[T][q.c.id];if(rec&&rec.checked)continue;   // 今天已经打卡：不再响
+for(let k=0;k<ALM.REP;k++){
+const at=q.t0+k*ALM.GAP;if(now<at||now>at+90000)continue;
+const key=q.occ+'#'+k;if(ALM.fired.has(key))continue;ALM.fired.add(key);
+ringAlarm(q.c,q.r,{occ:q.occ,k,snz:q.snz});return}
+}
 }
 setInterval(alarmTick,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)alarmTick()});
+/* 原生转过来的响铃（App 开着时到点，或点开了通知） */
+window.__xmAlarm=function(d,n){
+if(!S||!S.cards){if((n||0)<40)setTimeout(()=>window.__xmAlarm(d,(n||0)+1),500);return}
+const c=cardById(d.card);if(!c)return;
+const key=d.occ+'#'+(d.k||0);if(ALM.fired.has(key)&&!(ALM.open&&ALM.open.occ===d.occ))return;ALM.fired.add(key);
+const r=(c.reminders||[]).find(x=>x.h==d.h&&x.m==d.m)||{h:d.h,m:d.m};
+ringAlarm(c,Object.assign({},r,{tone:d.tone||r.tone||1}),{occ:d.occ,k:d.k||0,snz:!!d.snz});
+};
+/* 通知上直接点了「去打卡」 */
+window.__xmAlarmGo=function(d,n){
+if(!S||!S.cards){if((n||0)<40)setTimeout(()=>window.__xmAlarmGo(d,(n||0)+1),500);return}
+almMark(d.occ);if(ALM.open&&ALM.open.occ===d.occ)ALM.open.stop();
+if(cardById(d.card))almGo(d.card);
+};
 function openReminderSheet(init,onSave,onDelete,c0){
 const r=init?JSON.parse(JSON.stringify(init)):{mode:'strong',h:21,m:30,repeat:'daily',days:[0,1,2,3,4,5,6],tone:1};r.mode='strong';
 const {sh,close}=openSheet(`
 <div class="sheet-head"><button class="ep-link" id="rmX">取消</button><h3>${init?'编辑提醒':'添加提醒'}</h3><button class="ep-link ok" id="rmOk">完成</button></div>
-<div class="alm-info"><span class="rm-ic">${ALARM_ICON}</span><span><b>闹钟提醒</b><small>时间一到就响铃，手动关掉才会停，手机调成静音也能听到</small></span></div>
-<p class="hint" style="margin:8px 6px 0">需要 iOS 26 及以上；更早的系统会改为普通通知提醒。</p>
+<div class="alm-info"><span class="rm-ic">${ALARM_ICON}</span><span><b>闹钟提醒</b><small>到点响铃，锁屏和后台也会响；没处理会每 5 分钟再响一次，最多 3 次</small></span></div>
+<p class="hint" style="margin:8px 6px 0">点开响铃可以去打卡、10 分钟后再提醒或关闭；打过卡当天就不再响。需要允许小满发送通知，手机静音时只振动。</p>
 <p class="rm-lbl">提醒时间</p>
 <div class="wheel-box"><div class="wheel-band"></div><div class="wheel" id="whH"></div><span class="wheel-colon">:</span><div class="wheel" id="whM"></div></div>
 <p class="rm-lbl">重复周期</p>
@@ -2816,7 +2857,7 @@ const {sh,close}=openSheet(`
 <div class="list glass rm-tones">${TONE.LIST.map(t=>`<button class="li rm-tone" data-t="${t.n}"><span class="rm-note">${NOTE_ICON}</span><span class="t">${t.name}<small>${t.desc}</small></span><span class="radio"></span></button>`).join('')}</div>
 ${init&&onDelete?'<button class="btn danger" id="rmDel" style="margin-top:6px">删除提醒</button>':''}
 <button class="alm-try" id="rmTry">试响一次</button>
-<p class="hint" style="margin:10px 6px 0">原型里只有 App 开着时才会响；正式版在锁屏、退出 App 后也会按时响铃。</p>`);
+${window.__XM_NATIVE__?'':'<p class="hint" style="margin:10px 6px 0">网页里只有页面开着时才会响；装在手机上的小满在锁屏、后台也会按时响铃。</p>'}`);
 const drawMode=()=>{};
 wheel($('#whH',sh),24,r.h,v=>r.h=v);
 wheel($('#whM',sh),60,r.m,v=>r.m=v);
@@ -2834,7 +2875,7 @@ r.repeat=hit?hit[0]:'custom';drawRep();buzz();
 const drawTone=()=>$$('.rm-tone',sh).forEach(b=>{const on=+b.dataset.t===r.tone;b.classList.toggle('on',on);$('.radio',b).classList.toggle('on',on)});
 $$('.rm-tone',sh).forEach(b=>b.onclick=()=>{r.tone=+b.dataset.t;drawTone();TONE.play(r.tone)});
 $('#rmX',sh).onclick=close;
-$('#rmTry',sh).onclick=()=>ringAlarm(c0||{name:'试响',ic:'text',text:'⏰',hex:'#F5C542'},r,true);
+$('#rmTry',sh).onclick=()=>ringAlarm(c0&&c0.name?c0:{name:'试响',ic:'text',text:'⏰',hex:'#F5C542'},r,{test:true});
 $('#rmOk',sh).onclick=()=>{
 if(!r.days.length){toast('至少选择一天');return}
 onSave(r);close();

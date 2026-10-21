@@ -54,7 +54,7 @@ struct DesignerView: View {
                 .presentationDragIndicator(.hidden)
         }
         .sheet(item: $reminderEdit) { e in
-            ReminderSheet(initial: e.index.flatMap { i in (c.reminders ?? []).indices.contains(i) ? c.reminders![i] : nil }) { r in
+            ReminderSheet(initial: e.index.flatMap { i in (c.reminders ?? []).indices.contains(i) ? c.reminders![i] : nil }, card: c) { r in
                 var R = c.reminders ?? []
                 if let i = e.index, R.indices.contains(i) { R[i] = r } else { R.append(r) }
                 c.reminders = R
@@ -413,7 +413,6 @@ struct DesignerView: View {
         if !(x.reminders ?? []).isEmpty {
             Task {
                 _ = await Notifier.shared.requestPermission()
-                await HabitAlarms.requestIfNeeded()
                 Notifier.shared.rescheduleAll(store)
             }
         }
@@ -657,6 +656,8 @@ struct IconPickerSheet: View {
 
 struct ReminderSheet: View {
     var initial: Reminder?
+    /// 试响时显示的卡片
+    var card: Card? = nil
     var onSave: (Reminder) -> Void
     var onDelete: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -697,14 +698,14 @@ struct ReminderSheet: View {
                             .background(Circle().fill(Color(red: 118/255, green: 118/255, blue: 128/255).opacity(0.14)))
                         VStack(alignment: .leading, spacing: 3) {
                             Text("闹钟提醒").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color(hex: "#3E3532"))
-                            Text("时间一到就响铃，手动关掉才会停，手机调成静音也能听到").font(.system(size: 12.5)).foregroundStyle(Color(hex: "#7D7366"))
+                            Text("到点响铃，锁屏和后台也会响；没处理会每 5 分钟再响一次，最多 3 次").font(.system(size: 12.5)).foregroundStyle(Color(hex: "#7D7366"))
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     .padding(14)
                     .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Color(hex: "#FFF4D6")))
                     .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color(hex: "#F2D58A"), lineWidth: 1.5))
-                    Text("需要 iOS 26 及以上；更早的系统会改为普通通知提醒。").font(.system(size: 12)).foregroundStyle(WT.gray)
+                    Text("点开响铃可以去打卡、10 分钟后再提醒或关闭；打过卡当天就不再响。需要允许小满发送通知，手机静音时只振动。").font(.system(size: 12)).foregroundStyle(WT.gray)
                         .padding(.horizontal, 6).padding(.top, 8)
 
                     lbl("提醒时间")
@@ -770,6 +771,18 @@ struct ReminderSheet: View {
                         .buttonStyle(.plain)
                             .padding(.top, 6)
                     }
+                    Button {
+                        Feedback.tap()
+                        SFX.stopTone()
+                        AlarmCenter.shared.test(card: card ?? Card(name: "试响"), tone: r.tone ?? 1)
+                    } label: {
+                        Text("试响一次").font(.system(size: 14, weight: .semibold)).foregroundStyle(Theme.adaptive("#5E544A", "#E5E0D6"))
+                            .padding(.horizontal, 20).frame(height: 38)
+                            .background(Capsule().fill(Theme.adaptive("#F2EDE3", "#2F2E2B")))
+                    }
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 14)
                 }
                 .padding(.horizontal, 18).padding(.bottom, 24)
             }

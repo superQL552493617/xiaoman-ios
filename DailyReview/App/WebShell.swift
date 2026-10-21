@@ -3,6 +3,7 @@ import WebKit
 import UIKit
 import LocalAuthentication
 import WidgetKit
+import UserNotifications
 
 // MARK: - 网页版界面（把最终版网页原样装进 App，用原生能力补齐：存储、触感、分享导出、反馈、面容 ID、提醒、小组件）
 
@@ -157,7 +158,6 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     @Published var ready = false
     private var postTask: Task<Void, Never>?
     private var lastWrite = Date.distantPast
-    private var asked = false
 
     /// 页面加载前注入：存储、触感、分享
     static let startScript = """
@@ -227,6 +227,12 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
                 DispatchQueue.main.async { replyHandler(ok, nil) }
             }
+        case "alarm":
+            // 网页里的响铃页：去打卡 / 10 分钟后再提醒 / 关闭 / 没人理自己停
+            if let ring = AlarmRing(web: body), let act = AlarmCenter.Act(rawValue: (body["act"] as? String) ?? "") {
+                Task { await AlarmCenter.shared.handle(ring, act, fromWeb: true) }
+            }
+            replyHandler(true, nil)
         default:
             replyHandler(nil, nil)
         }
@@ -245,13 +251,19 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             let d = UserDefaults.standard
             let last = d.object(forKey: "reminderCount") as? Int
             d.set(n, forKey: "reminderCount")
-            if let last, n > last, self?.asked == false {
-                self?.asked = true
+            if let last, n > last {
                 _ = await Notifier.shared.requestPermission()
-                await HabitAlarms.requestIfNeeded()
+                await self?.syncAlarmFlag()
             }
             Notifier.shared.rescheduleAll(s)
         }
+    }
+
+    /// 告诉网页：提醒由系统通知负责（网页自己就不再计时，避免响两次）；没开通知权限时网页自己在 App 开着时响
+    func syncAlarmFlag() async {
+        let st = await UNUserNotificationCenter.current().notificationSettings()
+        let ok = st.authorizationStatus == .authorized || st.authorizationStatus == .provisional || st.authorizationStatus == .ephemeral
+        _ = try? await webView?.evaluateJavaScript("window.XM_NATIVE_ALARM=\(ok ? "true" : "false")")
     }
 
     /// 切换界面前，让网页把最后的修改写完
@@ -308,10 +320,17 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { self.ready = true }
+        Task { await syncAlarmFlag() }
+        // 网页读完数据再把排队的响铃交给它（点通知冷启动时会先排队）
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+            AlarmCenter.shared.attachWeb { js in self?.webView?.evaluateJavaScript(js) }
+        }
     }
 
     // 页面进程被系统回收时自动重新加载
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { webView.reload() }
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { AlarmCenter.shared.detachWeb(); webView.reload() }
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { AlarmCenter.shared.detachWeb() }
 
     // 网页里的 alert / confirm / prompt
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,

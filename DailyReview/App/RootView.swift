@@ -105,6 +105,14 @@ struct RootView: View {
         }
         .onAppear {
             syncFeedback()
+            // 闹钟响铃页的「去打卡」：回到今天的打卡页，打开这张卡片的打卡弹窗
+            AlarmCenter.shared.store = store
+            AlarmCenter.shared.openCheck = { [weak router = router] id in
+                guard let router else { return }
+                router.designer = nil; router.journal = nil; router.memory = false; router.vip = false; router.pop = nil
+                router.goDay = DK.today
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { router.check = CheckTarget(cardId: id, day: DK.today) }
+            }
             // 截图测试用：启动参数 -shotTab bars 直接打开某个页签
             if let t = UserDefaults.standard.string(forKey: "shotTab"), let v = AppTab(rawValue: t) { tab = v }
             // 截图测试用：-shotSeed 1 造 40 天的打卡数据（和网页版对比图用的一样）
