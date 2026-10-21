@@ -513,7 +513,13 @@ struct QuickRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        if id == "mood" { b.readFrame($moodFrame) } else { b }
+        if id == "mood" {
+            b.readFrame($moodFrame)
+                .onAppear {
+                    // 截图测试用：-shotMood 1 打开心情菜单
+                    if UserDefaults.standard.bool(forKey: "shotMood") { DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { openMood() } }
+                }
+        } else { b }
     }
 
     /// 网页版 openMood：按钮下面弹出小菜单，再点一次当前心情就是清除

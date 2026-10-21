@@ -997,6 +997,7 @@ struct HeatSheet: View {
             }
         }
         .onChange(of: month) { _, _ in dayK = nil }
+        .onAppear { if UserDefaults.standard.bool(forKey: "shotHeatDay") { DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { dayK = DK.today } } }
         .fullScreenCover(item: $edit) { t in
             JournalEditor(day: t.day, entryId: t.entryId).environmentObject(store).environmentObject(toaster)
         }

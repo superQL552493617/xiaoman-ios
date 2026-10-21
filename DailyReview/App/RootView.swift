@@ -116,6 +116,18 @@ struct RootView: View {
                         store.s.records[k, default: [:]][c.id] = Rec(checked: true, t: DK.nowMs)
                     }
                 }
+                if store.s.journal[DK.today] == nil {
+                    var a = JournalEntry(title: "早上散步", text: "沿着河边走了四十分钟，风很舒服。\n回来以后精神好多了。", c: DK.nowMs - 3_600_000)
+                    a.t = a.c
+                    let b = JournalEntry(title: "", text: "晚上读了二十页书，记几句喜欢的话。", c: DK.nowMs)
+                    store.s.journal[DK.today] = [a, b]
+                }
+            }
+            // 截图测试用：-shotJr new / edit 打开笔记编辑页
+            if let j = UserDefaults.standard.string(forKey: "shotJr") {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    router.journal = JournalTarget(day: DK.today, entryId: j == "edit" ? store.s.journalList(DK.today).first?.id : nil)
+                }
             }
         }
         .onChange(of: store.s.prefs) { _, _ in syncFeedback() }
