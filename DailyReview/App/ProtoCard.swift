@@ -29,7 +29,7 @@ struct ProtoDot: View {
             // 打卡后的填充
             cs.fill(card.ic == "img" ? Color.clear : PT.fillOn(card.hex, dark: dark))
                 .scaleEffect(fill)
-                .opacity(fillOpacity * (fill > 0 ? 1 : 0))
+                .opacity(fillOpacity)
             // 照片图标铺满
             if card.ic == "img", let ui = ImageData.image(card.icImg) {
                 Image(uiImage: ui).resizable().scaledToFill().frame(width: size, height: size).clipShape(cs)
@@ -91,16 +91,12 @@ struct ProtoDot: View {
         }
     }
 
+    /// 所有形状都一样：颜色从中心往外长出来，稍微冲过一点再回到原大小
     private func animateIn() {
-        if shape == "circle" {
-            fill = 0; fillOpacity = 1
-            withAnimation(.timingCurve(0.3, 0.8, 0.4, 1, duration: 0.29)) { fill = 1.08 }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.29) {
-                withAnimation(.easeOut(duration: 0.15)) { fill = 1 }
-            }
-        } else {
-            fill = 1; fillOpacity = 0.25
-            withAnimation(.easeOut(duration: 0.26)) { fillOpacity = 1 }
+        fill = 0; fillOpacity = 1
+        withAnimation(.timingCurve(0.3, 0.8, 0.4, 1, duration: 0.29)) { fill = 1.08 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.29) {
+            withAnimation(.easeOut(duration: 0.15)) { fill = 1 }
         }
         let s: CGFloat = shape == "circle" ? 1 : 0.86
         ripples = [RippleItem(scale: 1, opacity: 0.75, to: 1.6 * s, ms: 0.56, delay: 0),
@@ -109,9 +105,10 @@ struct ProtoDot: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { ripples = [] }
     }
 
+    /// 取消打卡：颜色往中心缩回去并变淡（和网页版一样 0.3 秒）
     private func animateOut() {
-        withAnimation(.easeIn(duration: 0.3)) { fill = 0 }
-        fillOpacity = 1
+        fill = 1; fillOpacity = 1
+        withAnimation(.easeIn(duration: 0.3)) { fill = 0; fillOpacity = 0.4 }
     }
 }
 

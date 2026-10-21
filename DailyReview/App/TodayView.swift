@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - 打卡主页（按网页版 v256 复刻）
 
@@ -14,6 +15,13 @@ struct TodayView: View {
     @State private var pulses: [String: Int] = [:]
     @State private var lastAllDone: [String: Bool] = [:]
     @State private var popAll = false
+    // 左右拖动换一天（网页版 bindDaySwipe）
+    @State private var swipeX: CGFloat = 0
+    @State private var swipeAxis = 0
+    @State private var paneX: CGFloat = 0
+    @State private var paneOpacity: Double = 1
+    /// 长按卡片拖动换位置（网页版 gest：按住 0.42 秒抬起，拖到别的卡片上换位置）
+    @State private var dragging: String?
 
     private var P: Prefs { store.s.prefs }
     private var isToday: Bool { sel == DK.today }
@@ -27,10 +35,14 @@ struct TodayView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .padding(.bottom, 130)
+                    .offset(x: paneX)
+                    .opacity(paneOpacity)
             }
             .scrollIndicators(.hidden)
             .safeAreaInset(edge: .top, spacing: 0) { topFix }
             .background(PageBG().ignoresSafeArea())
+            .overlay(alignment: .leading) { dayHint(left: true) }
+            .overlay(alignment: .trailing) { dayHint(left: false) }
         }
         .onAppear {
             stripOpen = P.home.strip; noteAllDone(animate: false)
@@ -39,6 +51,13 @@ struct TodayView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { tapCard(c) }
             }
             // 截图测试用：-shotDlg done/undo/pause 打开第一张卡片的弹窗；-shotDesigner new/edit 打开编辑页
+            // 截图测试用：-shotAllDone 1 先把其它的都打上，6 秒多时点最后一个，截图时正好在冒光点
+            if UserDefaults.standard.bool(forKey: "shotAllDone") {
+                let left = countable.filter { !store.s.isChecked(sel, $0.id) }
+                for c in left.dropLast() { store.toggle(c.id, on: sel) }
+                noteAllDone(animate: false)
+                if let last = left.last { DispatchQueue.main.asyncAfter(deadline: .now() + 6.2) { tapCard(last) } }
+            }
             if UserDefaults.standard.string(forKey: "shotDlg") != nil, let c = countable.first {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { openDialog(c) }
             }
@@ -122,7 +141,7 @@ struct TodayView: View {
             if P.home.quick { QuickRow(day: sel).padding(.horizontal, 12).padding(.bottom, 12) }
             if P.home.jr { JournalStrip(day: sel) }
             VStack(alignment: .leading, spacing: 0) {
-                trayHead.padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 14)
+                trayHead.padding(.horizontal, 4).padding(.top, 6).padding(.bottom, 14).zIndex(2)
                 groupsView(width: width)
                 Text(isToday ? "今天的都完成了，真不错" : "这一天的都完成了，真不错")
                     .font(.system(size: 13))
@@ -133,18 +152,63 @@ struct TodayView: View {
                     .animation(.easeOut(duration: 0.3), value: allDone)
             }
             .contentShape(Rectangle())
-            // 左右滑动换一天（笔记卡片上的左滑留给删除）
+            // 左右拖动换一天：页面跟着手指走一点，边上出现「前往明天 / 回到昨天」，拉够了松手就换（笔记卡片上的左滑留给删除）
             .simultaneousGesture(
-            DragGesture(minimumDistance: 30).onEnded { v in
-                let dx = v.translation.width, dy = v.translation.height
-                guard abs(dx) > 70, abs(dx) > abs(dy) * 1.6 else { return }
-                Feedback.tap()
-                withAnimation(.easeOut(duration: 0.2)) { sel = DK.addKey(sel, dx < 0 ? 1 : -1) }
-            }
+                DragGesture(minimumDistance: 10)
+                    .onChanged { v in
+                        if swipeAxis == 0 { swipeAxis = abs(v.translation.width) > abs(v.translation.height) * 1.2 ? 1 : 2 }
+                        guard swipeAxis == 1 else { return }
+                        let wasGo = abs(swipeX) >= 80
+                        swipeX = v.translation.width
+                        paneX = swipeX * 0.35
+                        if !wasGo && abs(swipeX) >= 80 { Feedback.soft() }
+                    }
+                    .onEnded { _ in
+                        defer { swipeAxis = 0 }
+                        guard swipeAxis == 1 else { return }
+                        let dx = swipeX
+                        swipeX = 0
+                        if abs(dx) >= 80 {
+                            Feedback.tap()
+                            withAnimation(.easeIn(duration: 0.16)) { paneX = dx < 0 ? -60 : 60; paneOpacity = 0 }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
+                                sel = DK.addKey(sel, dx < 0 ? 1 : -1)
+                                paneX = dx < 0 ? 60 : -60
+                                withAnimation(.easeOut(duration: 0.22)) { paneX = 0; paneOpacity = 1 }
+                            }
+                        } else {
+                            withAnimation(.easeOut(duration: 0.22)) { paneX = 0 }
+                        }
+                    }
             )
         }
         .padding(.horizontal, 2)
         .padding(.top, 4)
+        // 松手的地方不在卡片上：结束拖动
+        .onDrop(of: [UTType.text], isTargeted: nil) { _ in dragging = nil; store.save(); return true }
+    }
+
+    // MARK: 屏幕边上的竖排提示：前往明天 / 回到昨天
+
+    @ViewBuilder private func dayHint(left: Bool) -> some View {
+        let word = isToday ? (left ? "回到昨天" : "前往明天") : (left ? "前一天" : "后一天")
+        let p = min(1, abs(swipeX) / 80)
+        let shown = left ? swipeX > 0 : swipeX < 0
+        let go = shown && p >= 1
+        VStack(spacing: 2) {
+            ForEach(Array(word.enumerated()), id: \.offset) { _, ch in Text(String(ch)) }
+        }
+        .font(.system(size: 13, weight: .medium))
+        .foregroundStyle(go ? Theme.adaptive("#5E6B5A", "#CFE0C8") : PT.faint)
+        .padding(.vertical, 12).padding(.horizontal, 5)
+        .background(
+            UnevenRoundedRectangle(topLeadingRadius: left ? 0 : 12, bottomLeadingRadius: left ? 0 : 12,
+                                   bottomTrailingRadius: left ? 12 : 0, topTrailingRadius: left ? 12 : 0, style: .continuous)
+                .fill(go ? Theme.adaptive("#E7EEE3", "#34402F") : PT.chip.opacity(0.85))
+        )
+        .opacity(shown ? p : 0)
+        .animation(.easeOut(duration: 0.15), value: go)
+        .allowsHitTesting(false)
     }
 
     // MARK: 「日常打卡」标题行
@@ -315,7 +379,18 @@ struct TodayView: View {
                     ForEach(rows[r]) { c in
                         ProtoCell(card: c, rec: store.s.rec(sel, c.id), layout: P.layout, shape: shape, line: line,
                                   pulse: pulses[c.id] ?? 0, width: colW)
+                            .opacity(dragging == c.id ? 0.35 : 1)
                             .onTapGesture { tapCard(c) }
+                            .onDrag {
+                                dragging = c.id
+                                Feedback.tap()
+                                return NSItemProvider(object: c.id as NSString)
+                            } preview: {
+                                ProtoDot(card: c, on: store.s.isChecked(sel, c.id), shape: shape, line: line)
+                                    .padding(6)
+                                    .environmentObject(store)
+                            }
+                            .onDrop(of: [UTType.text], delegate: TodayDrop(target: c, store: store, flat: P.flat, order: cards.map(\.id), dragging: $dragging))
                     }
                 }
             }
@@ -352,6 +427,44 @@ struct TodayView: View {
         if animate, now, lastAllDone[sel] == false { sparkle += 1; Feedback.success() }
         lastAllDone[sel] = now
     }
+}
+
+/// 打卡页拖动换位置：拖到哪张卡片上，就排到它的位置（分组模式下也会换到那个分组）
+private struct TodayDrop: DropDelegate {
+    let target: Card
+    let store: Store
+    let flat: Bool
+    let order: [String]
+    @Binding var dragging: String?
+
+    func validateDrop(info: DropInfo) -> Bool { dragging != nil }
+    func dropEntered(info: DropInfo) {
+        guard let d = dragging, d != target.id else { return }
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+            if flat {
+                var ids = store.s.prefs.flatOrder ?? []
+                for c in store.s.cards where !ids.contains(c.id) { ids.append(c.id) }
+                guard let from = ids.firstIndex(of: d), let to = ids.firstIndex(of: target.id) else { return }
+                ids.remove(at: from)
+                ids.insert(d, at: to)
+                store.s.prefs.flatOrder = ids
+            } else {
+                guard let from = store.s.cards.firstIndex(where: { $0.id == d }),
+                      let to = store.s.cards.firstIndex(where: { $0.id == target.id }) else { return }
+                var c = store.s.cards.remove(at: from)
+                c.group = target.group
+                store.s.cards.insert(c, at: min(to, store.s.cards.count))
+            }
+        }
+        Feedback.tap()
+    }
+    func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
+    func performDrop(info: DropInfo) -> Bool {
+        dragging = nil
+        store.save()
+        return true
+    }
+    func dropExited(info: DropInfo) {}
 }
 
 struct CheckTarget: Identifiable {
@@ -617,30 +730,61 @@ struct DoodleIcon: View {
     }
 }
 
-// MARK: - 全部完成时的小光点（小星星往下缓缓飘）
+// MARK: - 全部完成时：椰树周围一圈暖光，细小的光点和星星往下缓缓飘（和网页版 sparkBurst 一样）
 
 struct SparkleBurst: View {
     var trigger: Int
-    @State private var particles: [Particle] = []
+    @State private var start: Date?
+    @State private var parts: [Particle] = []
 
     struct Particle: Identifiable {
         let id = UUID()
-        var x0: CGFloat, y0: CGFloat, dx: CGFloat, fall: CGFloat, size: CGFloat, color: Color, star: Bool, delay: Double
-        var on = false
+        var x0: CGFloat, y0: CGFloat, sway: CGFloat, fall: CGFloat, size: CGFloat, color: Color, star: Bool, delay: Double, dur: Double
+
+        /// 网页版的四个关键帧：出现 → 10% 变亮 → 65% → 消失
+        func state(_ t: Double) -> (x: CGFloat, y: CGFloat, s: CGFloat, o: Double)? {
+            guard t >= 0 else { return nil }
+            let u = min(1, t / dur)
+            let e = 1 - pow(1 - u, 2.2)   // 先快后慢，接近 cubic-bezier(.3,.6,.4,1)
+            let k: [(Double, CGFloat, CGFloat, CGFloat, Double)] = [
+                (0, x0, y0, 0.6, 0.6),
+                (0.1, x0 + sway * 0.3, y0 + fall * 0.2, 1, 1),
+                (0.65, x0 + sway, y0 + fall * 0.7, 0.9, 0.85),
+                (1, x0 + sway * 0.6, y0 + fall, 0.4, 0)
+            ]
+            var i = 0
+            while i < k.count - 2 && e > k[i + 1].0 { i += 1 }
+            let a = k[i], b = k[i + 1], f = CGFloat((e - a.0) / (b.0 - a.0))
+            return (a.1 + (b.1 - a.1) * f, a.2 + (b.2 - a.2) * f, a.3 + (b.3 - a.3) * f, a.4 + (b.4 - a.4) * Double(f))
+        }
     }
 
     var body: some View {
-        ZStack {
-            ForEach(particles) { p in
-                Group {
-                    if p.star { Image(systemName: "sparkle").resizable().frame(width: p.size * 1.8, height: p.size * 1.8) }
-                    else { Circle().frame(width: p.size, height: p.size) }
+        TimelineView(.animation(paused: start == nil)) { tl in
+            let t = start.map { tl.date.timeIntervalSince($0) } ?? 99
+            ZStack {
+                if t < 1.4 {
+                    let u = t / 1.4
+                    let o = u < 0.15 ? 0.35 + (0.6 - 0.35) * u / 0.15 : 0.6 * (1 - (u - 0.15) / 0.85)
+                    Circle()
+                        .fill(RadialGradient(colors: [Color(red: 1, green: 226/255, blue: 120/255).opacity(0.55), Color(red: 1, green: 226/255, blue: 120/255).opacity(0)],
+                                             center: .center, startRadius: 0, endRadius: 17 * 0.7 * 1.43))
+                        .frame(width: 34, height: 34)
+                        .scaleEffect(0.8 + 0.7 * (1 - pow(1 - u, 2)))
+                        .opacity(o)
                 }
-                .foregroundStyle(p.color)
-                .shadow(color: p.color.opacity(0.8), radius: 2)
-                .offset(x: p.on ? p.x0 + p.dx : p.x0, y: p.on ? p.y0 + p.fall : p.y0)
-                .opacity(p.on ? 0 : 1)
-                .animation(.easeOut(duration: 1.9).delay(p.delay), value: p.on)
+                ForEach(parts) { p in
+                    if let st = p.state(t - p.delay) {
+                        Group {
+                            if p.star { StarShape().fill(p.color) } else { Circle().fill(p.color) }
+                        }
+                        .frame(width: p.size, height: p.size)
+                        .shadow(color: p.color, radius: 1.5)
+                        .scaleEffect(st.s)
+                        .opacity(st.o)
+                        .offset(x: st.x, y: st.y)
+                    }
+                }
             }
         }
         .allowsHitTesting(false)
@@ -649,14 +793,27 @@ struct SparkleBurst: View {
 
     private func fire() {
         let C: [Color] = ["#FFD45C", "#F7C948", "#8FD27A", "#FF9DB5", "#9BD0F5", "#FFC27A"].map { Color(hex: $0) }
-        particles = (0..<22).map { i in
-            Particle(x0: .random(in: -13...13), y0: .random(in: -12...6), dx: .random(in: -6...6), fall: .random(in: 16...32),
-                     size: .random(in: 1.6...3.2), color: C[i % C.count], star: Double.random(in: 0...1) < 0.35,
-                     delay: i < 12 ? Double.random(in: 0...0.12) : Double.random(in: 0.15...0.8))
+        let w: CGFloat = 22, h: CGFloat = 22
+        parts = (0..<22).map { i in
+            let star = Double.random(in: 0...1) < 0.4
+            return Particle(x0: CGFloat.random(in: -0.5...0.5) * w * 1.1, y0: CGFloat.random(in: -0.6...0.4) * h * 0.8,
+                            sway: CGFloat.random(in: -5...5), fall: CGFloat.random(in: 16...32),
+                            size: star ? CGFloat.random(in: 3...5) : CGFloat.random(in: 1.4...3), color: C[i % C.count], star: star,
+                            delay: i < 12 ? Double.random(in: 0...0.12) : Double.random(in: 0.15...0.8), dur: Double.random(in: 1.7...2.6))
         }
-        DispatchQueue.main.async {
-            for i in particles.indices { particles[i].on = true }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) { particles = [] }
+        start = Date()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.8) { start = nil; parts = [] }
+    }
+}
+
+/// 网页版 .spark.star 的四角星
+struct StarShape: Shape {
+    func path(in r: CGRect) -> Path {
+        let pts: [(CGFloat, CGFloat)] = [(0.5, 0), (0.62, 0.38), (1, 0.5), (0.62, 0.62), (0.5, 1), (0.38, 0.62), (0, 0.5), (0.38, 0.38)]
+        var p = Path()
+        p.move(to: CGPoint(x: r.minX + pts[0].0 * r.width, y: r.minY + pts[0].1 * r.height))
+        for q in pts.dropFirst() { p.addLine(to: CGPoint(x: r.minX + q.0 * r.width, y: r.minY + q.1 * r.height)) }
+        p.closeSubpath()
+        return p
     }
 }
