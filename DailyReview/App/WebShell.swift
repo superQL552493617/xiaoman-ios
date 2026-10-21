@@ -237,7 +237,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         if(/support\\.qq\\.com/.test(this.action||'')){var f={};for(var i=0;i<this.elements.length;i++){var el=this.elements[i];if(el.name)f[el.name]=el.value}N({cmd:'feedback',fields:f}).catch(function(){});return}
         return sub.call(this)};
       if(typeof window.faceScan==='function'){
-        window.faceScan=function(onOk,label,onFail){N({cmd:'faceid',label:label||''}).then(function(ok){if(ok){onOk&&onOk()}else{onFail&&onFail()}}).catch(function(){onFail&&onFail()})};
+        window.faceScan=function(onOk,label,onFail){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||''}).then(function(ok){done();if(ok){onOk&&onOk()}else{onFail&&onFail()}}).catch(function(){done();onFail&&onFail()})};
       }
     })();
     """

@@ -262,7 +262,7 @@ final class AppLock: ObservableObject {
         guard enabled else { locked = false; return }
         if let t = wentBackground {
             wentBackground = nil
-            if Date().timeIntervalSince(t) > 30 { locked = true; autoPrompt = true }
+            _ = t; locked = true; autoPrompt = true   // 离开过 App 就要重新验证
         }
         promptIfNeeded()
     }
