@@ -1,0 +1,39 @@
+name: 会员商品（App Store Connect）
+on:
+  push:
+    branches: [main]
+    paths: [ci/iap.txt]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  iap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KEY_ID: G235VJ97RJ
+      ISSUER_ID: 984b2449-6ea9-47a4-8956-c836f0aa5f92
+    steps:
+      - uses: actions/checkout@v4
+      - name: 解密 App Store Connect 密钥
+        env:
+          PASS: ${{ secrets.SIGNING_PASSPHRASE }}
+          ASC_B64: ${{ secrets.ASC_KEY_ENC_B64 }}
+        run: |
+          K="$RUNNER_TEMP/keys"; mkdir -p "$K"
+          printf %s "$ASC_B64" | base64 --decode > "$RUNNER_TEMP/asc.enc"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/asc.enc" -out "$K/AuthKey.p8" -pass env:PASS
+          echo "KEY_PATH=$K/AuthKey.p8" >> $GITHUB_ENV
+      - name: 检查 / 创建会员商品
+        run: |
+          pip install -q pyjwt cryptography requests
+          mkdir -p /tmp/iaplog
+          python3 ci/asc_iap.py "$(head -1 ci/iap.txt)" 2>&1 | tee /tmp/iaplog/out.txt
+      - name: 保存日志
+        if: always()
+        run: |
+          mkdir -p /tmp/iaplog && cd /tmp/iaplog
+          echo "$GITHUB_SHA" > sha.txt
+          git init -q -b ci-log-iap; git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "iap $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-log-iap
