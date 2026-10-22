@@ -1,2 +1,2 @@
-splash-dark2|dark|-uiMode web|2
-splash-dark3|dark|-uiMode web|0
+sp-light|light|-uiMode web|2
+sp-dark|dark|-uiMode web|2

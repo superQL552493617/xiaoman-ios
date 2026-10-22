@@ -2449,7 +2449,9 @@ document.body.append(bd,dg);
 {const sw=$('#stripWrap'),hd=$('#hdr');const r=(sw&&!sw.classList.contains('collapsed')?sw:hd);   // sit just under the date strip so the dates stay visible
 const top=r?Math.max(r.getBoundingClientRect().bottom+10,12):120;dg.style.top=Math.min(top,Math.max(12,innerHeight-dg.offsetHeight-16))+'px'}
 /* 弹窗刚出来时，手指那一下点击的「余波」可能落在弹窗按钮上（比如「编辑习惯」）：0.5 秒内的点击都不算 */
-{const t0=performance.now();const guard=e=>{if(performance.now()-t0<500){e.stopPropagation();e.preventDefault()}};['click','pointerup','touchend'].forEach(t=>dg.addEventListener(t,guard,true));bd.addEventListener('click',guard,true)}
+{const t0=performance.now();const guard=e=>{if(performance.now()-t0<600){e.stopPropagation();e.preventDefault()}};['click','pointerup','touchend','mousedown','pointerdown','touchstart'].forEach(t=>dg.addEventListener(t,guard,true));bd.addEventListener('click',guard,true);
+/* 输入框先设成只读：打开弹窗那一下的点击余波落在输入框上也不会弹出输入法；之后用户自己点输入框才弹 */
+const ta0=$('.dlg-ta',dg);if(ta0){ta0.readOnly=true;setTimeout(()=>{ta0.readOnly=false;if(document.activeElement===ta0)ta0.blur()},650)}}
 requestAnimationFrame(()=>{bd.classList.add('show');dg.classList.add('show')});
 edApply($('.dlg-ta-wrap',dg),'log');
 const ta=$('.dlg-ta',dg),qi=$('.dlg-qty input',dg);

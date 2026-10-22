@@ -85,7 +85,6 @@ struct SplashView: View {
                     .padding(.bottom, 24)
             }
         }
-        .environment(\.colorScheme, .light)
     }
 }
 
