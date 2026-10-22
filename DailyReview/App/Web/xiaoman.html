@@ -5429,7 +5429,7 @@ return {device:/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(
 function userId(){if(window.__XM_UID__)return window.__XM_UID__;if(!/^\d{8}$/.test(S.prefs.uid||'')){S.prefs.uid=String(1e7+Math.floor(Math.random()*9e7));save()}return S.prefs.uid}
 const IS_TEST=!IN_APP||window.__XM_TEST__===true;
 /* 私密反馈表单的网址（腾讯问卷等，只有开发者能看到提交的内容）。填好后「意见反馈」就会打开它，不再进兔小巢社区 */
-const FEEDBACK_FORM='';
+const FEEDBACK_FORM='https://wj.qq.com/s2/28298368/emfy/';
 function anonId(){S.prefs.anon=S.prefs.anon||('u-'+uid());return S.prefs.anon}
 async function uploadFeedback(item){
 if(!FEEDBACK_API)return false;
