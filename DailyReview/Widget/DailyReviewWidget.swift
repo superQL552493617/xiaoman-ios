@@ -271,7 +271,7 @@ struct XiaomanControl: ControlWidget {
             }
         }
         .displayName("小满打卡")
-        .description("打开小满，记录今天的打卡")
+        .description("打开小满记，记录今天的打卡")
     }
 }
 

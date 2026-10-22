@@ -176,7 +176,7 @@ final class Notifier {
         items.sort { $0.0 < $1.0 }
         for (_, req) in items.prefix(60) { center.add(req) }
         if s.prefs.daily.on {
-            add(id: "daily-review", title: "小满", body: "花一分钟，记录一下今天吧", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
+            add(id: "daily-review", title: "小满记", body: "花一分钟，记录一下今天吧", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
         }
     }
 
