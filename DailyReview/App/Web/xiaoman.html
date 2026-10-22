@@ -5335,16 +5335,20 @@ let fails=0;
 const bye=ok=>{cv.classList.remove('show');cv.classList.add(ok?'ok':'bye');setTimeout(()=>cv.remove(),dur(320))};
 const again=$('.lk-again',cv);
 const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true)},'解锁小满',()=>{fails++;
-if(fails>=2){bye(false);setTimeout(openPad,dur(200))}
+if(fails>=2){openPad();setTimeout(()=>cv.remove(),dur(60))}   // 密码键盘直接盖在锁屏上面，再拿掉锁屏，中间不会露出 App 内容
 else{$('.lk-s',cv).textContent='没有认出来，再试一次';again.hidden=false}},true)};
 again.onclick=tryFace;
 setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
 }
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
+/* 离开 App 时先盖一层空白锁屏，回来时直接是锁住的样子，不会先闪一下 App 里的内容 */
+const lockShield=on=>{const old=$('.lk-shield');if(!on){old&&old.remove();return}
+if(old)return;const L=lockCfg();if(!LOCK_ENABLED||!L.on||!L.code)return;
+const el=document.createElement('div');el.className='lk lk-gate lk-cover lk-shield';el.innerHTML=`<div class="lk-top"><span class="lk-ic">${LOCK_SVG}</span><h3 class="lk-t">小满已上锁</h3></div>`;document.body.append(el)};
 document.addEventListener('visibilitychange',()=>{
-if(document.hidden){if(!window.__XM_FACE_BUSY)HIDDEN_AT=Date.now()}
-else if(HIDDEN_AT){HIDDEN_AT=0;showLock()}   // 离开 App（回到桌面、切到别的 App）再回来，都要重新验证
+if(document.hidden){if(!window.__XM_FACE_BUSY){HIDDEN_AT=Date.now();lockShield(true)}}
+else if(HIDDEN_AT){HIDDEN_AT=0;showLock();setTimeout(()=>lockShield(false),dur(80))}   // 离开 App（回到桌面、切到别的 App）再回来，都要重新验证
 });
 
 /* 我的 page tiles: line drawings with one or two colour accents */
@@ -5781,6 +5785,10 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 html body .cw .dot:has(.ic-img) .fill{transform:scale(1)!important;background:color-mix(in srgb,var(--b) 58%,#fff)!important}
 html body.dark .cw .dot:has(.ic-img) .fill{background:color-mix(in srgb,var(--b) 62%,#1B1B1A)!important}
 html body .cw.on .dot:has(.ic-img) .fill,html body.dark .cw.on .dot:has(.ic-img) .fill{background:var(--b)!important}
+
+/* 锁屏一出现就是完整盖住的，不做淡入，避免露出 App 内容；解锁时照常淡出 */
+.lk.lk-gate:not(.ok):not(.bye){opacity:1!important;transform:none!important;transition:none}
+.lk.lk-shield{z-index:89}
 </style>
 </body>
 </html>
