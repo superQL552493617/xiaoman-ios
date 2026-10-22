@@ -5468,7 +5468,7 @@ ${FEEDBACK_FORM?`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('
 <p class="meta">${FEEDBACK_FORM?`你的反馈只会发给开发者。当前版本 ${IN_APP?NV.v+'（'+NV.b+'）':APP_VER()}，${device}${os?' iOS '+os:''}，遇到问题时可以一起写上。`:`会自动附带：${APP_VER()}（${APP_BUILD}），${device}${os?' iOS '+os:''}。不会附带你的打卡、日志和笔记内容。`}</p>`);
 $('#fbX',sh).onclick=close;
 $('#fbTxc',sh).onclick=()=>{buzz();if(!FEEDBACK_FORM){openTxc();return}
-if(IN_APP)window.webkit.messageHandlers.native.postMessage({cmd:'feedback',url:FEEDBACK_FORM}).catch(()=>{});else window.open(FEEDBACK_FORM,'_blank')};
+if(IN_APP)window.webkit.messageHandlers.native.postMessage({cmd:'feedback',url:FEEDBACK_FORM,fill:`${userId()}｜${PLAN_NAME[planOf()]}｜${NV.v}(${NV.b})`}).catch(()=>{});else window.open(FEEDBACK_FORM,'_blank')};
 $('#fbUid',sh).onclick=async()=>{try{await navigator.clipboard.writeText(userId());toast('用户 ID 已复制')}catch(e){toast('用户 ID：'+userId())}};
 }
 

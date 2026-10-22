@@ -309,7 +309,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             for (k, v) in (body["fields"] as? [String: Any]) ?? [:] { f[k] = "\(v)" }
             f["clientInfo"] = DeviceInfo.model
             f["osVersion"] = DeviceInfo.osVersion
-            if let s = body["url"] as? String, let u = URL(string: s) { feedback = FeedbackFields(fields: [:], url: u) }
+            if let s = body["url"] as? String, let u = URL(string: s) { feedback = FeedbackFields(fields: ["fill": body["fill"] as? String ?? UserID.value], url: u) }
             else { feedback = FeedbackFields(fields: f) }
             replyHandler(true, nil)
         case "sfx":
