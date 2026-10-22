@@ -1,0 +1,3 @@
+raw/Yozai-Light.ttf
+raw/Yozai-Medium.ttf
+raw/Yozai-Regular.ttf
