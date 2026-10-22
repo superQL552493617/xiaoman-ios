@@ -6,6 +6,7 @@ xm_butter.ttf：站酷庆科黄油体（ZCOOL QingKe HuangYou）子集，已改�
 xm_kuaile.ttf：站酷快乐体（ZCOOL KuaiLe），原样
 xm_pixel.ttf：精品点阵体 9×9（BoutiqueBitmap9x9），原样
 xm_round.ttf：Chiron GoRound TC 子集（字重 500），已改名为 XM Round
+xm_cute.ttf：悠哉字体（Yozai）Medium 子集，已改名为 XM Cute（日志和笔记里的「软萌体」）
 
 ==================================================
 Copyright 2020-2024 LXGW (https://github.com/lxgw/kose-font)
@@ -617,3 +618,8 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+
+==================================================
+Copyright 2020, 2024 LXGW (https://github.com/lxgw/yozai-font)
+Original Font Data Copyright (C) Y.OzVox.
+This Font Software is licensed under the SIL Open Font License, Version 1.1 (see above).

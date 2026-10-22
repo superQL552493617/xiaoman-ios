@@ -49,6 +49,7 @@ targets:
           - xm_kai.ttf
           - xm_pixel.ttf
           - xm_round.ttf
+          - xm_cute.ttf
     entitlements:
       path: App/DailyReview.entitlements
       properties:
