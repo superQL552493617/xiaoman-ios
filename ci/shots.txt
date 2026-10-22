@@ -1,3 +1,2 @@
-splash|light|-uiMode web|1
-splash-dark|dark|-uiMode web|1
-after|light|-uiMode web|6
+splash-dark2|dark|-uiMode web|2
+splash-dark3|dark|-uiMode web|0
