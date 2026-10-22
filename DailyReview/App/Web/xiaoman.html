@@ -5465,7 +5465,7 @@ ${FEEDBACK_FORM?`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('
 <button class="fb2-main" id="fbUid"><span class="fb2-ic">${mi('copy',22,2)}</span><span class="t"><b>复制我的用户 ID</b><small>${userId()}，写反馈时附上，方便开发者帮你查会员和数据问题</small></span></button>
 </div>
 <div class="fb2-tips"><p><b>反馈小提示</b></p><p>遇到问题时，写清楚在哪个页面、做了什么、看到了什么，最好附一张截图，我们能更快找到原因。</p></div>
-<p class="meta">会自动附带：${APP_VER()}（${APP_BUILD}），${device}${os?' iOS '+os:''}。不会附带你的打卡、日志和笔记内容。</p>`);
+<p class="meta">${FEEDBACK_FORM?`你的反馈只会发给开发者。当前版本 ${IN_APP?NV.v+'（'+NV.b+'）':APP_VER()}，${device}${os?' iOS '+os:''}，遇到问题时可以一起写上。`:`会自动附带：${APP_VER()}（${APP_BUILD}），${device}${os?' iOS '+os:''}。不会附带你的打卡、日志和笔记内容。`}</p>`);
 $('#fbX',sh).onclick=close;
 $('#fbTxc',sh).onclick=()=>{buzz();if(!FEEDBACK_FORM){openTxc();return}
 if(IN_APP)window.webkit.messageHandlers.native.postMessage({cmd:'feedback',url:FEEDBACK_FORM}).catch(()=>{});else window.open(FEEDBACK_FORM,'_blank')};
@@ -5781,10 +5781,6 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .lk-again[hidden]{display:none}.lk-again svg{width:22px;height:22px}
 .sf-acts.sf-big button{align-items:center;text-align:center;padding:22px 12px 18px;gap:8px}.sf-acts.sf-big b{font-size:18px}
 
-/* 照片图标：图片外面露出的部分用卡片的颜色，不再是白底（没打卡时浅一点，打卡后是原色） */
-html body .cw .dot:has(.ic-img) .fill{transform:scale(1)!important;background:color-mix(in srgb,var(--b) 58%,#fff)!important}
-html body.dark .cw .dot:has(.ic-img) .fill{background:color-mix(in srgb,var(--b) 62%,#1B1B1A)!important}
-html body .cw.on .dot:has(.ic-img) .fill,html body.dark .cw.on .dot:has(.ic-img) .fill{background:var(--b)!important}
 
 /* 锁屏一出现就是完整盖住的，不做淡入，避免露出 App 内容；解锁时照常淡出 */
 .lk.lk-gate:not(.ok):not(.bye){opacity:1!important;transform:none!important;transition:none}
