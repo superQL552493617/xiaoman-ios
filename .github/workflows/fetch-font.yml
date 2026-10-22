@@ -1,0 +1,34 @@
+name: 下载字体
+on:
+  push:
+    branches: [main]
+    paths: [ci/font.txt]
+permissions:
+  contents: write
+jobs:
+  font:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 下载并裁剪
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install -q fonttools brotli
+          mkdir -p /tmp/out && cd /tmp/out
+          gh release list -R lxgw/yozai-font -L 3 > releases.txt || true
+          gh release download -R lxgw/yozai-font --pattern '*.ttf' --dir raw || gh release download -R lxgw/yozai-font --pattern '*.zip' --dir raw
+          cd raw && for z in *.zip; do [ -f "$z" ] && unzip -o -q "$z"; done; cd ..
+          find raw -name '*.ttf' | sort > list.txt; cat list.txt
+          for f in $(cat list.txt); do
+            b=$(basename "$f" .ttf)
+            pyftsubset "$f" --unicodes-file="$GITHUB_WORKSPACE/ci/font_unicodes.txt" --output-file="sub_$b.ttf" --layout-features='*' --no-hinting || true
+          done
+          rm -rf raw; ls -la
+      - name: 推送
+        if: always()
+        run: |
+          cd /tmp/out
+          git init -q -b ci-font; git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "font $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-font
