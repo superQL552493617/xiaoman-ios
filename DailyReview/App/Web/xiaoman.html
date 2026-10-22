@@ -2936,7 +2936,7 @@ drawMode();drawRep();drawTone();
 /* ---------- icon & colour picker (opened from the avatar) ---------- */
 function openIconPicker(c,onChange){
 let cat=ICON_CATS[0].id;   // always open on 日常
-let shown=c.ic||'icon';
+let shown=c.ic||'icon',slotEmpty=false;   // slotEmpty：点了「移除」只清空下面的选图框，图标本身要等选了新照片才换
 const vipTag='<span class="vip">VIP</span>';
 const {sh,close}=openSheet(`
 <div class="sheet-head"><span style="width:36px"></span><h3>图标与颜色</h3>
@@ -2984,7 +2984,7 @@ $$('#dCat button',sh).forEach(b=>b.onclick=()=>{cat=b.dataset.c;drawIcons();$('#
 const drawStyle=()=>{
 $$('#dIc button',sh).forEach(b=>b.classList.toggle('on',b.dataset.v===shown));
 $$('.ic-pane',sh).forEach(p=>p.style.display=p.dataset.p===shown?'':'none');
-const shot=$('#dIcShot',sh);shot.style.backgroundImage=c.icImg?`url(${c.icImg})`:'';shot.dataset.plus=c.icImg?'':'+';$('#dFitRow',sh).style.display=c.icImg?'':'none';$$('#dFit button',sh).forEach(b=>b.classList.toggle('on',(c.imgFit==='fill'?'fill':'fit')===b.dataset.fit));
+const shot=$('#dIcShot',sh),hasImg=c.icImg&&!slotEmpty;shot.style.backgroundImage=hasImg?`url(${c.icImg})`:'';shot.dataset.plus=hasImg?'':'+';$('#dFitRow',sh).style.display=hasImg?'':'none';$$('#dFit button',sh).forEach(b=>b.classList.toggle('on',(c.imgFit==='fill'?'fill':'fit')===b.dataset.fit));
 
 };
 $$('#dIc button',sh).forEach(b=>b.onclick=()=>{
@@ -2996,9 +2996,9 @@ drawStyle();changed()};
 v==='img'?needVip(go):go();
 });
 $('#dText',sh).oninput=e=>{c.text=[...e.target.value.trim()].slice(0,2).join('');c.ic='text';changed()};
-$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await trimIcon(await compress(f,480,true,true));c.imgTrim=1;c.ic='img';c.imgFit=c.imgFit||'fit';drawStyle();changed();e.target.value=''};
+$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await trimIcon(await compress(f,480,true,true));c.imgTrim=1;slotEmpty=false;c.ic='img';c.imgFit=c.imgFit||'fit';drawStyle();changed();e.target.value=''};
 $$('#dFit button',sh).forEach(b=>b.onclick=()=>{c.imgFit=b.dataset.fit;buzz();drawStyle();changed()});
-$('#dIcImgRm',sh).onclick=()=>{c.icImg=null;c.ic='icon';shown='img';drawIcons();drawStyle();changed()};
+$('#dIcImgRm',sh).onclick=()=>{slotEmpty=true;buzz();drawStyle()};
 const drawPal=()=>{
 const custom=!PALETTE.includes(c.hex);
 $('#dPal',sh).innerHTML=`<button class="sq custom${custom?' on':''}" id="dPick" aria-label="自定义颜色" style="${custom?`--c:${c.hex}`:''}"></button>`+
