@@ -39,6 +39,8 @@ struct TxcWebView: UIViewRepresentable {
     static let productURL = URL(string: "https://support.qq.com/product/802265")!
     let fields: [String: String]
     @Binding var loading: Bool
+    /// 私密反馈表单的网址（只有开发者能看到提交的内容）；没有时打开兔小巢
+    var url: URL? = nil
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -48,6 +50,7 @@ struct TxcWebView: UIViewRepresentable {
         wv.allowsBackForwardNavigationGestures = true
         wv.isOpaque = false
         wv.backgroundColor = .clear
+        if let u = url { wv.load(URLRequest(url: u)); return wv }
         var req = URLRequest(url: Self.productURL)
         req.httpMethod = "POST"
         req.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")

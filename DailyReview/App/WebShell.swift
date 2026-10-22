@@ -4,11 +4,46 @@ import UIKit
 import LocalAuthentication
 import WidgetKit
 import UserNotifications
+import Security
 
 // MARK: - 网页版界面（把最终版网页原样装进 App，用原生能力补齐：存储、触感、分享导出、反馈、面容 ID、提醒、小组件）
 
 /// 界面模式：web 网页版（默认，和原型完全一致）/ native 原生版（测试中）
 /// 测试包专用：默认就是会员，方便测会员功能；摇一摇菜单里可以关掉，用来测购买流程
+/// 用户 ID：8 位数字，第一次打开时生成，存在钥匙串里（开了 iCloud 钥匙串会跟着 Apple ID 同步）
+/// 删掉 App 重装、换同一个 Apple ID 的新手机，ID 都不变；只用来在反馈里认出是谁，会员状态仍以 App Store 购买记录为准
+enum UserID {
+    private static let service = "site.xiaomanhabit.app.uid"
+    static let value: String = {
+        if let s = read(), !s.isEmpty { return s }
+        let n = String(Int.random(in: 10_000_000...99_999_999))
+        write(n)
+        return n
+    }()
+    private static func base() -> [String: Any] {
+        [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: "uid"]
+    }
+    private static func read() -> String? {
+        var q = base()
+        q[kSecAttrSynchronizable as String] = kSecAttrSynchronizableAny
+        q[kSecReturnData as String] = true
+        q[kSecMatchLimit as String] = kSecMatchLimitOne
+        var out: CFTypeRef?
+        guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess, let d = out as? Data else { return nil }
+        return String(data: d, encoding: .utf8)
+    }
+    private static func write(_ s: String) {
+        var a = base()
+        a[kSecAttrSynchronizable as String] = true
+        a[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+        a[kSecValueData as String] = Data(s.utf8)
+        if SecItemAdd(a as CFDictionary, nil) != errSecSuccess {
+            a[kSecAttrSynchronizable as String] = false
+            SecItemAdd(a as CFDictionary, nil)
+        }
+    }
+}
+
 enum TestMode {
     static let vipKey = "testVIP"
     static var vip: Bool {
@@ -57,7 +92,7 @@ struct WebRootView: View {
             .animation(.easeOut(duration: 0.25), value: bridge.ready)
             .sheet(item: $bridge.feedback) { f in
                 NavigationStack {
-                    WebFeedbackView(fields: f.fields)
+                    WebFeedbackView(fields: f.fields, url: f.url)
                         .navigationTitle("意见反馈")
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { bridge.feedback = nil } } }
@@ -101,14 +136,16 @@ struct WebRootView: View {
 struct FeedbackFields: Identifiable {
     let id = UUID()
     let fields: [String: String]
+    var url: URL? = nil
 }
 
 struct WebFeedbackView: View {
     let fields: [String: String]
+    var url: URL? = nil
     @State private var loading = true
     var body: some View {
         ZStack {
-            TxcWebView(fields: fields, loading: $loading)
+            TxcWebView(fields: fields, loading: $loading, url: url)
             if loading { ProgressView().controlSize(.large) }
         }
     }
@@ -213,6 +250,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
       var N=function(m){return window.webkit.messageHandlers.native.postMessage(m)};
       window.__XM_NATIVE__=true;
       window.__XM_VER__={v:'\(v)',b:'\(b)'};
+      window.__XM_UID__='\(UserID.value)';
+      window.__XM_TEST__=\(UIMode.canSwitch ? "true" : "false");
       try{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:function(t){return N({cmd:'copy',text:String(t)}).then(function(){})}}})}catch(e){}
       window.storage={
         get:function(k){return N({cmd:'load'}).then(function(v){return v?{value:v}:null})},
@@ -237,7 +276,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         if(/support\\.qq\\.com/.test(this.action||'')){var f={};for(var i=0;i<this.elements.length;i++){var el=this.elements[i];if(el.name)f[el.name]=el.value}N({cmd:'feedback',fields:f}).catch(function(){});return}
         return sub.call(this)};
       if(typeof window.faceScan==='function'){
-        window.faceScan=function(onOk,label,onFail){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||''}).then(function(ok){done();if(ok){onOk&&onOk()}else{onFail&&onFail()}}).catch(function(){done();onFail&&onFail()})};
+        window.faceScan=function(onOk,label,onFail,bio){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||'',bio:!!bio}).then(function(ok){done();if(ok){onOk&&onOk()}else{onFail&&onFail()}}).catch(function(){done();onFail&&onFail()})};
       }
     })();
     """
@@ -270,13 +309,19 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             for (k, v) in (body["fields"] as? [String: Any]) ?? [:] { f[k] = "\(v)" }
             f["clientInfo"] = DeviceInfo.model
             f["osVersion"] = DeviceInfo.osVersion
-            feedback = FeedbackFields(fields: f)
+            if let s = body["url"] as? String, let u = URL(string: s) { feedback = FeedbackFields(fields: [:], url: u) }
+            else { feedback = FeedbackFields(fields: f) }
             replyHandler(true, nil)
         case "faceid":
             let ctx = LAContext()
             var err: NSError?
-            guard ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) else { replyHandler(false, nil); return }
-            ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
+            // 解锁时只用面容 ID（不弹系统密码），认不出来由小满自己数次数、再换成小满的密码键盘
+            // 忘记密码时仍允许用手机锁屏密码验证本人
+            let bio = body["bio"] as? Bool ?? false
+            let policy: LAPolicy = bio ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
+            if bio { ctx.localizedFallbackTitle = "" }
+            guard ctx.canEvaluatePolicy(policy, error: &err) else { replyHandler(false, nil); return }
+            ctx.evaluatePolicy(policy, localizedReason: (body["label"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "解锁小满") { ok, _ in
                 DispatchQueue.main.async { replyHandler(ok, nil) }
             }
         case "copy":

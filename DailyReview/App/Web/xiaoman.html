@@ -1265,7 +1265,7 @@ if(!_colCache.has(h)){const v=vividHex(h);_colCache.set(h,{a:mixHex(v,'#FFFFFF',
 return _colCache.get(h);
 }
 function iconHTML(c){
-if(c.ic==='img'&&c.icImg) return `<img class="ic-img" src="${c.icImg}" alt="">`;
+if(c.ic==='img'&&c.icImg) return `<img class="ic-img ${c.imgFit==='fill'?'ic-fill':'ic-fit'}" src="${c.icImg}" alt="">`;
 if(c.ic==='text') return `<span class="ic-txt" style='font-family:${fontCss(c.font)}'>${esc(c.text||[...(c.name||'?')][0])}</span>`;
 if(c.icon&&ICON_SVG[c.icon]) return ICON_SVG[c.icon];
 return `<span>${esc(c.emoji||'✨')}</span>`;
@@ -1539,9 +1539,9 @@ rp.animate([{transform:'scale(1)',opacity:op},{transform:`scale(${scale})`,opaci
 const defs=document.querySelector('svg defs');const bb=d=>d.replace(/-?\d+(\.\d+)?/g,n=>(+n/100).toFixed(4));
 let clips='',css='';
 Object.keys(SHAPE_D).filter(k=>k!=='square').forEach(k=>{clips+=`<clipPath id="clip-${k}" clipPathUnits="objectBoundingBox"><path d="${bb(SHAPE_D[k])}"/></clipPath>`;
-css+=`body.shape-${k} .fill,.cw.shp-${k} .fill{border-radius:0!important;clip-path:url(#clip-${k})!important;-webkit-clip-path:url(#clip-${k})!important}`});
+css+=`body.shape-${k} .fill,.cw.shp-${k} .fill,body.shape-${k} .dot .ic-fill,.cw.shp-${k} .dot .ic-fill{border-radius:0!important;clip-path:url(#clip-${k})!important;-webkit-clip-path:url(#clip-${k})!important}`});
 defs&&defs.insertAdjacentHTML('beforeend',clips);
-css+=`.cw.shp-circle .fill{border-radius:50%!important;clip-path:none!important;-webkit-clip-path:none!important}.cw.shp-square .fill{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
+css+=`.cw.shp-circle .fill,.cw.shp-circle .dot .ic-fill{border-radius:50%!important;clip-path:none!important;-webkit-clip-path:none!important}.cw.shp-square .fill,body.shape-square .dot .ic-fill,.cw.shp-square .dot .ic-fill{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
 css+=`body.shape-onigiri .cic,.cw.shp-onigiri .cic{transform:translateY(7%) scale(.86)!important}body.shape-heart .cic,.cw.shp-heart .cic{transform:translateY(-3%) scale(.84)!important}body.shape-flower .cic,body.shape-scallop .cic,.cw.shp-flower .cic,.cw.shp-scallop .cic{transform:scale(.92)!important}`;
 const L=(k,r)=>`body.line-${k} ${r},.ln-opt.ln-${k} ${r}`;
 css+=`${L('solid','.ring *')}{stroke-dasharray:none!important}${L('dash','.ring *')}{stroke-dasharray:2.3 1.7!important}`;
@@ -2698,7 +2698,7 @@ if(!isN&&!c.days.length){toast('循环模式里至少选择一天');return}
 c.name=c.name.trim();
 if(isN&&!c.day)c.day=tab==='today'?sel:TODAY();
 const offToday=!isN&&!c.days.includes(new Date().getDay());
-if(isNew&&!isN&&!S.vip&&S.cards.filter(x=>!isNoteCard(x)).length>=VIP_FREE_LIMIT){vipGate(`免费版最多 ${VIP_FREE_LIMIT} 个习惯，开通会员就不限个数啦。`);return}
+if(isNew&&!isN&&!S.vip&&S.cards.filter(x=>!isNoteCard(x)).length>=VIP_FREE_LIMIT){vipGate('开通会员，解锁无限习惯数量，想养多少个好习惯都可以。');return}
 if(isNew){c.createdAt=TODAY();S.cards.push(c);if(!isN)logEvent('add',c);
 const gName=((S.groups||[]).find(g=>g.id===c.group)||{}).name;
 toast(isN?`记录卡片已创建${gName?`（${gName}）`:''}，${c.day===TODAY()?'今天':'这一天'}的打卡页可以看到它`:offToday?'已创建。今天不在循环日里，打卡页今天不会显示它':gName?`已添加到“${gName}”`:'打卡已创建')}
@@ -2954,10 +2954,9 @@ const {sh,close}=openSheet(`
 <p class="hint">最多两个字，比如“英”“跑”“Ab”。</p></div>
 <div class="field ic-pane" data-p="img">
 <div class="vip-box"><div class="row" style="align-items:center">
-<span class="shot" id="dIcShot"></span>
-<div style="flex:1"><b style="font-size:15px">用自己的照片做图标</b><p class="hint" style="margin:4px 0 0">照片会裁成圆形放在圆圈中间，四周留出底色。</p></div></div>
-<div class="row" style="margin-top:12px">
-<label class="pill" style="display:inline-flex;align-items:center">选择照片<input type="file" accept="image/*" id="dIcImg" hidden></label>
+<label class="shot" id="dIcShot" aria-label="选择照片"><input type="file" accept="image/*" id="dIcImg" hidden></label>
+<div style="flex:1"><b style="font-size:15px">用自己的照片做图标</b><p class="hint" style="margin:4px 0 0">点左边的 + 选一张照片，透明背景的图片效果最好。</p></div></div>
+<div class="row ip-fit" id="dFitRow" style="margin-top:12px"><div class="seg" id="dFit"><button data-fit="fit">和图标一样大</button><button data-fit="fill">铺满整个图标</button></div>
 <button class="pill" id="dIcImgRm">移除</button></div></div></div>
 `);
 sh.classList.add('full');
@@ -2984,8 +2983,8 @@ $$('#dCat button',sh).forEach(b=>b.onclick=()=>{cat=b.dataset.c;drawIcons();$('#
 const drawStyle=()=>{
 $$('#dIc button',sh).forEach(b=>b.classList.toggle('on',b.dataset.v===shown));
 $$('.ic-pane',sh).forEach(p=>p.style.display=p.dataset.p===shown?'':'none');
-const shot=$('#dIcShot',sh);shot.style.backgroundImage=c.icImg?`url(${c.icImg})`:'';shot.textContent=c.icImg?'':'+';
-$('#dIcImgRm',sh).style.display=c.icImg?'':'none';
+const shot=$('#dIcShot',sh);shot.style.backgroundImage=c.icImg?`url(${c.icImg})`:'';shot.dataset.plus=c.icImg?'':'+';$('#dFitRow',sh).style.display=c.icImg?'':'none';$$('#dFit button',sh).forEach(b=>b.classList.toggle('on',(c.imgFit==='fill'?'fill':'fit')===b.dataset.fit));
+
 };
 $$('#dIc button',sh).forEach(b=>b.onclick=()=>{
 const v=b.dataset.v;
@@ -2996,7 +2995,8 @@ drawStyle();changed()};
 v==='img'?needVip(go):go();
 });
 $('#dText',sh).oninput=e=>{c.text=[...e.target.value.trim()].slice(0,2).join('');c.ic='text';changed()};
-$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await compress(f,240,true);c.ic='img';drawStyle();changed()};
+$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await compress(f,240,true,true);c.ic='img';c.imgFit=c.imgFit||'fit';drawStyle();changed();e.target.value=''};
+$$('#dFit button',sh).forEach(b=>b.onclick=()=>{c.imgFit=b.dataset.fit;buzz();drawStyle();changed()});
 $('#dIcImgRm',sh).onclick=()=>{c.icImg=null;c.ic='icon';shown='icon';drawStyle();drawIcons();changed()};
 const drawPal=()=>{
 const custom=!PALETTE.includes(c.hex);
@@ -3012,7 +3012,7 @@ drawStyle();drawIcons();drawPal();$('#ipPv',sh).innerHTML=avatarHTML(c,58);
 requestAnimationFrame(()=>{const pal=$('#dPal',sh),on=$('.sq.on',pal);if(on)pal.scrollLeft=Math.max(0,on.offsetLeft-pal.clientWidth/2+19)});
 }
 
-function compress(file,max,square){
+function compress(file,max,square,keepAlpha){
 return new Promise(res=>{
 const fr=new FileReader();
 fr.onload=()=>{const im=new Image();im.onload=()=>{
@@ -3020,7 +3020,7 @@ const cv=document.createElement('canvas'),ctx=cv.getContext('2d');
 if(square){const side=Math.min(im.width,im.height);cv.width=cv.height=Math.min(max,side);
 ctx.drawImage(im,(im.width-side)/2,(im.height-side)/2,side,side,0,0,cv.width,cv.height);}
 else{const s=Math.min(1,max/Math.max(im.width,im.height));cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
-ctx.drawImage(im,0,0,cv.width,cv.height);}res(cv.toDataURL('image/jpeg',.76));
+ctx.drawImage(im,0,0,cv.width,cv.height);}res(keepAlpha?cv.toDataURL('image/png'):cv.toDataURL('image/jpeg',.76));
 };im.src=fr.result};
 fr.readAsDataURL(file);
 });
@@ -3857,27 +3857,17 @@ const {al,close}=openAlert(L.length?`<div class="up-ic ok">${mi('check',30,2)}</
 :`<div class="up-ic ok">${mi('check',30,2)}</div><h3>没有需要导入的新内容</h3><p>备份里的习惯、打卡和笔记，这台手机上都已经有了。</p><button class="al-btn" id="imOk">好的</button>`,'neutral up-al');
 $('#imOk',al).onclick=()=>{close();if(L.length){tab='today';sel=TODAY();render();scrollTo(0,0)}};
 }
-function openExport(){
-const data=backupData();
-const json=JSON.stringify(data);
+function openImport(){
 const {sh,close}=openSheet(`
-<div class="sheet-head"><button class="pe-x" id="exX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><h3>数据管理</h3><span style="width:36px"></span></div>
-<p class="list-title" style="margin-top:0">导出备份</p>
-<div class="list glass">
-<button class="li" id="exCopy"><span class="t">复制备份内容<small>${S.cards.length} 个习惯，${Object.keys(S.records).length} 天的记录，约 ${Math.ceil(json.length/1024)} KB</small></span></button>
-<button class="li" id="exFile"><span class="t">保存为文件<small>生成一个 .json 文件，可以存到“文件”、iCloud 云盘，或用 AirDrop、微信发给自己</small></span></button>
-</div>
-<p class="list-title">导入备份</p>
+<div class="sheet-head"><button class="pe-x" id="exX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><h3>导入</h3><span style="width:36px"></span></div>
+<p class="list-title" style="margin-top:0">从备份文件导入</p>
 <label class="btn sec im-file">从文件导入（.json）<input type="file" id="imFile" accept=".json,application/json,text/plain" hidden></label>
 <p class="hint" style="margin:8px 6px 8px;text-align:center">或者把备份内容粘贴到下面</p>
 <textarea class="inp" id="imText" rows="4" placeholder="把备份内容粘贴到这里"></textarea>
 <button class="btn sec" id="imGo" style="margin-top:10px">导入并合并</button>
-<p class="hint" style="margin:10px 6px 0">导入时按唯一编号合并：已有的习惯和记录保持不变，只补上缺少的，不会出现重复。导出和导入都免费。</p>`);
+<p class="hint" style="margin:10px 6px 0">导入时按唯一编号合并：已有的习惯和记录保持不变，只补上缺少的，不会出现重复。导入永久免费。</p>`);
 sh.classList.add('exs');
-const done=()=>{S.lastBackup=TODAY();save();if(tab==='me')renderMe()};
 $('#exX',sh).onclick=close;
-$('#exCopy',sh).onclick=async()=>{try{await navigator.clipboard.writeText(json);done();toast('备份内容已复制')}catch(e){$('#imText',sh).value=json;done();toast('已放到下方文本框，请手动全选复制')}};
-$('#exFile',sh).onclick=async()=>{const r=await saveFile(`小满-完整备份-${TODAY()}.json`,json,'application/json');if(r==='shared'||r==='download')done();const m=saveMsg(r,'备份文件');m&&toast(m)};
 const doImport=text=>{
 let d;try{d=JSON.parse(text)}catch(e){toast('内容格式不对，请使用完整的备份文件或内容');return}
 if(!d||d.app!=='daily-review'&&!Array.isArray(d.cards)){toast('这不是小满的备份内容');return}
@@ -4326,8 +4316,7 @@ ${secH('eye','数据预览',isJson?'':`<small class="sec-note">共 ${rows.length
 :rows.length>1?`<table><thead><tr>${rows[0].map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.slice(1,6).map(r=>`<tr>${r.map(v=>`<td>${esc(String(v))}</td>`).join('')}</tr>`).join('')}</tbody></table>`
 :'<p>这个时间范围里没有数据</p>'}</div>
 <button class="btn ex-go" id="exGo" ${!isJson&&rows.length<2?'disabled':''}>${mi('out',18,2.2)}导出${isJson?' JSON':' CSV'}</button>
-${secH('cloud','导入数据')}
-<div class="list glass ex-im"><button class="li" id="exBackup"><span class="row-ic">${mi('cloud',20,2)}</span><span class="t">从备份导入<small>选择 .json 备份文件，或粘贴备份内容，按编号合并、不会重复</small></span><span class="ar">›</span></button></div>`;
+<div style="height:120px" aria-hidden="true"></div>`;
 backToMe();
 $$('.ex-t').forEach(b=>b.onclick=()=>{exType=b.dataset.t;renderExport()});
 $$('.ex-ranges button').forEach(b=>b.onclick=()=>{exRange=b.dataset.r;renderExport()});
@@ -4340,18 +4329,17 @@ const r=isJson?await saveFile(`小满-${name}-${TODAY()}.json`,JSON.stringify(ba
 if(isJson&&(r==='shared'||r==='download')){S.lastBackup=TODAY();save()}   // only a full backup can restore data
 const m=saveMsg(r,name);m&&toast(m);
 };
-$('#exBackup').onclick=openExport;
 }
 
 /* ---- 模块设置: reorder and hide the tiles on 我的 ---- */
 const MODULES=[
-['cards','cards','习惯管理'],['memory','calendar','回忆'],['backup','cloud','备份'],['events','events','新事件'],['personal','shirt','个性化'],
+['ai','stat','统计'],['cards','cards','习惯管理'],['memory','calendar','回忆'],['backup','cloud','备份'],['events','events','新事件'],['personal','shirt','个性化'],
 ['widget','widget','小组件'],
 ['feedback','msg','意见反馈']];
 function modList(){
 const saved=S.prefs.modules||[],ids=MODULES.map(m=>m[0]);
 const out=saved.filter(m=>ids.includes(m.id));
-MODULES.forEach(m=>{if(!out.some(x=>x.id===m[0]))out.push({id:m[0],on:true})});
+MODULES.forEach(m=>{if(!out.some(x=>x.id===m[0]))out[m[0]==='ai'?'unshift':'push']({id:m[0],on:true})});
 return out;
 }
 const modMeta=id=>MODULES.find(m=>m[0]===id);
@@ -4465,18 +4453,16 @@ $('#view').innerHTML=`${pgTop('备份')}
 <section class="sf-hero ${S.lastBackup?'ok':'warn'}"><div><b>${S.lastBackup?'记录都安放好了':'记录保存在这台手机上'}</b><small>${cards} 个习惯、${days} 天打卡、${notes} 篇笔记都在手机里，没有上传到我们的服务器</small></div></section>
 <div class="sf-flow">${nodes.map(([n,d,st,t],i)=>`${i?'<i class="sf-link"></i>':''}<div class="sf-node ${st}"><span class="sf-dot">${SVG(d)}</span><b>${n}</b><small>${t}</small></div>`).join('')}</div>
 <p class="sf-h">手动备份</p>
-<div class="sf-acts"><button id="bkExport">${SVG('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>导出到文件</b><small>可以存到「文件」或 iCloud 云盘</small></button>
-<button id="bkMan">${SVG('<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>从文件恢复</b><small>换手机时用</small></button></div>
-<p class="sf-h">导出表格</p>
-<div class="list glass ex-im"><button class="li" id="bkCsv"><span class="row-ic">${mi('table',20,2)}</span><span class="t">导出打卡记录、笔记、习惯列表<small>CSV 表格，可以用 Numbers、Excel、WPS 打开</small></span><span class="ar">›</span></button></div>
+<div class="sf-acts sf-big"><button id="bkMan">${SVG('<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',30)}<b>导入</b><small>从备份文件恢复、合并</small></button>
+<button id="bkExport">${SVG('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',30)}<b>导出</b><small>表格或完整备份</small></button></div>
 <p class="sf-h">常见疑问</p>
 <div class="sf-qa">
-<details><summary>删掉 App，记录还在吗？</summary><p>不在了。删 App 会把手机里的记录一起删掉，删之前请先「导出到文件」。</p></details>
-<details><summary>换新手机要做什么？</summary><p>如果用 iPhone 自带的「iCloud 云备份」或电脑把整台手机迁移过去，小满的记录会一起带过去。也可以先在旧手机「导出到文件」，再到新手机「从文件恢复」。</p></details>
+<details><summary>删掉 App，记录还在吗？</summary><p>不在了。删 App 会把手机里的记录一起删掉，删之前请先点「导出」，选「完整备份」存一份。</p></details>
+<details><summary>换新手机要做什么？</summary><p>如果用 iPhone 自带的「iCloud 云备份」或电脑把整台手机迁移过去，小满的记录会一起带过去。也可以先在旧手机「导出」完整备份，再到新手机点「导入」。</p></details>
 <details><summary>多久备份一次好？</summary><p>建议每个月导出一次，或者在换手机、刷机之前导出。导出和恢复都免费。</p></details></div>
 </div>`;
 backToMe();
-$('#bkExport').onclick=openExport;$('#bkMan').onclick=openExport;$('#bkCsv').onclick=()=>goPage('export');
+$('#bkExport').onclick=()=>goPage('export');$('#bkMan').onclick=openImport;
 }
 function renderBackup(){
 if(IN_APP){renderBackupApp();return}
@@ -4499,12 +4485,12 @@ $('#view').innerHTML=`${pgTop('备份')}
 <div class="sf-flow">${nodes.map(([n,d,st,t],i)=>`${i?'<i class="sf-link"></i>':''}<div class="sf-node ${st}"><span class="sf-dot">${SVG(d)}</span><b>${n}</b><small>${t}</small></div>`).join('')}</div>
 ${issues.length?`<p class="sf-h">需要你看一下</p><div class="sf-list">${issues.map(([n,st,msg])=>`<div class="sf-issue ${st}"><span class="sf-tag">${st==='bad'?'暂停':'提醒'}</span><span class="sf-t"><b>${n}</b><small>${msg}</small></span></div>`).join('')}</div>`:''}
 <p class="sf-h">手动备份</p>
-<div class="sf-acts"><button id="bkExport">${SVG('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>导出到文件</b><small>${notes} 篇笔记一起带走</small></button>
-<button id="bkMan">${SVG('<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',24)}<b>从文件恢复</b><small>换手机、换平台时用</small></button></div>
+<div class="sf-acts sf-big"><button id="bkMan">${SVG('<path d="M12 4v11M8 11l4 4 4-4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',30)}<b>导入</b><small>从备份文件恢复、合并</small></button>
+<button id="bkExport">${SVG('<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/>',30)}<b>导出</b><small>表格或完整备份</small></button></div>
 <p class="sf-h">常见疑问</p>
 <div class="sf-qa">
 <details><summary>关掉 iCloud，记录会不见吗？</summary><p>不会。记录先写在手机上，iCloud 只是另存一份。重新打开后会接着同步。</p></details>
-<details><summary>换新手机要做什么？</summary><p>用同一个 Apple ID 登录，打开 App 稍等一会儿就回来了。也可以先在旧手机「导出到文件」，再到新手机「从文件恢复」。</p></details>
+<details><summary>换新手机要做什么？</summary><p>用同一个 Apple ID 登录，打开 App 稍等一会儿就回来了。也可以先在旧手机「导出」完整备份，再到新手机点「导入」。</p></details>
 <details><summary>两台设备看到的不一样？</summary><p>两台都联网、都开着 iCloud，下拉或点下面的「再检查一次」，过一会儿会自动对齐。</p></details></div>
 <button class="sf-re" id="bkRe">再检查一次</button>
 <label class="bk-sim"><input type="checkbox" id="bkSim" ${S.prefs.simNoIcloud?'checked':''}> 原型演示：模拟关闭 iCloud 权限</label>
@@ -4512,7 +4498,7 @@ ${issues.length?`<p class="sf-h">需要你看一下</p><div class="sf-list">${is
 backToMe();
 const re=()=>{const sh=$('.snav'),y=sh?sh.scrollTop:scrollY;renderBackup();if(sh)sh.scrollTop=y};
 $('#bkRe').onclick=()=>{const h=$('.sf-art');h&&h.animate([{transform:'rotate(0)'},{transform:'rotate(-6deg)'},{transform:'rotate(5deg)'},{transform:'rotate(0)'}],{duration:dur(500)});buzz();setTimeout(()=>{re();toast('检查好了')},dur(600))};
-$('#bkExport').onclick=openExport;$('#bkMan').onclick=openExport;
+$('#bkExport').onclick=()=>goPage('export');$('#bkMan').onclick=openImport;
 $('#bkSim').onchange=e=>{S.prefs.simNoIcloud=e.target.checked;save();re()};
 }
 function renderModules(){
@@ -4568,8 +4554,8 @@ $$('.snd-try').forEach(b=>b.onclick=()=>b.dataset.try==='in'?playCheck(true):pla
 const PLAN_NAME={free:'普通用户',month:'月度会员',year:'年度会员',life:'永久会员'};
 const planOf=()=>S.vip?(S.prefs.plan&&S.prefs.plan!=='free'?S.prefs.plan:'year'):'free';
 /* ---- 会员：年度卡（首次 3 天免费试用）/ 永久会员 / 月度卡。装在 App 里由 App Store 购买，网页预览里可以免费体验 ---- */
-const VIP_FREE_LIMIT=8,VIP_FREE_BG=['white','cream','mist'];
-const VIP_PERKS=[['shield','纯净无广告','没有弹窗打扰，坚持起来更轻松'],['cards','习惯不限个数',`想养多少个好习惯都行，免费版最多 ${VIP_FREE_LIMIT} 个`],['camera','照片做图标','拍一张或从相册选，做成独一无二的习惯图标'],['lockf','密码锁和面容 ID','打开小满先验证，日记和打卡只有你能看'],
+const VIP_FREE_LIMIT=4,VIP_FREE_BG=['white','cream','mist'];
+const VIP_PERKS=[['shield','纯净无广告','没有弹窗打扰，坚持起来更轻松'],['cards','解锁无限习惯数量','想养多少个好习惯都可以，一个都不用舍弃'],['camera','照片做图标','拍一张或从相册选，做成独一无二的习惯图标'],['lockf','密码锁和面容 ID','打开小满先验证，日记和打卡只有你能看'],
 ['heart','支持小满走得更远','你的支持会变成更多好用的小功能']];
 const VIP_FREE_TEXT='打卡、闹钟提醒、统计、笔记、小组件、主题背景和数据备份，所有人都能免费用。';
 const vipPost=m=>window.webkit.messageHandlers.native.postMessage(Object.assign({cmd:'vip'},m));
@@ -4602,8 +4588,8 @@ const draw=()=>`<div class="sheet-head acx-head"><button class="acx-tx" id="acCa
 <p class="acx-sec">用户类型</p>
 <div class="acx-list">
 <div class="acx-row"><b>当前账号</b><span>本机账号（未登录）</span></div>
-${IN_APP?'':'<div class="acx-row"><b>Apple 账号</b><span class="dim">正式版支持「通过 Apple 登录」</span></div><div class="acx-row"><b>微信绑定</b><span class="dim">正式版支持</span></div>'}
-<div class="acx-row"><b>本机 ID</b><span class="dim">${P.localId}</span></div>
+<button class="acx-row" id="acUid"><b>用户 ID</b><span class="dim">${userId()} · 复制</span></button>
+${IS_TEST?'<button class="acx-row acx-bind" data-bind="微信"><b>绑定微信</b><span class="dim">未绑定 ›</span></button><button class="acx-row acx-bind" data-bind="QQ"><b>绑定 QQ</b><span class="dim">未绑定 ›</span></button>':''}
 <button class="acx-row" id="acPlan"><b>类型</b><span>${PLAN_NAME[planOf()]} ›</span></button>
 </div>
 <p class="acx-sec">数据</p>
@@ -4619,7 +4605,9 @@ const rs=$('#acReset',sh);rs&&(rs.onclick=()=>{D.avatar=null;redraw()});
 $('#acNick',sh).oninput=e=>{D.nick=e.target.value};
 $('#acBio',sh).oninput=e=>{D.bio=e.target.value;const pl=$('.acx-plus',sh);pl&&(pl.style.display=e.target.value?'none':'')};
 $('#acPlan',sh).onclick=()=>{close();setTimeout(openVip,dur(250))};
-$('#acBackup',sh).onclick=()=>{close();setTimeout(openExport,dur(250))};
+$('#acUid',sh).onclick=async()=>{try{await navigator.clipboard.writeText(userId());toast('用户 ID 已复制')}catch(e){toast('用户 ID：'+userId())}};
+$$('.acx-bind',sh).forEach(b=>b.onclick=()=>{const n=b.dataset.bind;plainConfirm(`绑定${n}（测试包）`,`${n}登录还没有接入：需要先在${n==='微信'?'微信开放平台':'QQ 互联'}申请 App 的 AppID，并同时提供「通过 Apple 登录」。接入前这一行只在测试包里显示，正式版不会出现。`,'知道了',()=>{})});
+$('#acBackup',sh).onclick=()=>{close();setTimeout(()=>openPageSheet('backup'),dur(250))};
 };
 bind();
 }
@@ -5304,7 +5292,7 @@ const L=lockCfg();
 passPad({title,cancel:true,onCode(code,ctl){if(codeHash(code)===L.code){ctl.close(true);onOk()}else ctl.err('密码不对，再试一次')}});
 }
 /* simulated Face ID (the prototype can't reach the camera; the real app uses the system prompt) */
-function faceScan(onOk,label='面容 ID',onFail){
+function faceScan(onOk,label='面容 ID',onFail,bio){
 const f=document.createElement('div');f.className='lk-face';
 f.innerHTML=`<div class="lk-face-card"><span class="lk-face-ic">${FACE_SVG}</span><b>${esc(label)}</b><small>正在识别…</small></div>`;
 document.body.append(f);requestAnimationFrame(()=>f.classList.add('show'));
@@ -5314,10 +5302,22 @@ setTimeout(()=>{f.classList.remove('show');setTimeout(()=>f.remove(),dur(240));o
 let LOCKED=false;
 function showLock(){
 if(!LOCK_ENABLED)return;const L=lockCfg();if(!L.on||!L.code||LOCKED)return;LOCKED=true;
-const pad=passPad({title:'输入密码',sub:'小满已上锁',cancel:false,
-face:L.face?ctl=>faceScan(()=>{LOCKED=false;ctl.close(true)}):null,
+const openPad=()=>passPad({title:'输入密码',sub:'小满已上锁',cancel:false,
 onCode(code,ctl){if(codeHash(code)===L.code){LOCKED=false;ctl.close(true)}else ctl.err('密码不对，再试一次')}});
-if(L.face)setTimeout(()=>{if(LOCKED)faceScan(()=>{LOCKED=false;pad.close(true)})},dur(350));
+if(!L.face){openPad();return}
+/* 开了面容 ID：先只盖一层锁屏，用面容 ID 解锁；连续两次没认出来，才换成密码键盘（两者不同时出现） */
+const cv=document.createElement('div');cv.className='lk lk-gate lk-cover';cv.setAttribute('role','dialog');cv.setAttribute('aria-label','小满已上锁');
+cv.innerHTML=`<div class="lk-top"><span class="lk-ic">${LOCK_SVG}</span><h3 class="lk-t">小满已上锁</h3><p class="lk-s">正在用面容 ID 解锁…</p></div>
+<button class="lk-again" hidden>${FACE_SVG}<span>再试一次面容 ID</span></button>`;
+document.body.append(cv);requestAnimationFrame(()=>cv.classList.add('show'));
+let fails=0;
+const bye=ok=>{cv.classList.remove('show');cv.classList.add(ok?'ok':'bye');setTimeout(()=>cv.remove(),dur(320))};
+const again=$('.lk-again',cv);
+const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true)},'解锁小满',()=>{fails++;
+if(fails>=2){bye(false);setTimeout(openPad,dur(200))}
+else{$('.lk-s',cv).textContent='没有认出来，再试一次';again.hidden=false}},true)};
+again.onclick=tryFace;
+setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
 }
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
@@ -5344,8 +5344,8 @@ ai:'<path d="M16 5.5A10.5 10.5 0 1 0 26.5 16H16z"/><path d="M19 3a10 10 0 0 1 10
 const artSVG=id=>ART[id]?`<svg class="mt-art" viewBox="0 0 32 32" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ART[id]}</svg>`:null;
 function renderMe(){
 const st=meStats(),backed=S.lastBackup,plan=planOf();
-const keys=tabKeys(),extra=[['ai','stat','统计']].filter(([k])=>!keys.includes(k));
-const tiles=extra.concat(modList().filter(m=>m.on&&!(m.id==='memory'&&keys.includes('memory'))).map(m=>modMeta(m.id))).concat([['modules','modules','模块设置']]);
+const keys=tabKeys();
+const tiles=(modList().filter(m=>m.on&&!(m.id==='memory'&&keys.includes('memory'))).map(m=>modMeta(m.id))).concat([['modules','modules','模块设置']]);
 $('#view').innerHTML=`
 <div class="me-top"><button class="me-ibtn" id="meHelp" aria-label="意见反馈">${mi('help',24,2)}</button><h2>我的</h2>
 <button class="me-ibtn" id="meSet" aria-label="设置">${mi('gear',24,1.8)}</button></div>
@@ -5400,6 +5400,11 @@ function devInfo(){
 const ua=navigator.userAgent;
 return {device:/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(ua)?'Android':'桌面浏览器',os:(ua.match(/OS (\d+)_(\d+)/)||[]).slice(1).join('.')};
 }
+/* 用户 ID：8 位数字，固定不变。App 里由系统钥匙串保存（重装、换同一 Apple ID 的手机都不变），网页预览存在本机 */
+function userId(){if(window.__XM_UID__)return window.__XM_UID__;if(!/^\d{8}$/.test(S.prefs.uid||'')){S.prefs.uid=String(1e7+Math.floor(Math.random()*9e7));save()}return S.prefs.uid}
+const IS_TEST=!IN_APP||window.__XM_TEST__===true;
+/* 私密反馈表单的网址（腾讯问卷等，只有开发者能看到提交的内容）。填好后「意见反馈」就会打开它，不再进兔小巢社区 */
+const FEEDBACK_FORM='';
 function anonId(){S.prefs.anon=S.prefs.anon||('u-'+uid());return S.prefs.anon}
 async function uploadFeedback(item){
 if(!FEEDBACK_API)return false;
@@ -5417,7 +5422,7 @@ if(changed)save();
 const TXC_URL='https://support.qq.com/product/802265';
 function openTxc(){const {device,os}=devInfo(),P=S.prefs;
 const fields={openid:anonId(),nickname:(P.nick||'小满用户').slice(0,20),avatar:'https://txc.qq.com/static/desktop/img/products/def-product-logo.png',
-clientInfo:device,clientVersion:IN_APP?'V'+NV.v:APP_VER(),os:'iOS',osVersion:os||'',customInfo:IN_APP?`App ${NV.v}（${NV.b}）`:`build ${APP_BUILD}`};
+clientInfo:device,clientVersion:IN_APP?'V'+NV.v:APP_VER(),os:'iOS',osVersion:os||'',customInfo:(IN_APP?`App ${NV.v}（${NV.b}）`:`build ${APP_BUILD}`)+` · 用户ID ${userId()} · ${PLAN_NAME[planOf()]}`};
 const f=document.createElement('form');f.method='POST';f.action=TXC_URL;f.target='_blank';f.style.display='none';
 Object.entries(fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;f.appendChild(i)});
 /* 从主屏幕打开的网页 App 里，弹新窗口的 POST 会被 iOS 静默拦截，所以在当前窗口打开；iOS 会用自带的浏览页显示，点左上角「完成」回到 App */
@@ -5430,12 +5435,16 @@ const {sh,close}=openSheet(`
 <div class="sheet-head"><button class="pe-x" id="fbX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><h3>意见反馈</h3><span style="width:36px"></span></div>
 <div class="fb-hero"><span>${mi('msg',26,2)}</span><p>你的每一条反馈，开发者都会认真看</p></div>
 <div class="fb2">
-<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('msg',22,2)}</span><span class="t"><b>去反馈社区提建议</b><small>可以发文字和截图，也能看到开发者的回复和其他人的建议</small></span><span class="ar">›</span></button>
+${FEEDBACK_FORM?`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('msg',22,2)}</span><span class="t"><b>写给开发者</b><small>只有开发者能看到，其他用户看不到你的反馈</small></span><span class="ar">›</span></button>`
+:`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('msg',22,2)}</span><span class="t"><b>去反馈社区提建议</b><small>可以发文字和截图，也能看到开发者的回复和其他人的建议</small></span><span class="ar">›</span></button>`}
+<button class="fb2-main" id="fbUid"><span class="fb2-ic">${mi('copy',22,2)}</span><span class="t"><b>复制我的用户 ID</b><small>${userId()}，写反馈时附上，方便开发者帮你查会员和数据问题</small></span></button>
 </div>
 <div class="fb2-tips"><p><b>反馈小提示</b></p><p>遇到问题时，写清楚在哪个页面、做了什么、看到了什么，最好附一张截图，我们能更快找到原因。</p></div>
 <p class="meta">会自动附带：${APP_VER()}（${APP_BUILD}），${device}${os?' iOS '+os:''}。不会附带你的打卡、日志和笔记内容。</p>`);
 $('#fbX',sh).onclick=close;
-$('#fbTxc',sh).onclick=()=>{buzz();openTxc()};
+$('#fbTxc',sh).onclick=()=>{buzz();if(!FEEDBACK_FORM){openTxc();return}
+if(IN_APP)window.webkit.messageHandlers.native.postMessage({cmd:'feedback',url:FEEDBACK_FORM}).catch(()=>{});else window.open(FEEDBACK_FORM,'_blank')};
+$('#fbUid',sh).onclick=async()=>{try{await navigator.clipboard.writeText(userId());toast('用户 ID 已复制')}catch(e){toast('用户 ID：'+userId())}};
 }
 
 
@@ -5732,6 +5741,20 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .me-tic .mt-art{width:32px!important;height:32px!important}
 .me-tic>svg{width:28px;height:28px}
 .st-vip{display:inline-block;margin-left:6px;padding:0 5px;border-radius:5px;background:#F5C542;color:#4A3000;font-size:10px;font-weight:900;font-style:normal;line-height:16px;vertical-align:2px}
+
+/* 照片图标：不加白边和白底；「和图标一样大」放在图标内容的位置，「铺满」当作整个图标的背景 */
+.ic-img.ic-fit{border-radius:0!important;box-shadow:none!important;object-fit:contain!important;background:none!important}
+.dot .cic:has(.ic-fill){position:static!important;transform:none!important}
+.dot .ic-img.ic-fill{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover!important;box-shadow:none!important;border-radius:50%;z-index:1}
+.shot{cursor:pointer;position:relative}
+.shot::after{content:attr(data-plus);font-size:30px;color:var(--ink3)}
+.ip-fit{align-items:center;gap:10px}.ip-fit .seg{flex:1}
+
+.lk-cover{justify-content:center}
+.lk-cover .lk-top{margin-top:-8vh}
+.lk-again{margin-top:28px;display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;border:0;background:var(--chip,rgba(0,0,0,.06));color:inherit;font:inherit;font-size:15px}
+.lk-again[hidden]{display:none}.lk-again svg{width:22px;height:22px}
+.sf-acts.sf-big button{align-items:center;text-align:center;padding:22px 12px 18px;gap:8px}.sf-acts.sf-big b{font-size:18px}
 </style>
 </body>
 </html>

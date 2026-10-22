@@ -409,7 +409,7 @@ struct DesignerView: View {
         if x.ic == "img" && x.icImg == nil { x.ic = "icon" }
         // 免费版最多 8 个习惯，开通会员不限
         if isNew && !x.isNote && !store.vip && store.s.cards.filter({ !$0.isNote }).count >= VipPerks.freeLimit {
-            toaster.show("免费版最多 \(VipPerks.freeLimit) 个习惯，开通会员就不限个数啦")
+            toaster.show("开通会员，解锁无限习惯数量")
             VipGate.present()
             return
         }

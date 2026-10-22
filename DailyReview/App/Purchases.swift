@@ -185,13 +185,13 @@ enum VipPerks {
     /// (网页图标, 原生图标, 标题, 说明)
     static let list: [(web: String, asset: String, title: String, sub: String)] = [
         ("shield", "sf:sparkles", "纯净无广告", "没有弹窗打扰，坚持起来更轻松"),
-        ("cards", "vp_list", "习惯不限个数", "想养多少个好习惯都行，免费版最多 \(freeLimit) 个"),
+        ("cards", "vp_list", "解锁无限习惯数量", "想养多少个好习惯都可以，一个都不用舍弃"),
         ("camera", "vp_photo", "照片做图标", "拍一张或从相册选，做成独一无二的习惯图标"),
         ("lockf", "sf:lock.fill", "密码锁和面容 ID", "打开小满先验证，日记和打卡只有你能看"),
         ("heart", "sf:heart.fill", "支持小满走得更远", "你的支持会变成更多好用的小功能")
     ]
     static let free = "打卡、闹钟提醒、统计、笔记、小组件、主题背景和数据备份，所有人都能免费用。"
-    static let freeLimit = 8
+    static let freeLimit = 4
     /// 免费可用的主题背景
     static let freeThemes: Set<String> = ["white", "cream", "mist"]
 }
