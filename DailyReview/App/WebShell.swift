@@ -312,6 +312,10 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             if let s = body["url"] as? String, let u = URL(string: s) { feedback = FeedbackFields(fields: [:], url: u) }
             else { feedback = FeedbackFields(fields: f) }
             replyHandler(true, nil)
+        case "sfx":
+            // 打卡音效用原生播放（跟随静音键、和别的 App 的音乐混音），网页不再用 <audio>，锁屏就不会出现「正在播放」小窗
+            if let n = body["n"] as? Int { SFX.play(n) } else if let d = body["n"] as? Double { SFX.play(Int(d)) }
+            replyHandler(true, nil)
         case "faceid":
             let ctx = LAContext()
             var err: NSError?
