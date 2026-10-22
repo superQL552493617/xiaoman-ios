@@ -2510,7 +2510,9 @@ const edFont=kind=>ED_FONTS.find(f=>f[0]===S.prefs[kind+'Font'])||ED_FONTS[0];
 const ED_WHITE=['white','白色','#FFFFFF','#1B1B1A'];
 const edBgs=kind=>[ED_WHITE,...ED_BGS];
 const edBg=kind=>{const L=edBgs(kind);return L.find(b=>b[0]===S.prefs[kind+'Bg'])||L[0]};
-function edApply(el,kind){el.dataset.edk=kind;const f=edFont(kind),b=edBg(kind);if(f[0]==='round')loadChill();
+/* 笔记卡片（预览）的正文和标题，跟笔记里选的字体一致 */
+function syncNoteFont(){try{document.documentElement.style.setProperty('--note-font',edFont('note')[2])}catch(e){}}
+function edApply(el,kind){el.dataset.edk=kind;const f=edFont(kind),b=edBg(kind);if(f[0]==='round')loadChill();syncNoteFont();
 el.style.setProperty('--ed-font',f[2]);el.style.setProperty('--ed-bg',document.body.classList.contains('dark')?b[3]:b[2]);
 $$('[data-ef]',el).forEach(x=>x.classList.toggle('on',x.dataset.ef===f[0]));$$('[data-eb]',el).forEach(x=>x.classList.toggle('on',x.dataset.eb===b[0]))}
 const edTools=(kind,extra='')=>`<div class="ew-bar" role="toolbar">${extra}
@@ -5639,7 +5641,7 @@ if(tab==='today'){renderToday()}else render()}
 setInterval(checkDayRoll,20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRoll()});
 addEventListener('focus',checkDayRoll);addEventListener('pageshow',checkDayRoll);
-load().then(()=>{setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
+load().then(()=>{syncNoteFont();setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
 </script>
 <!-- size variables (defaults are the design values; the tuner panel has been removed) -->
 <style>
@@ -5801,6 +5803,7 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .lk.lk-gate:not(.ok):not(.bye){opacity:1!important;transform:none!important;transition:none}
 .lk.lk-shield{z-index:89}
 #pane .cw,#pane .addc,#pane button{touch-action:pan-y}
+.jrc p,.jrc-t{font-family:var(--note-font,inherit)}
 </style>
 </body>
 </html>
