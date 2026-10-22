@@ -2996,7 +2996,7 @@ drawStyle();changed()};
 v==='img'?needVip(go):go();
 });
 $('#dText',sh).oninput=e=>{c.text=[...e.target.value.trim()].slice(0,2).join('');c.ic='text';changed()};
-$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await compress(f,240,true,true);c.ic='img';c.imgFit=c.imgFit||'fit';drawStyle();changed();e.target.value=''};
+$('#dIcImg',sh).onchange=async e=>{const f=e.target.files[0];if(!f)return;c.icImg=await trimIcon(await compress(f,480,true,true));c.imgTrim=1;c.ic='img';c.imgFit=c.imgFit||'fit';drawStyle();changed();e.target.value=''};
 $$('#dFit button',sh).forEach(b=>b.onclick=()=>{c.imgFit=b.dataset.fit;buzz();drawStyle();changed()});
 $('#dIcImgRm',sh).onclick=()=>{c.icImg=null;c.ic='icon';shown='icon';drawStyle();drawIcons();changed()};
 const drawPal=()=>{
@@ -3013,6 +3013,26 @@ drawStyle();drawIcons();drawPal();$('#ipPv',sh).innerHTML=avatarHTML(c,58);
 requestAnimationFrame(()=>{const pal=$('#dPal',sh),on=$('.sq.on',pal);if(on)pal.scrollLeft=Math.max(0,on.offsetLeft-pal.clientWidth/2+19)});
 }
 
+/* 照片图标：去掉图片四周的白边 / 白色圆角（比如存下来的 App 图标截图），只留中间的主体，四周变透明 */
+function trimIcon(url,max=240){
+return new Promise(res=>{const im=new Image();im.onload=()=>{try{
+const W=Math.min(480,im.width),H=Math.round(im.height*W/im.width),cv=document.createElement('canvas');cv.width=W;cv.height=H;
+const x=cv.getContext('2d');x.drawImage(im,0,0,W,H);const d=x.getImageData(0,0,W,H),a=d.data;
+const bg=i=>a[i+3]<24||(a[i]>226&&a[i+1]>226&&a[i+2]>226&&Math.max(a[i],a[i+1],a[i+2])-Math.min(a[i],a[i+1],a[i+2])<22);
+const seen=new Uint8Array(W*H),st=[];
+for(let i=0;i<W;i++){st.push(i,(H-1)*W+i)}for(let j=0;j<H;j++){st.push(j*W,j*W+W-1)}
+let cleared=0;
+while(st.length){const k=st.pop();if(seen[k])continue;seen[k]=1;if(!bg(k*4))continue;a[k*4+3]=0;cleared++;
+const px=k%W,py=(k-px)/W;if(px>0)st.push(k-1);if(px<W-1)st.push(k+1);if(py>0)st.push(k-W);if(py<H-1)st.push(k+W)}
+if(!cleared||cleared>W*H*.92){res(url);return}   // 没有白边，或者几乎整张都是白的：保持原样
+/* 软化边缘：挨着透明区的浅色像素减淡一半，免得留一圈白毛边 */
+for(let k=0;k<W*H;k++){if(a[k*4+3]&&bg(k*4)){const px=k%W;if((px>0&&!a[(k-1)*4+3])||(px<W-1&&!a[(k+1)*4+3])||(k>=W&&!a[(k-W)*4+3])||(k<W*H-W&&!a[(k+W)*4+3]))a[k*4+3]=90}}
+x.putImageData(d,0,0);
+let x0=W,y0=H,x1=-1,y1=-1;for(let j=0;j<H;j++)for(let i=0;i<W;i++)if(a[(j*W+i)*4+3]>40){if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j}
+if(x1<0){res(url);return}
+const side=Math.max(x1-x0+1,y1-y0+1),cx=(x0+x1+1)/2,cy=(y0+y1+1)/2,o=document.createElement('canvas');o.width=o.height=Math.min(max,side);
+o.getContext('2d').drawImage(cv,cx-side/2,cy-side/2,side,side,0,0,o.width,o.height);res(o.toDataURL('image/png'))}catch(e){res(url)}};
+im.onerror=()=>res(url);im.src=url})}
 function compress(file,max,square,keepAlpha){
 return new Promise(res=>{
 const fr=new FileReader();
@@ -5606,7 +5626,7 @@ if(tab==='today'){renderToday()}else render()}
 setInterval(checkDayRoll,20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRoll()});
 addEventListener('focus',checkDayRoll);addEventListener('pageshow',checkDayRoll);
-load().then(()=>{LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
+load().then(()=>{setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
 </script>
 <!-- size variables (defaults are the design values; the tuner panel has been removed) -->
 <style>
@@ -5756,6 +5776,11 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .lk-again{margin-top:28px;display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;border:0;background:var(--chip,rgba(0,0,0,.06));color:inherit;font:inherit;font-size:15px}
 .lk-again[hidden]{display:none}.lk-again svg{width:22px;height:22px}
 .sf-acts.sf-big button{align-items:center;text-align:center;padding:22px 12px 18px;gap:8px}.sf-acts.sf-big b{font-size:18px}
+
+/* 照片图标：图片外面露出的部分用卡片的颜色，不再是白底（没打卡时浅一点，打卡后是原色） */
+html body .cw .dot:has(.ic-img) .fill{transform:scale(1)!important;background:color-mix(in srgb,var(--b) 58%,#fff)!important}
+html body.dark .cw .dot:has(.ic-img) .fill{background:color-mix(in srgb,var(--b) 62%,#1B1B1A)!important}
+html body .cw.on .dot:has(.ic-img) .fill,html body.dark .cw.on .dot:has(.ic-img) .fill{background:var(--b)!important}
 </style>
 </body>
 </html>
