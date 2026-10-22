@@ -1,2 +1,2 @@
-sp-light|light|-uiMode web|2
-sp-dark|dark|-uiMode web|2
+sp-dark1|dark|-uiMode web|1
+sp-dark2|dark|-uiMode web|1
