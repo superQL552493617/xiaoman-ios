@@ -1590,7 +1590,7 @@ $('#view').innerHTML=`<div class="topfix" id="topfix">
 <div class="topspace" id="topspace"></div><div id="pane"></div>`;
 /* the header + date strip are pinned (position:fixed) so that pulling down at the top only stretches the
    content under the strip; a spacer keeps the content below them and follows their height */
-{const tf=$('#topfix'),sp=$('#topspace');const fit=()=>{if(sp&&tf)sp.style.height=tf.offsetHeight+'px'};fit();
+{const tf=$('#topfix'),sp=$('#topspace');const fit=()=>{if(sp&&tf){sp.style.height=tf.offsetHeight+'px';const pn=$('#pane');if(pn)pn.style.minHeight=`calc(100dvh - ${tf.offsetHeight}px)`}};   // 内容不多时，下面的空白处也能左右滑fit();
 try{window.__tfRO&&window.__tfRO.disconnect();window.__tfRO=new ResizeObserver(fit);window.__tfRO.observe(tf)}catch(e){}}
 bindDaySwipe($('#pane'));
 buildStrip();
@@ -1773,6 +1773,9 @@ if(n===-1)return '回到昨天';
 if(n===1)return '前往明天';
 return `${dir<0?'回到':'前往'} ${d.getMonth()+1}月${d.getDate()}日`;
 }
+let SWIPED_AT=0;
+/* 左右滑过之后，手指抬起时不要再当成一次点击（不会误打卡、误点按钮） */
+document.addEventListener('click',e=>{if(Date.now()-SWIPED_AT<350&&e.target.closest('#pane')){e.stopPropagation();e.preventDefault()}},true);
 function bindDaySwipe(pane){
 if(pane.dataset.swipe)return;pane.dataset.swipe='1';
 let hl=$('#dhL'),hr=$('#dhR');
@@ -1782,7 +1785,7 @@ let sx=0,sy=0,on=false,lock=null,dx=0;
 const reset=()=>{pane.style.transition='transform .22s ease';pane.style.transform='';hl.style.opacity=0;hr.style.opacity=0;
 hl.classList.remove('go');hr.classList.remove('go');setTimeout(()=>{pane.style.transition=''},240)};
 pane.addEventListener('pointerdown',e=>{
-if(e.button>0||DRAGGING||SORT||e.target.closest('.cw,.addc,button,input,textarea,a,.grp-h,.srch,.jrc,.jrc-sw'))return;
+if(e.button>0||DRAGGING||SORT||e.target.closest('input,textarea,select,.srch,.jrc-sw,[contenteditable]'))return;   // 从卡片、分组名、空白处开始左右滑都可以换天
 sx=e.clientX;sy=e.clientY;on=true;lock=null;dx=0;
 const prev=keyOf(addDays(parseKey(sel),-1)),next=keyOf(addDays(parseKey(sel),1));
 hl.textContent=dayWord(prev,-1);hr.textContent=dayWord(next,1);
@@ -1790,6 +1793,7 @@ hl.textContent=dayWord(prev,-1);hr.textContent=dayWord(next,1);
 addEventListener('pointermove',e=>{
 if(!on)return;const x=e.clientX-sx,y=e.clientY-sy;
 if(lock===null&&(Math.abs(x)>10||Math.abs(y)>10))lock=Math.abs(x)>Math.abs(y)*1.2?'x':'y';
+if(DRAGGING){if(lock==='x'){on=false;reset()}return}   // 长按拖卡片时不换天
 if(lock!=='x')return;
 dx=x;const p=Math.min(1,Math.abs(dx)/80);
 pane.style.transform=`translateX(${dx*.35}px)`;
@@ -1797,7 +1801,7 @@ hr.style.opacity=dx<0?p:0;hl.style.opacity=dx>0?p:0;
 hr.classList.toggle('go',dx<0&&p>=1);hl.classList.toggle('go',dx>0&&p>=1);
 },{passive:true});
 const end=()=>{
-if(!on)return;on=false;
+if(!on)return;on=false;if(lock==='x'&&Math.abs(dx)>12)SWIPED_AT=Date.now();
 if(lock==='x'&&Math.abs(dx)>=80){
 const k=keyOf(addDays(parseKey(sel),dx<0?1:-1));buzz();
 pane.style.transition='transform .16s ease-in,opacity .16s';pane.style.transform=`translateX(${dx<0?-60:60}px)`;pane.style.opacity='0';
@@ -5793,6 +5797,7 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 /* 锁屏一出现就是完整盖住的，不做淡入，避免露出 App 内容；解锁时照常淡出 */
 .lk.lk-gate:not(.ok):not(.bye){opacity:1!important;transform:none!important;transition:none}
 .lk.lk-shield{z-index:89}
+#pane .cw,#pane .addc,#pane button{touch-action:pan-y}
 </style>
 </body>
 </html>
