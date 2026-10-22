@@ -1540,7 +1540,6 @@ rp.animate([{transform:'scale(1)',opacity:op},{transform:`scale(${scale})`,opaci
 const defs=document.querySelector('svg defs');const bb=d=>d.replace(/-?\d+(\.\d+)?/g,n=>(+n/100).toFixed(4));
 let clips='',css='';
 Object.keys(SHAPE_D).filter(k=>k!=='square').forEach(k=>{clips+=`<clipPath id="clip-${k}" clipPathUnits="objectBoundingBox"><path d="${bb(SHAPE_D[k])}"/></clipPath>`;
-css+=`body.shape-${k} .cw.on .dot:has(.ic-fill)::after,.cw.shp-${k}.on .dot:has(.ic-fill)::after{clip-path:url(#clip-${k});border-radius:0!important}`;
 css+=`body.shape-${k} .fill,.cw.shp-${k} .fill,body.shape-${k} .dot .ic-img,.cw.shp-${k} .dot .ic-img{border-radius:0!important;clip-path:url(#clip-${k})!important;-webkit-clip-path:url(#clip-${k})!important}`});
 defs&&defs.insertAdjacentHTML('beforeend',clips);
 css+=`.cw.shp-circle .fill,.cw.shp-circle .dot .ic-img{border-radius:50%!important;clip-path:none!important;-webkit-clip-path:none!important}.cw.shp-square .fill,body.shape-square .dot .ic-img,.cw.shp-square .dot .ic-img{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
@@ -5772,23 +5771,10 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .ic-img.ic-fit{border-radius:0!important;box-shadow:none!important;object-fit:contain!important;background:none!important}
 /* 「和图标一样大」：图片裁成和当前图标一样的形状 */
 .dot .ic-img.ic-fit{object-fit:cover!important;border-radius:50%!important}
-/* 照片图标（仅「铺满整个图标」）打卡后：外面一圈卡片颜色的光晕环，环上四个小白点，照片边缘一圈小圆点。
-「和图标一样大」沿用系统图标的打卡效果 */
-.dot .ic-img{transition:transform .32s cubic-bezier(.2,.9,.3,1.25),filter .35s ease}
-.cw.on .dot .ic-img.ic-fill{filter:brightness(1.08) saturate(1.1)}
+/* 照片图标（仅「铺满整个图标」）打卡后：照片稍微缩小，露出一圈很细的卡片颜色边（跟图标形状一致）；其他和系统图标一样 */
+.dot .ic-img.ic-fill{transition:transform .28s cubic-bezier(.2,.9,.3,1.25)}
+.cw.on .dot .ic-img.ic-fill{transform:scale(.93)}
 .cw.on .dot:has(.ic-fill) .fill{background:var(--b)!important}
-.dot:has(.ic-fill)::before{content:"";position:absolute;inset:-17%;border-radius:50%;z-index:-1;pointer-events:none;
-background:radial-gradient(circle 2.4px at 17.5% 17.5%,#fff 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 82.5% 17.5%,#fff 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 17.5% 82.5%,#fff 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 82.5% 82.5%,#fff 0 1.7px,transparent 2.4px),radial-gradient(circle closest-side,transparent 0 76%,color-mix(in srgb,var(--b) 62%,#fff) 79.5%,color-mix(in srgb,var(--b) 62%,#fff) 98%,transparent 100%);
-box-shadow:0 0 16px 1px color-mix(in srgb,var(--b) 40%,transparent);
-opacity:0;transform:scale(.7);transition:opacity .3s ease,transform .45s cubic-bezier(.2,.9,.3,1.3)}
-.cw.on .dot:has(.ic-fill)::before{opacity:1;transform:none}
-body.dark .dot:has(.ic-fill)::before{background:radial-gradient(circle 2.4px at 17.5% 17.5%,rgba(255,255,255,.85) 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 82.5% 17.5%,rgba(255,255,255,.85) 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 17.5% 82.5%,rgba(255,255,255,.85) 0 1.7px,transparent 2.4px),radial-gradient(circle 2.4px at 82.5% 82.5%,rgba(255,255,255,.85) 0 1.7px,transparent 2.4px),radial-gradient(circle closest-side,transparent 0 76%,color-mix(in srgb,var(--b) 62%,#1B1B1A) 79.5%,color-mix(in srgb,var(--b) 62%,#1B1B1A) 98%,transparent 100%)}
-/* 照片边缘的一圈小圆点（盖在照片上，按图标形状裁切） */
-.cw.on .dot:has(.ic-fill)::after{display:block!important;z-index:2;opacity:1!important;border:0!important;
-background:repeating-conic-gradient(rgba(20,30,40,.5) 0deg 2.6deg,transparent 2.6deg 9deg)!important;
--webkit-mask:radial-gradient(circle closest-side,transparent 0 calc(84% - 1.8px),#000 calc(84% - 1.4px) 84%,transparent calc(84% + .4px));mask:radial-gradient(circle closest-side,transparent 0 calc(84% - 1.8px),#000 calc(84% - 1.4px) 84%,transparent calc(84% + .4px));
-inset:0;border-radius:50%}
-.cw.on .dot:has(.ic-fill) .ring{display:none}
 .dot .cic:has(.ic-fill){position:static!important;transform:none!important}
 .dot .ic-img.ic-fill{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover!important;box-shadow:none!important;border-radius:50%;z-index:1}
 .shot{cursor:pointer;position:relative}
