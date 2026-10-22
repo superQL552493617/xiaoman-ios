@@ -67,6 +67,28 @@ enum UIMode {
     static var current: String { UserDefaults.standard.string(forKey: key) ?? "web" }
 }
 
+/// 开屏页：一句话 + 插图（插图和竖排文字合成一张图，四周用纸色铺满）
+struct SplashView: View {
+    var body: some View {
+        ZStack {
+            Color("LaunchPaper").ignoresSafeArea()
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
+                Image("splash_art").resizable().scaledToFit().frame(maxWidth: 330, maxHeight: 560)
+                    .padding(.horizontal, 30)
+                    .accessibilityLabel("每天一点点，日子就慢慢满了。")
+                Spacer(minLength: 0)
+                Text("小满记 · 记下每一点小小的满足")
+                    .font(.system(size: 12, weight: .medium, design: .serif))
+                    .tracking(4)
+                    .foregroundStyle(Color(red: 0.6, green: 0.565, blue: 0.518))
+                    .padding(.bottom, 24)
+            }
+        }
+        .environment(\.colorScheme, .light)
+    }
+}
+
 struct WebRootView: View {
     @EnvironmentObject var store: Store
     @EnvironmentObject var purchases: Purchases
@@ -74,22 +96,35 @@ struct WebRootView: View {
     @StateObject private var bridge = WebBridge()
     @State private var askSwitch = false
     @Environment(\.scenePhase) private var phase
+    @State private var splashGone = false
+    @State private var minShown = false
+
+    private func endSplash() {
+        guard !splashGone else { return }
+        splashGone = true
+        // 告诉网页开屏结束了：开着面容 ID 时，这时才弹出识别（锁屏遮罩早已在下面盖好）
+        bridge.webView?.evaluateJavaScript("window.__XM_SPLASH_DONE=true;window.__xmSplashDone&&window.__xmSplashDone()", completionHandler: nil)
+    }
 
     var body: some View {
         WebContainer(bridge: bridge)
             .ignoresSafeArea()
             .background(Color(UIColor.systemBackground).ignoresSafeArea())
             .overlay {
-                // 页面加载完成前显示启动画面，避免白屏
-                if !bridge.ready {
-                    ZStack {
-                        Color(UIColor.systemBackground).ignoresSafeArea()
-                        Image("prog_palm").resizable().scaledToFit().frame(width: 64, height: 64).opacity(0.9)
-                    }
-                    .transition(.opacity)
+                // 开屏页：只在冷启动（App 被系统关掉后重新打开）时出现；从后台切回来不会再出现
+                // 至少显示 1.2 秒，同时等网页加载好；加载好以后点一下可以提前跳过
+                if !splashGone {
+                    SplashView()
+                        .contentShape(Rectangle())
+                        .onTapGesture { if bridge.ready { endSplash() } }
+                        .transition(.opacity)
                 }
             }
-            .animation(.easeOut(duration: 0.25), value: bridge.ready)
+            .animation(.easeOut(duration: 0.4), value: splashGone)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { minShown = true; if bridge.ready { endSplash() } }
+            }
+            .onChange(of: bridge.ready) { _, r in if r && minShown { endSplash() } }
             .sheet(item: $bridge.feedback) { f in
                 NavigationStack {
                     WebFeedbackView(fields: f.fields, url: f.url)

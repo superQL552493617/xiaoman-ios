@@ -1,2 +1,3 @@
-fb-page|light|-uiMode web -shotJS b3BlbkZlZWRiYWNrKCk=|12
-fb-form|light|-uiMode web -shotJS b3BlbkZlZWRiYWNrKCk7c2V0VGltZW91dChmdW5jdGlvbigpe2RvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJyNmYlR4YycpLmNsaWNrKCl9LDEyMDAp|22
+splash|light|-uiMode web|1
+splash-dark|dark|-uiMode web|1
+after|light|-uiMode web|6

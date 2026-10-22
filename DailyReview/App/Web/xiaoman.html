@@ -5338,7 +5338,9 @@ const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true)},'解�
 if(fails>=2){openPad();setTimeout(()=>cv.remove(),dur(60))}   // 密码键盘直接盖在锁屏上面，再拿掉锁屏，中间不会露出 App 内容
 else{$('.lk-s',cv).textContent='没有认出来，再试一次';again.hidden=false}},true)};
 again.onclick=tryFace;
-setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
+/* 冷启动时先等开屏页结束再弹面容 ID（锁屏遮罩已经盖住内容） */
+const go=()=>setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
+if(IN_APP&&!window.__XM_SPLASH_DONE)window.__xmSplashDone=()=>{window.__xmSplashDone=null;go()};else go();
 }
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
