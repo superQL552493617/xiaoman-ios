@@ -116,7 +116,6 @@ enum SFX {
 /// 闹钟提醒 + 每日提醒。
 /// 闹钟：每次提醒按 0、5、10 分钟排三条一次性通知（没人管就每 5 分钟响一次，最多 3 次），
 /// 处理过或打过卡就取消剩下的。iOS 最多保留 64 条待发通知，所以只排最近的 60 条，每次打开 App、保存、打卡时重排。
-@MainActor
 /// 提醒通知上的习惯图标：画成一张小图片附在通知上（锁屏和横幅右侧会显示这个习惯的图标）
 enum AlarmIcon {
     private static var cache: [String: Data] = [:]
@@ -166,6 +165,7 @@ enum AlarmIcon {
     }
 }
 
+@MainActor
 final class Notifier {
     static let shared = Notifier()
     private let center = UNUserNotificationCenter.current()
