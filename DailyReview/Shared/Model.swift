@@ -312,7 +312,7 @@ struct WidgetPrefs: Codable, Hashable {
         custom = c.lenient(String.self, .custom) ?? "#E8F0FF"
     }
     static let bgs: [(id: String, name: String, hex: String)] = [
-        ("default", "默认", ""), ("cream", "米白", "#FBF7EE"), ("blue", "淡蓝", "#EDF3FF"), ("green", "淡绿", "#EAF7EF"),
+        ("default", "米白（默认）", ""), ("cream", "奶油", "#FBF3E2"), ("blue", "淡蓝", "#EDF3FF"), ("green", "淡绿", "#EAF7EF"),
         ("pink", "淡粉", "#FFEEF3"), ("purple", "淡紫", "#F3EEFF"), ("yellow", "淡黄", "#FFF9E3"), ("grey", "浅灰", "#F1F1F4")
     ]
     /// nil = 默认（白色 / 深色模式下深灰）

@@ -54,23 +54,26 @@ struct HabitProvider: TimelineProvider {
     }
 }
 
-/// 小组件上的一个习惯圆点（未打卡的样子：白底 + 灰边 + 图标）
+/// 小组件上的一个习惯圆点：用打卡后的样子（卡片颜色填满）更好看，外圈统一一圈虚线
 struct WidgetDot: View {
     let card: Card
     var shape: String
     var size: CGFloat
     var body: some View {
         let cs = CardShape(id: shape)
+        let col = card.colors
         ZStack {
-            cs.fill(Theme.adaptive("#FFFFFF", "#1E1E21"))
-            cs.stroke(Theme.adaptive("#E2E2E6", "#3A3A3E"), lineWidth: 1.3)
+            cs.fill(col.b)
+            cs.stroke(style: StrokeStyle(lineWidth: 1.3, lineCap: .round, dash: [2.6, 2.6]))
+                .foregroundStyle(col.base.mix(HexColor("#2A2A2A"), 0.35).color)
+                .padding(-2.5)
             if card.ic == "img", let ui = WidgetImages.icon(card) {
                 // 自己上传的照片图标：「铺满」盖满整个形状，「一样大」放在中间，都按图标形状裁切
                 let side = card.imgFit == "fill" ? size : size * 0.62
                 Image(uiImage: ui).resizable().scaledToFill().frame(width: side, height: side).clipShape(cs)
             } else if card.ic == "text" {
                 Text(card.text.isEmpty ? String(card.name.prefix(1)) : card.text)
-                    .font(.system(size: size * 0.31, weight: .bold, design: .rounded)).foregroundStyle(Color(hex: card.hex))
+                    .font(.system(size: size * 0.31, weight: .bold, design: .rounded)).foregroundStyle(col.fg)
                     .lineLimit(1).minimumScaleFactor(0.5)
             } else {
                 Image(IconCatalog.assetName(card.icon)).resizable().scaledToFit().frame(width: size * 0.62, height: size * 0.62)
@@ -126,14 +129,17 @@ struct HabitWidgetView: View {
     private var dot: CGFloat { family == .systemLarge ? 38 : 36 }
     /// 放不下时分页：右上角「›」翻到下一组
     private var pages: Int { max(1, Int(ceil(Double(entry.left.count) / Double(n)))) }
-    private var page: Int { entry.page % pages }
+    private var famKey: String { family == .systemSmall ? "s" : family == .systemMedium ? "m" : "l" }
+    /// 每种尺寸各记各的页码，一页一页往后翻，翻到最后一页再回到第一页
+    private var page: Int { (UserDefaults(suiteName: Persistence.appGroup)?.integer(forKey: "widgetPage_" + famKey) ?? 0) % pages }
 
     var body: some View {
         if entry.allDone {
             // 全部打完：左上角一句话，右下角盆栽（小号 1 盆、中号 3 盆、大号一排 5 盆）
-            IllustratedCard(title: "今天都完成啦", sub: "一点一点，都在慢慢长大。",
+            let t = WidgetDay.pick(WidgetDay.done, entry.date)
+            IllustratedCard(title: t.0, sub: t.1,
                             art: family == .systemSmall ? "wg_pot1" : family == .systemMedium ? "wg_pots3" : "wg_pots5",
-                            artWidth: family == .systemSmall ? 62 : family == .systemMedium ? 132 : 300)
+                            artWidth: family == .systemSmall ? 54 : family == .systemMedium ? 132 : 300)
         } else {
             list
         }
@@ -146,7 +152,7 @@ struct HabitWidgetView: View {
                 Spacer()
                 Text("\(entry.doneCount)/\(entry.total)").font(.system(size: 12.5)).monospacedDigit().opacity(0.6)
                 if pages > 1 && !entry.allDone {
-                    Button(intent: WidgetNextPageIntent()) {
+                    Button(intent: WidgetNextPageIntent(family: famKey, pages: pages)) {
                         HStack(spacing: 1) {
                             Text("\(page + 1)/\(pages)").font(.system(size: 10, weight: .semibold)).monospacedDigit()
                             Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold))
@@ -216,38 +222,44 @@ struct WidgetBG: View {
     var body: some View {
         if let hex { Color(hex: hex) }
         else if scheme == .dark { Color(hex: "#262624") }
-        else {
-            let c = ThemeFill.colors(theme)
-            LinearGradient(colors: [Color(hex: c.top), Color(hex: c.base)], startPoint: .top, endPoint: .bottom)
-        }
+        else { Color(hex: "#FBF7EE") }   // 默认米白色
     }
 }
 
 // MARK: - 笔记小组件（点一下直接写当天的笔记）
+
+/// 按日期每天换一句（和 App 里「小组件」页的预览用同一个算法）
+enum WidgetDay {
+    static let prompts: [(String, String)] = [
+        ("写下今天开心的一件事", "再小的快乐，也值得记住。"),
+        ("写下今天让你骄傲的事", "哪怕只是早起了一点点。"),
+        ("写下今天想感谢的人或事", "温柔的瞬间，会被好好记住。"),
+        ("写下今天学到的一件事", "记下来，它就是你的了。"),
+        ("写下今天印象最深的瞬间", "以后翻到，会很想念。"),
+        ("写下今天有点累的事", "说出来，心会轻一些。"),
+        ("写下今天吃到的好吃的", "日子要有一点甜。")
+    ]
+    static let done: [(String, String)] = [
+        ("全部打卡完成", "今天的你，很棒。"),
+        ("今日份坚持，已收下", "一点一点，都在长大。"),
+        ("今天的小目标，都达成了", "好好休息一下吧。"),
+        ("完美收工", "明天也一起加油。")
+    ]
+    static func pick(_ list: [(String, String)], _ date: Date) -> (String, String) {
+        let dc = DK.calendar.dateComponents([.year, .month, .day], from: date)
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
+        let day = Int(((utc.date(from: dc) ?? date).timeIntervalSince1970 / 86400).rounded())
+        return list[((day % list.count) + list.count) % list.count]
+    }
+}
 
 struct JournalWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: HabitEntry
 
     /// 不显示笔记内容（放在桌面上容易被别人看到），只放一句温柔的提示，每天换一句
-    static let prompts: [(String, String)] = [
-        ("今天有什么值得记下的小事？", "写下来，日子会更清楚。"),
-        ("今天过得好吗？", "随手记两句，留给以后的自己。"),
-        ("有什么想留住的瞬间？", "点一下，把它写进今天。"),
-        ("今天有让你开心的事吗？", "哪怕很小，也值得记一笔。"),
-        ("累了的话，就写几句吧。", "说给自己听，也很好。"),
-        ("今天的你，辛苦啦。", "想说的话，都可以放在这里。"),
-        ("今天学到了什么新东西？", "记下来，它就是你的了。")
-    ]
-
-    /// 按日期每天换一句（和 App 里「小组件」页的预览用同一个算法）
-    private var prompt: (String, String) {
-        let dc = DK.calendar.dateComponents([.year, .month, .day], from: entry.date)
-        var utc = Calendar(identifier: .gregorian)
-        utc.timeZone = TimeZone(identifier: "UTC")!
-        let day = Int(((utc.date(from: dc) ?? entry.date).timeIntervalSince1970 / 86400).rounded())
-        return Self.prompts[((day % Self.prompts.count) + Self.prompts.count) % Self.prompts.count]
-    }
+    private var prompt: (String, String) { WidgetDay.pick(WidgetDay.prompts, entry.date) }
 
     var body: some View {
         let p = prompt

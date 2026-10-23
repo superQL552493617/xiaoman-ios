@@ -161,7 +161,7 @@ struct WebRootView: View {
             }
             .onChange(of: phase) { _, p in
                 if p == .active { bridge.reloadIfChangedOutside() }
-                if p == .background { bridge.flush {} }
+                if p == .background { bridge.flush { WidgetCenter.shared.reloadAllTimelines() } }   // 回到桌面时小组件马上是最新的
             }
             .confirmationDialog("测试菜单", isPresented: $askSwitch, titleVisibility: .visible) {
                 Button(TestMode.vip ? "关闭测试会员（用来测购买流程）" : "开启测试会员") {
@@ -324,7 +324,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         if(/support\\.qq\\.com/.test(this.action||'')){var f={};for(var i=0;i<this.elements.length;i++){var el=this.elements[i];if(el.name)f[el.name]=el.value}N({cmd:'feedback',fields:f}).catch(function(){});return}
         return sub.call(this)};
       if(typeof window.faceScan==='function'){
-        window.faceScan=function(onOk,label,onFail,bio){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||'',bio:!!bio}).then(function(ok){done();if(ok){onOk&&onOk()}else{onFail&&onFail()}}).catch(function(){done();onFail&&onFail()})};
+        window.faceScan=function(onOk,label,onFail,bio){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||'',bio:!!bio}).then(function(ok){done();if(ok===true){onOk&&onOk()}else{onFail&&onFail(ok)}}).catch(function(){done();onFail&&onFail()})};
       }
     })();
     """
@@ -382,8 +382,17 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             let policy: LAPolicy = bio ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
             if bio { ctx.localizedFallbackTitle = "" }
             guard ctx.canEvaluatePolicy(policy, error: &err) else { replyHandler(false, nil); return }
-            ctx.evaluatePolicy(policy, localizedReason: (body["label"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "解锁小满") { ok, _ in
-                DispatchQueue.main.async { replyHandler(ok, nil) }
+            ctx.evaluatePolicy(policy, localizedReason: (body["label"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "解锁小满") { ok, err in
+                // 返回 true 成功；"retry" 系统取消（App 还没回到前台等），网页会自动再试；"cancel" 用户取消；false 没认出来
+                var r: Any = ok
+                if !ok, let e = err as? LAError {
+                    switch e.code {
+                    case .appCancel, .systemCancel, .notInteractive: r = "retry"
+                    case .userCancel, .userFallback: r = "cancel"
+                    default: r = false
+                    }
+                }
+                DispatchQueue.main.async { replyHandler(r, nil) }
             }
         case "copy":
             UIPasteboard.general.string = body["text"] as? String ?? ""
@@ -462,7 +471,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     private func schedulePostSave() {
         postTask?.cancel()
         postTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            // 打卡后尽快刷新桌面小组件（App 在前台时刷新不受系统次数限制）
+            try? await Task.sleep(nanoseconds: 300_000_000)
             guard !Task.isCancelled else { return }
             WidgetCenter.shared.reloadAllTimelines()
             guard let s = Persistence.load() else { return }

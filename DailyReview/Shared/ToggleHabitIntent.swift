@@ -58,11 +58,17 @@ struct WidgetNextPageIntent: AppIntent {
     static var description = IntentDescription("显示小组件里的下一组习惯")
     static var isDiscoverable: Bool = false
 
-    init() {}
+    @Parameter(title: "尺寸") var family: String
+    @Parameter(title: "页数") var pages: Int
+
+    init() { family = "s"; pages = 1 }
+    init(family: String, pages: Int) { self.family = family; self.pages = pages }
 
     func perform() async throws -> some IntentResult {
+        // 一页一页往后翻，最后一页之后回到第一页（每种尺寸各自记页码）
         let d = UserDefaults(suiteName: Persistence.appGroup)
-        d?.set((d?.integer(forKey: "widgetPage") ?? 0) + 1, forKey: "widgetPage")
+        let key = "widgetPage_" + family, n = max(1, pages)
+        d?.set(((d?.integer(forKey: key) ?? 0) % n + 1) % n, forKey: key)
         WidgetCenter.shared.reloadAllTimelines()
         return .result()
     }

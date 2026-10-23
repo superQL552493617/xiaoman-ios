@@ -2274,6 +2274,7 @@ drag:cardById(el.dataset.id)?Drag:null
 /* ================= check in / plan ================= */
 function tryCheckIn(id){
 const k=sel;
+if(k>TODAY()){buzz();toast('还没到这一天，到时候再来打卡吧','gray');const el=$(`#pane .grid [data-id="${id}"] .dot`);el&&el.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:dur(300)});return}
 checkIn(id);
 }
 function checkIn(id){
@@ -2482,7 +2483,7 @@ opts.onClose(apply&&st==='undo');
 then&&then();
 },dur(220));
 };
-const bdT=performance.now();bd.onclick=()=>{if(performance.now()-bdT>450)close()};
+const bdT=performance.now();bd.onclick=()=>{if(performance.now()-bdT>450)close(false)};   // 点空白处关掉：等于没改，上面选的「取消打卡 / 暂停」不生效
 $('#dgOk',dg).onclick=()=>{if(st==='pause'&&!pzRg){buzz();toast('请选择结束日期，或打开「手动恢复」','gray');const r=$('#dgRg .rg-man',dg);r&&r.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:dur(360)});return}close()};
 if(archived){$('#dgDel',dg).hidden=true;$('#dgEd',dg).hidden=true;$('.dlg-head b',dg).insertAdjacentHTML('beforeend','<small class="arch-tag">已删除</small>')}
 $('#dgEd',dg).onclick=()=>close(false,()=>openDesigner(id));   // 去编辑习惯：上面选的「取消打卡 / 暂停」没点确认，不生效（日志已经实时保存）
@@ -2773,13 +2774,16 @@ if(!r)return '未设置';
 const rep=r.repeat==='custom'?[1,2,3,4,5,6,0].filter(d=>r.days.includes(d)).map(d=>'周'+'日一二三四五六'[d]).join('、'):REP.find(x=>x[0]===r.repeat)[1];
 return `${rep} ${pad(r.h)}:${pad(r.m)}，闹钟，${TONE.name(r.tone)}`;
 }
+/* 时间轮盘首尾相接：23 下面是 00，59 下面是 00。数字重复排 7 遍，停下后悄悄挪回中间那一遍 */
 function wheel(el,count,val,onChange){
-const H=40;
-el.innerHTML='<div class="wsp"></div>'+Array.from({length:count},(_,i)=>`<div class="wi">${pad(i)}</div>`).join('')+'<div class="wsp"></div>';
-const items=$$('.wi',el);
-const hl=()=>{const v=Math.round(el.scrollTop/H);items.forEach((x,i)=>x.classList.toggle('on',i===v))};
-let t;el.addEventListener('scroll',()=>{hl();clearTimeout(t);t=setTimeout(()=>{const v=Math.max(0,Math.min(count-1,Math.round(el.scrollTop/H)));onChange(v);buzz()},120)},{passive:true});
-requestAnimationFrame(()=>{el.scrollTop=val*H;hl()});
+const H=40,REP=7,len=count*REP,mid=count*3;el._len=len;
+el.innerHTML='<div class="wsp"></div>'+Array.from({length:len},(_,i)=>`<div class="wi">${pad(i%count)}</div>`).join('')+'<div class="wsp"></div>';
+const items=$$('.wi',el);let lastOn=-1;
+const hl=()=>{const v=Math.round(el.scrollTop/H);if(v===lastOn)return;if(items[lastOn])items[lastOn].classList.remove('on');items[v]&&items[v].classList.add('on');lastOn=v};
+let t,prev=val;el.addEventListener('scroll',()=>{hl();clearTimeout(t);t=setTimeout(()=>{const i=Math.max(0,Math.min(len-1,Math.round(el.scrollTop/H))),v=((i%count)+count)%count;
+if(i<count*2||i>=count*5){el.scrollTop=(mid+v)*H;hl()}
+if(v!==prev){prev=v;onChange(v);buzz()}},120)},{passive:true});
+requestAnimationFrame(()=>{el.scrollTop=(mid+val)*H;hl()});
 }
 /* the whole time box is one touch surface: left half = hours, right half = minutes.
 Dragging anywhere inside only turns the wheels, the sheet itself never scrolls. */
@@ -2787,7 +2791,7 @@ function wheelBox(box,wheels){
 const H=40;
 let act=null,sy=0,lastY=0,lastT=0,vel=0,moved=false,raf=0;
 const pick=x=>{const r=box.getBoundingClientRect();return x<r.left+r.width/2?wheels[0]:wheels[1]};
-const clamp=(w,v)=>Math.max(0,Math.min((w.count-1)*H,v));
+const clamp=(w,v)=>Math.max(0,Math.min(((w.el._len||w.count)-1)*H,v));
 const snap=w=>w.el.scrollTo({top:clamp(w,Math.round(w.el.scrollTop/H)*H),behavior:'smooth'});
 box.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
 box.addEventListener('touchmove',e=>{e.preventDefault();e.stopPropagation()},{passive:false});
@@ -3945,9 +3949,11 @@ const G=[
 ];
 const {sh,close}=openSheet(`
 <div class="sheet-head"><button class="pe-x" id="gdX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><h3>使用指南</h3><span style="width:36px"></span></div>
+<button class="btn sec" id="gdReplay" style="margin:4px 0 6px">重新看一遍新手引导</button>
 ${G.map(([h,rows])=>`<p class="list-title">${h}</p><div class="list glass guide">${rows.map(([a,b])=>`<div class="li"><span class="t">${a}<small>${b}</small></span></div>`).join('')}</div>`).join('')}`);
 sh.classList.add('tall');
 $('#gdX',sh).onclick=close;
+$('#gdReplay',sh).onclick=()=>{close();const go=()=>{SNAV&&SNAV.close();setTimeout(()=>startGuide(true),dur(420))};setTimeout(go,dur(300))};
 }
 function openAbout(){
 const {sh,close}=openSheet(`
@@ -4223,20 +4229,23 @@ bindPeriod('tlSeg',()=>({per:tlPer,off:tlOff}),(p,o)=>{tlPer=p;tlOff=o},renderTi
 }
 
 /* ---- 小组件: live previews in three sizes + settings + how to add ---- */
-const WIDGET_BG=[['default','默认',''],['cream','米白','#FBF7EE'],['blue','淡蓝','#EDF3FF'],['green','淡绿','#EAF7EF'],
+const WIDGET_BG=[['default','米白（默认）',''],['cream','奶油','#FBF3E2'],['blue','淡蓝','#EDF3FF'],['green','淡绿','#EAF7EF'],
 ['pink','淡粉','#FFEEF3'],['purple','淡紫','#F3EEFF'],['yellow','淡黄','#FFF9E3'],['grey','浅灰','#F1F1F4']];
 let wgPage=0;
 function wgOpts(){const o=S.prefs.widget=S.prefs.widget||{};for(const [k,v] of Object.entries({tap:true,bg:'default',custom:'#E8F0FF'}))if(!(k in o))o[k]=v;
 if(o.v!==2){o.v=2;o.tap=true}o.keep=false;return o}   // v125: direct check-in on by default; finished habits leave the widget
 let wgKind='check';
 /* 笔记小组件的提示语（和桌面小组件一致：按日期每天换一句，不显示笔记内容） */
-const WG_PROMPTS=[['今天有什么值得记下的小事？','写下来，日子会更清楚。'],['今天过得好吗？','随手记两句，留给以后的自己。'],['有什么想留住的瞬间？','点一下，把它写进今天。'],
-['今天有让你开心的事吗？','哪怕很小，也值得记一笔。'],['累了的话，就写几句吧。','说给自己听，也很好。'],['今天的你，辛苦啦。','想说的话，都可以放在这里。'],['今天学到了什么新东西？','记下来，它就是你的了。']];
+const WG_PROMPTS=[['写下今天开心的一件事','再小的快乐，也值得记住。'],['写下今天让你骄傲的事','哪怕只是早起了一点点。'],['写下今天想感谢的人或事','温柔的瞬间，会被好好记住。'],
+['写下今天学到的一件事','记下来，它就是你的了。'],['写下今天印象最深的瞬间','以后翻到，会很想念。'],['写下今天有点累的事','说出来，心会轻一些。'],['写下今天吃到的好吃的','日子要有一点甜。']];
+const WG_DONE=[['全部打卡完成','今天的你，很棒。'],['今日份坚持，已收下','一点一点，都在长大。'],['今天的小目标，都达成了','好好休息一下吧。'],['完美收工','明天也一起加油。']];
+function wgDayN(){const d=parseKey(TODAY());return Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)}
+function wgDone(){return WG_DONE[wgDayN()%WG_DONE.length]}
 function wgPrompt(){const d=parseKey(TODAY());const n=Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);return WG_PROMPTS[n%WG_PROMPTS.length]}
 const WG_THEME={cream:['#FAF7F0','#FAF7F0'],mist:['#F3F4F6','#F3F4F6'],sky:['#E6F0FC','#F2F7FD'],sage:['#E5F1E6','#F3F8F3'],peach:['#FBE9DA','#FDF6F0'],
 dots:['#FBFBFA','#FBFBFA'],grid:['#FCFCFA','#FCFCFA'],dream:['#E9DED2','#DCE9EE'],fog:['#FBF8F2','#F6EBDD'],beach:['#F8F7F2','#EEF1EA'],plaid:['#FAFCFE','#EEF4FA'],forest:['#F7F7F2','#ECF0E6']};
 function wgBg(o){if(o.bg==='custom')return o.custom;const f=WIDGET_BG.find(x=>x[0]===o.bg);if(f&&f[2])return f[2];
-if(document.body.classList.contains('dark'))return '';const t=WG_THEME[S.prefs.pageBg];return t?`linear-gradient(180deg,${t[0]},${t[1]})`:''}
+if(document.body.classList.contains('dark'))return '';return '#FBF7EE'}   // 默认米白色（和桌面小组件一致）
 function wgItems(max){
 const o=wgOpts(),d=parseKey(TODAY()),day=S.records[TODAY()]||{};
 return checkCards().filter(c=>scheduled(c,d)).map(c=>({c,done:!!(day[c.id]&&day[c.id].checked)})).filter(x=>o.keep||!x.done).slice(0,max);
@@ -4257,7 +4266,7 @@ function widgetPreviews(){
 const o=wgOpts(),bg=wgBg(o),style=bg?`style="--wbg:${bg}"`:'';
 const all=checkCards().filter(c=>scheduled(c,parseKey(TODAY()))),day=S.records[TODAY()]||{};
 const left=all.filter(c=>!(day[c.id]&&day[c.id].checked)),done=all.length-left.length;
-const ic=c=>{const col=COL(c);return `<button class="wgi" data-wsample aria-label="示例：${esc(c.name)}"><span class="cw wg-cw" style="--a:${col.a};--b:${col.b};--fg:${col.fg}"><span class="dot"><i class="fill"></i>${ringSVG()}<span class="cic">${iconHTML(c)}</span></span></span><small>${esc(c.name)}</small></button>`};
+const ic=c=>{const col=COL(c);return `<button class="wgi" data-wsample aria-label="示例：${esc(c.name)}"><span class="cw wg-cw on" style="--a:${col.a};--b:${col.b};--fg:${col.fg}"><span class="dot"><i class="fill"></i>${ringSVG()}<span class="cic">${iconHTML(c)}</span></span></span><small>${esc(c.name)}</small></button>`};
 const grid=(n,cls)=>`<div class="wg ${cls}" ${style}><div class="wg-top"><b>今日打卡</b><span>3/${n+3}</span></div>
 <div class="wgi-grid">${WG_SAMPLE.slice(0,n).map(ic).join('')}</div></div>`;
 const jl=jList(TODAY()),last=jl[jl.length-1];
@@ -4266,7 +4275,7 @@ const lines=n=>`<span class="wgj-lines">${'<i></i>'.repeat(n)}</span>`;
 if(wgKind==='jr'){const p=wgPrompt();
 const card=(cls,art)=>`<button class="wg ${cls} wg-ill" data-wjr ${style} aria-label="写笔记"><span class="wgx-t"><b>${p[0]}</b><small>${p[1]}</small></span><img class="wgx-art ${art}" src="wg_bubble.png" alt=""></button>`;
 return [['小号','点一下直接写今天的笔记',card('wg-s','bs')],['中号','桌面上不显示笔记内容，保护隐私',card('wg-m','bm')],['大号','每天换一句温柔的提示',card('wg-l','bl')]]}
-const doneCard=(cls,img,art)=>`<div class="wg ${cls} wg-ill" ${style}><span class="wgx-t"><b>今天都完成啦</b><small>一点一点，都在慢慢长大。</small></span><img class="wgx-art ${art}" src="${img}" alt=""></div>`;
+const doneCard=(cls,img,art)=>`<div class="wg ${cls} wg-ill" ${style}><span class="wgx-t"><b>${wgDone()[0]}</b><small>${wgDone()[1]}</small></span><img class="wgx-art ${art}" src="${img}" alt=""></div>`;
 return [['小号','4 个习惯，打完的自动消失',grid(4,'wg-s')],['中号','8 个习惯',grid(8,'wg-m')],['大号','16 个习惯',grid(16,'wg-l')],
 ['全部打完 · 小号','打完后换成一盆小盆栽',doneCard('wg-s','wg_pot1.png','ps')],['全部打完 · 中号','三盆小盆栽',doneCard('wg-m','wg_pots3.png','pm')],['全部打完 · 大号','一整排盆栽',doneCard('wg-l','wg_pots5.png','pl')]];
 }
@@ -5361,19 +5370,65 @@ if(!L.face){openPad();return}
 /* 开了面容 ID：先只盖一层锁屏，用面容 ID 解锁；连续两次没认出来，才换成密码键盘（两者不同时出现） */
 const cv=document.createElement('div');cv.className='lk lk-gate lk-cover';cv.setAttribute('role','dialog');cv.setAttribute('aria-label','小满已上锁');
 cv.innerHTML=`<div class="lk-top"><span class="lk-ic">${LOCK_SVG}</span><h3 class="lk-t">小满已上锁</h3><p class="lk-s">正在用面容 ID 解锁…</p></div>
-<button class="lk-again" hidden>${FACE_SVG}<span>再试一次面容 ID</span></button>`;
+<button class="lk-again" hidden>${FACE_SVG}<span>再试一次面容 ID</span></button><button class="lk-pw" hidden>输入密码</button>`;
 document.body.append(cv);requestAnimationFrame(()=>cv.classList.add('show'));
-let fails=0;
+let fails=0,busy=false,wd=0;
 const bye=ok=>{cv.classList.remove('show');cv.classList.add(ok?'ok':'bye');setTimeout(()=>cv.remove(),dur(320))};
-const again=$('.lk-again',cv);
-const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true);runPendingRoute()},'解锁小满',()=>{fails++;
-if(fails>=2){openPad();setTimeout(()=>cv.remove(),dur(60))}   // 密码键盘直接盖在锁屏上面，再拿掉锁屏，中间不会露出 App 内容
-else{$('.lk-s',cv).textContent='没有认出来，再试一次';again.hidden=false}},true)};
-again.onclick=tryFace;
+const again=$('.lk-again',cv),usePw=$('.lk-pw',cv);
+const toPad=()=>{if(!LOCKED||!cv.isConnected)return;openPad();setTimeout(()=>cv.remove(),dur(60))};   // 密码键盘直接盖在锁屏上面，再拿掉锁屏，中间不会露出 App 内容
+const showBtns=msg=>{$('.lk-s',cv).textContent=msg;again.hidden=false;usePw.hidden=false};
+const tryFace=()=>{if(busy||!LOCKED||!cv.isConnected)return;busy=true;again.hidden=true;usePw.hidden=true;$('.lk-s',cv).textContent='正在用面容 ID 解锁…';
+clearTimeout(wd);wd=setTimeout(()=>{if(busy){busy=false;showBtns('点下面的按钮继续解锁')}},12000);   // 系统没有弹出面容 ID 时，不会一直卡住
+faceScan(()=>{busy=false;clearTimeout(wd);LOCKED=false;bye(true);runPendingRoute()},'解锁小满',why=>{busy=false;clearTimeout(wd);
+if(why==='retry'){   // App 还没完全回到前台（比如从小组件点进来），系统取消了这次识别：回到前台后自动再试，不算失败
+const re=()=>{if(document.visibilityState==='visible')setTimeout(tryFace,dur(400));else document.addEventListener('visibilitychange',re,{once:true})};re();return}
+fails++;if(fails>=2){toPad();return}
+showBtns(why==='cancel'?'已取消面容 ID':'没有认出来，再试一次')},true)};
+again.onclick=tryFace;usePw.onclick=toPad;
 /* 冷启动时先等开屏页结束再弹面容 ID（锁屏遮罩已经盖住内容） */
 const go=()=>setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
 if(IN_APP&&!window.__XM_SPLASH_DONE)window.__xmSplashDone=()=>{window.__xmSplashDone=null;go()};else go();
 }
+
+/* ================= 首次使用引导（4 步，可跳过；只出现一次，「使用说明」里可以再看） ================= */
+const GUIDE_STEPS=[
+{t:'欢迎来到小满记',d:'每天一点点，日子就慢慢满了。<br>花 20 秒，认识一下怎么打卡吧。',sel:null},
+{t:'点一下圆圈，就完成打卡',d:'再点已打卡的圆圈，可以写打卡日志，或者取消打卡。<br>长按圆圈还能拖动排序。',sel:'#pane .grid .cw'},
+{t:'左右滑动，切换日期',d:'在这片区域左右滑，就能回到前一天补打卡。<br>点顶部的日期，可以展开一周的日期栏。',sel:'#pane .grid'},
+{t:'新建习惯，设置提醒',d:'点「+」添加自己的习惯，选图标、颜色和打卡日，<br>还能设闹钟，到点提醒你。',sel:'#pane .th-add'},
+{t:'把小满装扮成你喜欢的样子',d:'在「我的」里换主题、字体、小组件，<br>还可以加密码锁，日记只给自己看。',sel:'#tabbar'}];
+function startGuide(force){
+if(!force&&(S.prefs.guided||document.querySelector('.gd')))return;
+if(tab!=='today'){tab='today';render()}
+let i=0;const ov=document.createElement('div');ov.className='gd';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','新手引导');
+ov.innerHTML=`<div class="gd-hole"></div><div class="gd-card"><button class="gd-skip">跳过</button><b class="gd-t"></b><p class="gd-d"></p>
+<div class="gd-foot"><span class="gd-dots">${GUIDE_STEPS.map(()=>'<i></i>').join('')}</span><button class="gd-next"></button></div></div>`;
+document.body.append(ov);
+const hole=$('.gd-hole',ov),card=$('.gd-card',ov);
+const end=()=>{S.prefs.guided=1;save();ov.classList.remove('show');setTimeout(()=>ov.remove(),dur(260));removeEventListener('resize',place)};
+function place(){const st=GUIDE_STEPS[i],el=st.sel&&document.querySelector(st.sel);
+if(el){el.scrollIntoView({block:'center',behavior:'instant'})}
+const r=el?el.getBoundingClientRect():null,pad=8;
+if(r){Object.assign(hole.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px',borderRadius:(st.sel==='#pane .grid .cw'||st.sel==='#pane .th-add'?'50%':'22px'),opacity:1})}
+else Object.assign(hole.style,{left:'50%',top:'45%',width:'0px',height:'0px',opacity:0});
+const ch=card.offsetHeight,below=r&&r.bottom+pad+16+ch<innerHeight-20;
+card.style.top=(!r?Math.max(80,innerHeight*.5-ch/2):below?r.bottom+pad+16:Math.max(20,r.top-pad-16-ch))+'px';
+ov.classList.toggle('nohole',!r)}
+const show=()=>{const st=GUIDE_STEPS[i];$('.gd-t',ov).textContent=st.t;$('.gd-d',ov).innerHTML=st.d;
+$$('.gd-dots i',ov).forEach((x,k)=>x.classList.toggle('on',k===i));
+$('.gd-next',ov).textContent=i===0?'开始':i===GUIDE_STEPS.length-1?'开始使用':'下一步';
+$('.gd-skip',ov).hidden=i===GUIDE_STEPS.length-1;place();
+card.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:dur(260),easing:'ease-out'})};
+$('.gd-next',ov).onclick=()=>{buzz();if(i>=GUIDE_STEPS.length-1){end();return}i++;show()};
+$('.gd-skip',ov).onclick=()=>{buzz();end()};
+ov.addEventListener('click',e=>{if(e.target===ov||e.target===hole){e.stopPropagation()}});
+addEventListener('resize',place);
+requestAnimationFrame(()=>{ov.classList.add('show');show()});
+}
+/* 打开 App 后：开屏页、密码锁都结束了再出来 */
+function maybeGuide(){if(S.prefs.guided)return;let n=0;const t=setInterval(()=>{n++;
+const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!LOCKED&&!document.querySelector('.lk,.sheet.show,.jr.show,.fn')&&tab==='today'&&document.querySelector('#pane .grid .cw');
+if(ready){clearInterval(t);setTimeout(()=>startGuide(),dur(500))}else if(n>120)clearInterval(t)},500)}
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
 /* 离开 App 时先盖一层空白锁屏，回来时直接是锁住的样子，不会先闪一下 App 里的内容 */
@@ -5664,7 +5719,7 @@ if(tab==='today'){renderToday()}else render()}
 setInterval(checkDayRoll,20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRoll()});
 addEventListener('focus',checkDayRoll);addEventListener('pageshow',checkDayRoll);
-load().then(()=>{syncNoteFont();setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
+load().then(()=>{syncNoteFont();setTimeout(maybeGuide,800);setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
 </script>
 <!-- size variables (defaults are the design values; the tuner panel has been removed) -->
 <style>
@@ -5848,7 +5903,24 @@ body.dark .ai-opt{background:#262624}
 body.dark .wgx-t b{color:#F2F2F7}body.dark .wgx-t small{color:rgba(235,235,245,.55)}
 .wgx-art{position:absolute;right:4px;bottom:2px;height:auto;pointer-events:none}
 .wgx-art.bs{width:46%}.wgx-art.bm{width:28%}.wgx-art.bl{width:46%}
-.wgx-art.ps{width:40%;right:8px}.wgx-art.pm{width:40%}.wgx-art.pl{width:94%;right:3%}
+.wgx-art.ps{width:40%;right:8px}.wgx-art.pm{width:46%}.wgx-art.pl{width:94%;right:3%}
+.lk-pw{margin-top:14px;border:0;background:none;color:inherit;opacity:.65;font:inherit;font-size:14px;padding:8px 14px}.lk-pw[hidden]{display:none}
+
+/* 新手引导 */
+.gd{position:fixed;inset:0;z-index:85;opacity:0;transition:opacity .25s}
+.gd.show{opacity:1}
+.gd-hole{position:fixed;box-shadow:0 0 0 9999px rgba(20,18,16,.58);transition:all .35s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.gd.nohole{background:rgba(20,18,16,.58)}.gd.nohole .gd-hole{box-shadow:none}
+.gd-card{position:fixed;left:20px;right:20px;max-width:440px;margin:0 auto;background:#FFFDF8;color:#3E3532;border-radius:22px;padding:20px 20px 16px;box-shadow:0 18px 40px rgba(0,0,0,.25);transition:top .35s cubic-bezier(.2,.8,.2,1)}
+.gd-t{display:block;font-size:19px;font-weight:700;margin-bottom:8px;padding-right:48px}
+.gd-d{margin:0;font-size:14px;line-height:1.65;color:#7D7266}
+.gd-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+.gd-dots{display:flex;gap:6px}.gd-dots i{width:6px;height:6px;border-radius:3px;background:#E3DCCF;transition:width .25s}.gd-dots i.on{width:18px;background:#F5C542}
+.gd-next{border:0;background:#F5C542;color:#3E3532;font:inherit;font-weight:700;font-size:15px;padding:11px 22px;border-radius:999px;min-height:44px}
+.gd-skip{position:absolute;top:12px;right:12px;border:0;background:none;color:#A39888;font:inherit;font-size:14px;padding:8px 10px;min-height:36px}
+.gd-skip[hidden]{display:none}
+body.dark .gd-card{background:#262624;color:#F2EDE4}body.dark .gd-d{color:#B8B0A4}body.dark .gd-dots i{background:#4A4640}
+.wg .wg-cw .dot{outline:1.3px dashed color-mix(in srgb,var(--b) 65%,#2a2a2a);outline-offset:2px;border-radius:50%}
 </style>
 </body>
 </html>
