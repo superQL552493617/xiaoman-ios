@@ -229,3 +229,88 @@ if MODE == "avail":
 
 if MODE == "meta":
     meta(); status()
+
+def version_and_loc(aid):
+    ver = [v for v in all_pages(f"/v1/apps/{aid}/appStoreVersions")[0] if v["attributes"].get("appStoreState") in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")][0]
+    vl = first(f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")
+    return ver, vl
+
+def upload_shots():
+    aid = app_id(); ver, vl = version_and_loc(aid)
+    files = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "appstore", "*.png")))
+    print("files", [os.path.basename(f) for f in files])
+    sets, _ = all_pages(f"/v1/appStoreVersionLocalizations/{vl['id']}/appScreenshotSets")
+    st = next((x for x in sets if x["attributes"]["screenshotDisplayType"] == "APP_IPHONE_67"), None)
+    if not st:
+        st = api("POST", "/v1/appScreenshotSets", {"data": {"type": "appScreenshotSets", "attributes": {"screenshotDisplayType": "APP_IPHONE_67"},
+            "relationships": {"appStoreVersionLocalization": rel("appStoreVersionLocalizations", vl["id"])}}})["data"]
+    old, _ = all_pages(f"/v1/appScreenshotSets/{st['id']}/appScreenshots")
+    for o in old: api("DELETE", f"/v1/appScreenshots/{o['id']}")
+    for f in files:
+        data = open(f, "rb").read()
+        r = api("POST", "/v1/appScreenshots", {"data": {"type": "appScreenshots", "attributes": {"fileName": os.path.basename(f), "fileSize": len(data)},
+            "relationships": {"appScreenshotSet": rel("appScreenshotSets", st["id"])}}})
+        if not r: continue
+        sid = r["data"]["id"]
+        for op in r["data"]["attributes"]["uploadOperations"]:
+            hdr = {h["name"]: h["value"] for h in op.get("requestHeaders", [])}
+            chunk = data[op["offset"]: op["offset"] + op["length"]]
+            rr = requests.request(op["method"], op["url"], headers=hdr, data=chunk, timeout=120)
+            if rr.status_code >= 300: print("upload part failed", rr.status_code)
+        api("PATCH", f"/v1/appScreenshots/{sid}", {"data": {"type": "appScreenshots", "id": sid,
+            "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}}) and print("ok shot", os.path.basename(f))
+    time.sleep(20)
+    shots, _ = all_pages(f"/v1/appScreenshotSets/{st['id']}/appScreenshots")
+    for x in shots: print(" ", x["attributes"].get("fileName"), (x["attributes"].get("assetDeliveryState") or {}).get("state"))
+
+def review_detail():
+    aid = app_id(); ver, _ = version_and_loc(aid)
+    c = json.load(open(os.environ["CONTACT_PATH"]))
+    attrs = {"contactFirstName": c["first"], "contactLastName": c["last"], "contactPhone": c["phone"], "contactEmail": c["email"],
+             "demoAccountRequired": False,
+             "notes": "小满记是一款本地的习惯打卡和日记 App，不需要注册登录，所有数据只保存在用户手机上，没有服务器。\n"
+                      "会员（年度卡含 3 天免费试用、月度卡、永久会员）入口：我的 → 右上方「开通会员」，可在会员页底部查看用户协议和隐私政策，并可恢复购买。\n"
+                      "会员功能：不限习惯数量（免费版最多 4 个）、用照片做习惯图标、App 密码锁和面容 ID 解锁。\n"
+                      "首次打开会先请用户同意用户协议和隐私政策，然后是新手引导，可以直接点「跳过」。"}
+    j = api("GET", f"/v1/appStoreVersions/{ver['id']}/appStoreReviewDetail")
+    if j and j.get("data"):
+        r = api("PATCH", f"/v1/appStoreReviewDetails/{j['data']['id']}", {"data": {"type": "appStoreReviewDetails", "id": j["data"]["id"], "attributes": attrs}})
+    else:
+        r = api("POST", "/v1/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails", "attributes": attrs,
+            "relationships": {"appStoreVersion": rel("appStoreVersions", ver["id"])}}})
+    print("review detail", "ok" if r else "failed")
+
+def submit():
+    aid = app_id(); ver, _ = version_and_loc(aid)
+    # 第一次的会员商品要和这个版本一起送审
+    grps, _ = all_pages(f"/v1/apps/{aid}/subscriptionGroups")
+    for g in grps:
+        subs, _ = all_pages(f"/v1/subscriptionGroups/{g['id']}/subscriptions")
+        for sb in subs:
+            if sb["attributes"].get("state") == "READY_TO_SUBMIT":
+                r = api("POST", "/v1/subscriptionSubmissions", {"data": {"type": "subscriptionSubmissions", "relationships": {"subscription": rel("subscriptions", sb["id"])}}})
+                print("sub submit", sb["attributes"]["productId"], "ok" if r else "failed")
+    iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
+    for p in iaps:
+        if p["attributes"].get("state") == "READY_TO_SUBMIT":
+            r = api("POST", "/v1/inAppPurchaseSubmissions", {"data": {"type": "inAppPurchaseSubmissions", "relationships": {"inAppPurchaseV2": rel("inAppPurchases", p["id"])}}})
+            print("iap submit", p["attributes"]["productId"], "ok" if r else "failed")
+    subs, _ = all_pages(f"/v1/apps/{aid}/reviewSubmissions")
+    rs = next((x for x in subs if x["attributes"].get("state") == "READY_FOR_REVIEW"), None)
+    if not rs:
+        r = api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions", "attributes": {"platform": "IOS"}, "relationships": {"app": rel("apps", aid)}}})
+        rs = r and r["data"]
+    if not rs: print("no review submission"); return
+    items, _ = all_pages(f"/v1/reviewSubmissions/{rs['id']}/items")
+    if not items:
+        api("POST", "/v1/reviewSubmissionItems", {"data": {"type": "reviewSubmissionItems", "relationships": {
+            "reviewSubmission": rel("reviewSubmissions", rs["id"]), "appStoreVersion": rel("appStoreVersions", ver["id"])}}}) and print("item added")
+    r = api("PATCH", f"/v1/reviewSubmissions/{rs['id']}", {"data": {"type": "reviewSubmissions", "id": rs["id"], "attributes": {"submitted": True}}})
+    print("SUBMITTED" if r else "submit failed")
+
+if MODE == "shots":
+    upload_shots()
+if MODE == "review":
+    review_detail()
+if MODE == "submit":
+    submit(); status()

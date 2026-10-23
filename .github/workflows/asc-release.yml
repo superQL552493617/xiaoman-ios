@@ -23,6 +23,10 @@ jobs:
           printf %s "$ASC_B64" | base64 --decode > "$RUNNER_TEMP/asc.enc"
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$RUNNER_TEMP/asc.enc" -out "$K/AuthKey.p8" -pass env:PASS
           echo "KEY_PATH=$K/AuthKey.p8" >> $GITHUB_ENV
+          if [ -f ci/review_contact.enc ]; then
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in ci/review_contact.enc -out "$K/contact.json" -pass env:PASS
+            echo "CONTACT_PATH=$K/contact.json" >> $GITHUB_ENV
+          fi
       - name: 运行
         run: |
           pip install -q pyjwt cryptography requests
