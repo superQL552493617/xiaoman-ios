@@ -1,0 +1,9 @@
+submission d9e5d0a0-5374-41a7-932f-33b68aadc768 READY_FOR_REVIEW None
+  item READY_FOR_REVIEW {}
+  item READY_FOR_REVIEW {'appStoreVersion': '31c6a80e-bcee-47a1-bbb9-79748d9b41e1'}
+  item READY_FOR_REVIEW {}
+  item READY_FOR_REVIEW {}
+version 1.0 READY_FOR_REVIEW
+sub site.xiaomanhabit.app.vip.year READY_TO_SUBMIT
+sub site.xiaomanhabit.app.vip.month READY_TO_SUBMIT
+iap site.xiaomanhabit.app.vip.life READY_TO_SUBMIT
