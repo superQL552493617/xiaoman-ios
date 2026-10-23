@@ -117,6 +117,55 @@ enum SFX {
 /// 闹钟：每次提醒按 0、5、10 分钟排三条一次性通知（没人管就每 5 分钟响一次，最多 3 次），
 /// 处理过或打过卡就取消剩下的。iOS 最多保留 64 条待发通知，所以只排最近的 60 条，每次打开 App、保存、打卡时重排。
 @MainActor
+/// 提醒通知上的习惯图标：画成一张小图片附在通知上（锁屏和横幅右侧会显示这个习惯的图标）
+enum AlarmIcon {
+    private static var cache: [String: Data] = [:]
+
+    static func attachment(_ c: Card?, id: String) -> [UNNotificationAttachment] {
+        guard let c, let png = png(c) else { return [] }
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("almicon-\(abs(id.hashValue)).png")
+        do {
+            try png.write(to: url, options: .atomic)
+            return [try UNNotificationAttachment(identifier: "icon", url: url, options: nil)]
+        } catch { return [] }
+    }
+
+    static func png(_ c: Card) -> Data? {
+        let key = [c.id, c.ic, c.icon, c.text, c.hex, c.imgFit ?? "", String(c.icImg?.count ?? 0)].joined(separator: "|")
+        if let d = cache[key] { return d }
+        let side: CGFloat = 180
+        let h = HexColor(c.hex)
+        let bg = UIColor(h.mixWhite(0.55).color)
+        let r = UIGraphicsImageRenderer(size: CGSize(width: side, height: side))
+        let img = r.image { ctx in
+            let rect = CGRect(x: 0, y: 0, width: side, height: side)
+            UIBezierPath(roundedRect: rect, cornerRadius: side * 0.24).addClip()
+            bg.setFill(); ctx.fill(rect)
+            if c.ic == "img", let ui = ImageData.image(c.icImg) {
+                let fill = c.imgFit == "fill"
+                let s = fill ? side : side * 0.7
+                let r2 = CGRect(x: (side - s) / 2, y: (side - s) / 2, width: s, height: s)
+                if !fill { UIBezierPath(roundedRect: r2, cornerRadius: s * 0.24).addClip() }
+                let k = max(s / ui.size.width, s / ui.size.height)
+                let w = ui.size.width * k, hh = ui.size.height * k
+                ui.draw(in: CGRect(x: r2.midX - w / 2, y: r2.midY - hh / 2, width: w, height: hh))
+            } else if c.ic == "text" {
+                let t = c.text.isEmpty ? String(c.name.prefix(1)) : c.text
+                let f = UIFont.systemFont(ofSize: side * (t.count > 1 ? 0.34 : 0.46), weight: .bold)
+                let at: [NSAttributedString.Key: Any] = [.font: f, .foregroundColor: UIColor(Color(hex: c.hex)).withAlphaComponent(1)]
+                let sz = (t as NSString).size(withAttributes: at)
+                (t as NSString).draw(at: CGPoint(x: (side - sz.width) / 2, y: (side - sz.height) / 2), withAttributes: at)
+            } else if let ui = UIImage(named: IconCatalog.assetName(c.icon)) {
+                let s = side * 0.64
+                ui.draw(in: CGRect(x: (side - s) / 2, y: (side - s) / 2, width: s, height: s))
+            }
+        }
+        let d = img.pngData()
+        if let d { cache[key] = d }
+        return d
+    }
+}
+
 final class Notifier {
     static let shared = Notifier()
     private let center = UNUserNotificationCenter.current()
@@ -157,7 +206,7 @@ final class Notifier {
                     for i in 0..<AlarmRules.repeats {
                         let at = t0.addingTimeInterval(Double(i) * AlarmRules.gap)
                         if at <= now { continue }
-                        items.append((at, alarmRequest(occ: occ, name: c.name, card: c.id, h: r.h, m: r.m, tone: r.tone ?? 1, k: i, snooze: false, at: at)))
+                        items.append((at, alarmRequest(occ: occ, name: c.name, card: c.id, h: r.h, m: r.m, tone: r.tone ?? 1, k: i, snooze: false, at: at, c: c)))
                     }
                 }
             }
@@ -170,7 +219,7 @@ final class Notifier {
             for i in 0..<AlarmRules.repeats {
                 let at = Date(timeIntervalSince1970: z.t0 + Double(i) * AlarmRules.gap)
                 if at <= now { continue }
-                items.append((at, alarmRequest(occ: z.occ, name: c.name, card: c.id, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at)))
+                items.append((at, alarmRequest(occ: z.occ, name: c.name, card: c.id, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at, c: c)))
             }
         }
         items.sort { $0.0 < $1.0 }
@@ -191,12 +240,13 @@ final class Notifier {
     func addSnooze(_ z: AlarmLog.Snooze, name: String) async {
         for i in 0..<AlarmRules.repeats {
             let at = Date(timeIntervalSince1970: z.t0 + Double(i) * AlarmRules.gap)
-            try? await center.add(alarmRequest(occ: z.occ, name: name, card: z.card, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at))
+            try? await center.add(alarmRequest(occ: z.occ, name: name, card: z.card, h: z.h, m: z.m, tone: z.tone, k: i, snooze: true, at: at, c: Persistence.load()?.card(z.card)))
         }
     }
 
-    private func alarmRequest(occ: String, name: String, card: String, h: Int, m: Int, tone: Int, k: Int, snooze: Bool, at: Date) -> UNNotificationRequest {
+    private func alarmRequest(occ: String, name: String, card: String, h: Int, m: Int, tone: Int, k: Int, snooze: Bool, at: Date, c: Card? = nil) -> UNNotificationRequest {
         let ct = UNMutableNotificationContent()
+        ct.attachments = AlarmIcon.attachment(c, id: "\(occ)#\(k)")
         ct.title = name
         if k == 0 {
             ct.body = snooze ? "稍后提醒：到时间啦，做完记得打个卡" : "到时间啦，做完记得打个卡"

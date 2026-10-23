@@ -81,6 +81,8 @@ struct Card: Codable, Identifiable, Hashable {
     var text: String
     /// 照片图标（data URL 或 base64 JPEG）
     var icImg: String?
+    /// 照片图标的摆法：fit 和图标一样大 / fill 铺满整个图标
+    var imgFit: String?
     var hex: String
     /// "check" 打卡卡片 / "note" 记录卡片
     var type: String
@@ -98,13 +100,13 @@ struct Card: Codable, Identifiable, Hashable {
          hex: String = "#7DBF8A", type: String = "check", slot: String = "全天", days: [Int] = [1, 2, 3, 4, 5, 6, 0],
          group: String? = nil, createdAt: String? = DK.today, font: String? = "sys") {
         self.id = id; self.name = name; self.ic = ic; self.icon = icon; self.text = text
-        self.icImg = nil; self.hex = hex; self.type = type; self.slot = slot; self.days = days
+        self.icImg = nil; self.imgFit = nil; self.hex = hex; self.type = type; self.slot = slot; self.days = days
         self.daysHist = nil; self.group = group; self.reminders = nil; self.pauses = nil
         self.createdAt = createdAt; self.font = font
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, ic, icon, text, icImg, hex, type, slot, days, daysHist, group, reminders, pauses, createdAt, font
+        case id, name, ic, icon, text, icImg, imgFit, hex, type, slot, days, daysHist, group, reminders, pauses, createdAt, font
     }
 
     init(from decoder: Decoder) throws {
@@ -115,6 +117,7 @@ struct Card: Codable, Identifiable, Hashable {
         icon = c.lenient(String.self, .icon) ?? "1F33F"
         text = c.lenient(String.self, .text) ?? ""
         icImg = c.lenient(String.self, .icImg)
+        imgFit = c.lenient(String.self, .imgFit)
         hex = c.lenient(String.self, .hex) ?? "#7DBF8A"
         type = (c.lenient(String.self, .type) == "note") ? "note" : "check"
         slot = c.lenient(String.self, .slot) ?? "全天"

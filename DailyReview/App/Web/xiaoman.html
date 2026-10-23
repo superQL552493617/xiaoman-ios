@@ -2485,7 +2485,7 @@ then&&then();
 const bdT=performance.now();bd.onclick=()=>{if(performance.now()-bdT>450)close()};
 $('#dgOk',dg).onclick=()=>{if(st==='pause'&&!pzRg){buzz();toast('请选择结束日期，或打开「手动恢复」','gray');const r=$('#dgRg .rg-man',dg);r&&r.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:dur(360)});return}close()};
 if(archived){$('#dgDel',dg).hidden=true;$('#dgEd',dg).hidden=true;$('.dlg-head b',dg).insertAdjacentHTML('beforeend','<small class="arch-tag">已删除</small>')}
-$('#dgEd',dg).onclick=()=>close(true,()=>openDesigner(id));
+$('#dgEd',dg).onclick=()=>close(false,()=>openDesigner(id));   // 去编辑习惯：上面选的「取消打卡 / 暂停」没点确认，不生效（日志已经实时保存）
 $('#dgDel',dg).onclick=()=>{const {sh,close:cs}=openSheet(`<div class="dg-confirm"><b>删除习惯「${esc(c.name)}」？</b><p>删除后这张卡片不再出现在打卡页，以前的打卡记录和日志会保留在统计里。</p>
 <button class="btn dg-del" id="dcDel">删除</button><button class="btn sec" id="dcNo">取消</button></div>`);
 sh.classList.add('dg-sheet');const sbd=sh.previousElementSibling;if(sbd)sbd.style.zIndex=46;sh.style.zIndex=47;
@@ -3532,7 +3532,8 @@ const PV_HEX=['#7DB7E8','#F29D38','#A58BD6','#F5C542','#F3A6B8','#8C8FD9','#E66A
 function pvIcon(i,o={}){const [n,ic]=PV_ICONS[i%PV_ICONS.length],sh=o.shape||curShape(),col=colOfHex(o.hex||PV_HEX[i%PV_HEX.length]);
 const old=S.prefs.shape;S.prefs.shape=sh;const r=ringSVG();S.prefs.shape=old;
 return `<span class="pv-it"><span class="cw ${o.off?'':'on'} shp-${sh}" style="--a:${col.a};--b:${col.b};--fg:${col.fg}"><span class="dot"><i class="fill"></i>${r}<span class="cic">${ICON_SVG[ic]||''}</span></span></span>${o.noName?'':`<small>${n}</small>`}</span>`}
-const P_MENU=[['theme','p_theme','主题'],['font','p_font','APP 字体'],['palette','p_pal','配色板'],['shape','p_shape','打卡图标'],['layout','p_lay','排列密度'],['quick','p_quick','顶部快捷栏'],['tabbar','tabbar','底部导航样式'],['sound','p_snd','完成音效']];
+const P_MENU=[['theme','p_theme','主题'],['font','p_font','APP 字体'],['palette','p_pal','配色板'],['shape','p_shape','打卡图标'],['layout','p_lay','排列密度'],['quick','p_quick','顶部快捷栏'],['tabbar','tabbar','底部导航样式'],['sound','p_snd','完成音效'],['appicon','p_icon','App 图标']];
+const APP_ICONS=[['tree','小树','appicon_tree.png'],['sun','太阳','appicon_sun.png']];
 let palTab='preset',palPick=null;
 function pMenuValue(k){const P=S.prefs;
 if(k==='theme'){if(P.pageBg==='custom')return '自定义背景';const b=PAGE_BGS.find(x=>x[0]===(P.pageBg||'white'));return b?b[1]:'纯白'}
@@ -3543,6 +3544,7 @@ if(k==='quick'){const n=QUICK_ITEMS.filter(x=>quickOn(x[0])).length;return !HOME
 if(k==='tabbar')return ({s:'小',m:'中',l:'大'})[S.prefs.tabSize||'m']+(S.prefs.tabLabel?' · 显示文字':'');
 if(k==='layout')return (LAYOUTS.find(x=>x[0]===(P.layout||'loose'))||LAYOUTS[0])[1];
 if(k==='sound')return soundOn()?SFX.name(sndIn()):'已关闭';
+if(k==='appicon')return (APP_ICONS.find(x=>x[0]===(P.appIcon||'tree'))||APP_ICONS[0])[1];
 }
 
 /* small menu that pops out right next to the button that opened it */
@@ -3573,7 +3575,7 @@ if(pTab&&!P_MENU.some(m=>m[0]===pTab))pTab=null;
 if(!pTab){
 $('#view').innerHTML=`${pgTop('个性化')}
 <p class="pm-sub">按自己的喜好慢慢装扮</p>
-<div class="list glass pm-list">${P_MENU.map(([k,ic,n])=>`<button class="li" data-pm="${k}"><span class="pm-ic">${mi(ic,22,1.9)}</span><span class="t">${n}</span><span class="pm-v">${esc(pMenuValue(k))}</span><span class="ar">›</span></button>`).join('')}</div>`;
+<div class="list glass pm-list">${P_MENU.map(([k,ic,n])=>`<button class="li" data-pm="${k}"><span class="pm-ic${k==='appicon'?' pm-app':''}">${k==='appicon'?`<img src="${(APP_ICONS.find(x=>x[0]===(S.prefs.appIcon||'tree'))||APP_ICONS[0])[2]}" alt="">`:mi(ic,22,1.9)}</span><span class="t">${n}</span><span class="pm-v">${esc(pMenuValue(k))}</span><span class="ar">›</span></button>`).join('')}</div>`;
 backToMe();
 $$('[data-pm]').forEach(b=>b.onclick=()=>{pTab=b.dataset.pm;buzz();renderPersonal();scrollTo(0,0);SNAV&&(SNAV.sh.scrollTop=0);pageSlide(1)});
 return;
@@ -3644,6 +3646,9 @@ ${[['loose','宽敞',3,6],['dense','适中',4,8],['compact','满满',5,10]].map(
 <span class="ly-l"><b>${n}</b><small>${cols} 列</small><i class="ly-r"></i></span>
 <span class="ly-g" style="--cols:${cols}">${Array.from({length:cnt},(_,i)=>pvIcon(i)).join('')}</span></button>`).join('')}
 <p class="pp-ok">${mi('check',18,2.4)}选好就用上了，不用另外保存</p>`;
+if(pTab==='appicon'){const cur=P.appIcon||'tree';
+body=`<h3 class="pp-h big">选择你喜欢的 App 图标</h3><p class="pp-sub">换好后，手机桌面上的图标也会跟着变</p>
+<div class="ai-grid">${APP_ICONS.map(([k,n,src])=>`<button class="ai-opt${cur===k?' on':''}" data-aic="${k}" aria-pressed="${cur===k}"><img src="${src}" alt=""><b>${n}</b><i class="ai-r">${cur===k?mi('check',16,3):''}</i></button>`).join('')}</div>`}
 if(pTab==='sound'){const on=soundOn(),kind=P.sndKind||'in',cur=kind==='in'?sndIn():sndOut(),def=kind==='in'?SND_IN_DEFAULT:SND_OUT_DEFAULT;
 body=`<h3 class="pp-h big">完成那一下，配个响声</h3><p class="pp-sub">轻点就能试听，选中即用</p>
 <div class="list glass"><div class="li"><span class="row-ic">${mi('sound',20,2)}</span><span class="t">打卡音效<small>关闭后打卡和取消打卡都不发声</small></span>${swHTML('sndOn',on,'打卡音效')}</div></div>
@@ -3674,6 +3679,10 @@ $$('[data-shape]').forEach(b=>b.onclick=()=>{const k=b.dataset.shape;P.shape=k;s
 const d=$(`[data-shape="${k}"] .dot`);if(d){shapeRipple(d,k);d.animate([{transform:'scale(1)'},{transform:'scale(1.12)',offset:.45},{transform:'scale(1)'}],{duration:dur(420),easing:'ease-out'})}});
 $$('[data-line]').forEach(b=>b.onclick=()=>{P.line=b.dataset.line;save();applyTheme();buzz();re()});
 $$('[data-lay]').forEach(b=>b.onclick=()=>{P.layout=b.dataset.lay;save();applyPageBg();buzz();re()});
+$$('[data-aic]').forEach(b=>b.onclick=async()=>{const k=b.dataset.aic;if((P.appIcon||'tree')===k)return;buzz();
+if(IN_APP){let ok=false;try{ok=await window.webkit.messageHandlers.native.postMessage({cmd:'appicon',name:k==='tree'?'':k})}catch(e){}
+if(!ok){toast('暂时换不了图标，请稍后再试');return}}else toast('正式版里桌面图标会一起换');
+P.appIcon=k;save();re()});
 if(pTab==='palette'){
 $$('[data-pt2]').forEach(b=>b.onclick=()=>{palTab=b.dataset.pt2;buzz();re()});
 $$('[data-pal]').forEach(b=>{
@@ -4220,6 +4229,10 @@ let wgPage=0;
 function wgOpts(){const o=S.prefs.widget=S.prefs.widget||{};for(const [k,v] of Object.entries({tap:true,bg:'default',custom:'#E8F0FF'}))if(!(k in o))o[k]=v;
 if(o.v!==2){o.v=2;o.tap=true}o.keep=false;return o}   // v125: direct check-in on by default; finished habits leave the widget
 let wgKind='check';
+/* 笔记小组件的提示语（和桌面小组件一致：按日期每天换一句，不显示笔记内容） */
+const WG_PROMPTS=[['今天有什么值得记下的小事？','写下来，日子会更清楚。'],['今天过得好吗？','随手记两句，留给以后的自己。'],['有什么想留住的瞬间？','点一下，把它写进今天。'],
+['今天有让你开心的事吗？','哪怕很小，也值得记一笔。'],['累了的话，就写几句吧。','说给自己听，也很好。'],['今天的你，辛苦啦。','想说的话，都可以放在这里。'],['今天学到了什么新东西？','记下来，它就是你的了。']];
+function wgPrompt(){const d=parseKey(TODAY());const n=Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);return WG_PROMPTS[n%WG_PROMPTS.length]}
 const WG_THEME={cream:['#FAF7F0','#FAF7F0'],mist:['#F3F4F6','#F3F4F6'],sky:['#E6F0FC','#F2F7FD'],sage:['#E5F1E6','#F3F8F3'],peach:['#FBE9DA','#FDF6F0'],
 dots:['#FBFBFA','#FBFBFA'],grid:['#FCFCFA','#FCFCFA'],dream:['#E9DED2','#DCE9EE'],fog:['#FBF8F2','#F6EBDD'],beach:['#F8F7F2','#EEF1EA'],plaid:['#FAFCFE','#EEF4FA'],forest:['#F7F7F2','#ECF0E6']};
 function wgBg(o){if(o.bg==='custom')return o.custom;const f=WIDGET_BG.find(x=>x[0]===o.bg);if(f&&f[2])return f[2];
@@ -4250,11 +4263,12 @@ const grid=(n,cls)=>`<div class="wg ${cls}" ${style}><div class="wg-top"><b>今�
 const jl=jList(TODAY()),last=jl[jl.length-1];
 const jw=(cls,body)=>`<button class="wg ${cls} wg-jr" data-wjr ${style} aria-label="写笔记"><div class="wg-top"><b>笔记</b><span>今天 ${jl.length} 篇</span></div>${body}</button>`;
 const lines=n=>`<span class="wgj-lines">${'<i></i>'.repeat(n)}</span>`;
-if(wgKind==='jr')return [
-['小号','点一下直接写，不进入 App',jw('wg-s',`<span class="wgj-bub">${JR_SVG}</span><small class="wgj-hint">写一篇</small>`)],
-['中号','写下的内容自动存为当天笔记',jw('wg-m',`<div class="wgj-row"><span class="wgj-bub">${JR_SVG}</span><span class="wgj-t">${last?`<b>${esc(jName(TODAY(),last))}</b><small>${esc(last.text.slice(0,24))}</small>`:'<b>今天想记点什么？</b><small>点这里开始写</small>'}</span></div>${lines(2)}`)],
-['大号','显示今天写过的笔记',jw('wg-l',`<div class="wgj-list">${jl.slice(-3).reverse().map(e=>`<p><b>${esc(jName(TODAY(),e))}</b><span>${hm(e.c)}</span><small>${esc(e.text.slice(0,30))}</small></p>`).join('')||'<p class="wgj-empty">今天还没有笔记</p>'}</div>${lines(4)}<span class="wgj-cta">${JR_SVG}点这里写一篇</span>`)]];
-return [['小号','4 个习惯，打完的自动消失',grid(4,'wg-s')],['中号','8 个习惯',grid(8,'wg-m')],['大号','16 个习惯',grid(16,'wg-l')]];
+if(wgKind==='jr'){const p=wgPrompt();
+const card=(cls,art)=>`<button class="wg ${cls} wg-ill" data-wjr ${style} aria-label="写笔记"><span class="wgx-t"><b>${p[0]}</b><small>${p[1]}</small></span><img class="wgx-art ${art}" src="wg_bubble.png" alt=""></button>`;
+return [['小号','点一下直接写今天的笔记',card('wg-s','bs')],['中号','桌面上不显示笔记内容，保护隐私',card('wg-m','bm')],['大号','每天换一句温柔的提示',card('wg-l','bl')]]}
+const doneCard=(cls,img,art)=>`<div class="wg ${cls} wg-ill" ${style}><span class="wgx-t"><b>今天都完成啦</b><small>一点一点，都在慢慢长大。</small></span><img class="wgx-art ${art}" src="${img}" alt=""></div>`;
+return [['小号','4 个习惯，打完的自动消失',grid(4,'wg-s')],['中号','8 个习惯',grid(8,'wg-m')],['大号','16 个习惯',grid(16,'wg-l')],
+['全部打完 · 小号','打完后换成一盆小盆栽',doneCard('wg-s','wg_pot1.png','ps')],['全部打完 · 中号','三盆小盆栽',doneCard('wg-m','wg_pots3.png','pm')],['全部打完 · 大号','一整排盆栽',doneCard('wg-l','wg_pots5.png','pl')]];
 }
 const IS_WEB_APP=false;   // 装在 App 里：桌面小组件由 App 提供
 function renderWidget(){
@@ -5306,7 +5320,7 @@ document.addEventListener('keydown',kd);
 $('#lkX',el)&&($('#lkX',el).onclick=()=>ctl.close(false));
 $('#lkForgot',el)&&($('#lkForgot',el).onclick=()=>{if(!IN_APP){toast('正式版可以通过账号验证重置密码');return}
 /* App 里：用面容 ID 或手机锁屏密码验证本人，再设一个新密码 */
-faceScan(()=>{LOCKED=false;ctl.close(true);setTimeout(()=>setPasscode('设置新的 4 位密码',code=>{const L=lockCfg();L.code=codeHash(code);save();toast('密码已重设')}),dur(420))},'验证身份后重设密码')});
+faceScan(()=>{LOCKED=false;ctl.close(true);runPendingRoute();setTimeout(()=>setPasscode('设置新的 4 位密码',code=>{const L=lockCfg();L.code=codeHash(code);save();toast('密码已重设')}),dur(420))},'验证身份后重设密码')});
 return ctl;
 }
 function setPasscode(title,onSet){
@@ -5330,10 +5344,19 @@ setTimeout(()=>{f.classList.add('done');$('small',f).textContent='识别成功';
 setTimeout(()=>{f.classList.remove('show');setTimeout(()=>f.remove(),dur(240));onOk()},dur(520))},dur(1100));
 }
 let LOCKED=false;
+/* 桌面小组件打开 App（xiaoman://journal 写今天的笔记、xiaoman://today 回到今天）：开了密码锁时先验证，验证通过再打开 */
+let PENDING_ROUTE=null;
+function runPendingRoute(){const f=PENDING_ROUTE;PENDING_ROUTE=null;if(f)setTimeout(f,dur(380))}
+window.__xmRoute=r=>{
+const go=()=>{try{
+if(tab!=='today'||sel!==TODAY()){sel=TODAY();goPage('today')}
+if(r==='journal'){setTimeout(()=>{if(!document.querySelector('.jr.show,.fn'))openJournal(TODAY())},dur(260))}
+}catch(e){}};
+setTimeout(()=>{if(LOCKED)PENDING_ROUTE=go;else go()},450)};
 function showLock(){
 if(!LOCK_ENABLED)return;const L=lockCfg();if(!L.on||!L.code||LOCKED)return;LOCKED=true;
 const openPad=()=>passPad({title:'输入密码',sub:'小满已上锁',cancel:false,
-onCode(code,ctl){if(codeHash(code)===L.code){LOCKED=false;ctl.close(true)}else ctl.err('密码不对，再试一次')}});
+onCode(code,ctl){if(codeHash(code)===L.code){LOCKED=false;ctl.close(true);runPendingRoute()}else ctl.err('密码不对，再试一次')}});
 if(!L.face){openPad();return}
 /* 开了面容 ID：先只盖一层锁屏，用面容 ID 解锁；连续两次没认出来，才换成密码键盘（两者不同时出现） */
 const cv=document.createElement('div');cv.className='lk lk-gate lk-cover';cv.setAttribute('role','dialog');cv.setAttribute('aria-label','小满已上锁');
@@ -5343,7 +5366,7 @@ document.body.append(cv);requestAnimationFrame(()=>cv.classList.add('show'));
 let fails=0;
 const bye=ok=>{cv.classList.remove('show');cv.classList.add(ok?'ok':'bye');setTimeout(()=>cv.remove(),dur(320))};
 const again=$('.lk-again',cv);
-const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true)},'解锁小满',()=>{fails++;
+const tryFace=()=>{again.hidden=true;faceScan(()=>{LOCKED=false;bye(true);runPendingRoute()},'解锁小满',()=>{fails++;
 if(fails>=2){openPad();setTimeout(()=>cv.remove(),dur(60))}   // 密码键盘直接盖在锁屏上面，再拿掉锁屏，中间不会露出 App 内容
 else{$('.lk-s',cv).textContent='没有认出来，再试一次';again.hidden=false}},true)};
 again.onclick=tryFace;
@@ -5804,6 +5827,28 @@ body:not(.dark) .sheet.acx .acx-seg{background:#E9E4DA}
 .lk.lk-shield{z-index:89}
 #pane .cw,#pane .addc,#pane button{touch-action:pan-y}
 .jrc p,.jrc-t{font-family:var(--note-font,inherit)}
+.pm-ic.pm-app{padding:0;overflow:hidden;background:none!important}.pm-ic.pm-app img{width:100%;height:100%;border-radius:9px;object-fit:cover;display:block}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 4px 0}
+.ai-opt{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 8px 16px;border-radius:24px;background:var(--card,#fff);border:0}
+.ai-opt img{width:104px;height:104px;border-radius:24px;box-shadow:0 6px 18px rgba(0,0,0,.12);outline:3px solid transparent;outline-offset:3px;transition:outline-color .2s}
+.ai-opt.on img{outline-color:#F5C542}
+.ai-opt b{font-size:16px}
+.ai-r{width:26px;height:26px;border-radius:50%;border:2px solid #D8D8DC;display:grid;place-items:center;color:#fff}
+.ai-opt.on .ai-r{background:#F5C542;border-color:#F5C542}
+body.dark .ai-opt{background:#262624}
+
+/* 插画式小组件（笔记、打卡全部完成）：左上角一句话，右下角插画 */
+.wg.wg-ill{position:relative;overflow:hidden;display:flex!important;flex-direction:column;justify-content:flex-start!important;align-items:flex-start!important;text-align:left}
+.wgx-t{position:relative;z-index:1;display:flex;flex-direction:column;gap:5px;max-width:100%}
+.wg-m .wgx-t{max-width:62%}
+.wgx-t b{font-size:15px;line-height:1.3;font-weight:700;color:var(--ink,#1C1C1E)}
+.wg-m .wgx-t b{font-size:18px}.wg-l .wgx-t b{font-size:21px}
+.wgx-t small{font-size:11px;color:rgba(60,60,67,.6);line-height:1.35}
+.wg-m .wgx-t small,.wg-l .wgx-t small{font-size:12.5px}
+body.dark .wgx-t b{color:#F2F2F7}body.dark .wgx-t small{color:rgba(235,235,245,.55)}
+.wgx-art{position:absolute;right:4px;bottom:2px;height:auto;pointer-events:none}
+.wgx-art.bs{width:46%}.wgx-art.bm{width:28%}.wgx-art.bl{width:46%}
+.wgx-art.ps{width:40%;right:8px}.wgx-art.pm{width:40%}.wgx-art.pl{width:94%;right:3%}
 </style>
 </body>
 </html>

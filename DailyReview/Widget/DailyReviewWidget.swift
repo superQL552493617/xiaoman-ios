@@ -1,6 +1,7 @@
 import WidgetKit
 import SwiftUI
 import AppIntents
+import UIKit
 
 // MARK: - 数据
 
@@ -63,7 +64,11 @@ struct WidgetDot: View {
         ZStack {
             cs.fill(Theme.adaptive("#FFFFFF", "#1E1E21"))
             cs.stroke(Theme.adaptive("#E2E2E6", "#3A3A3E"), lineWidth: 1.3)
-            if card.ic == "text" {
+            if card.ic == "img", let ui = WidgetImages.icon(card) {
+                // 自己上传的照片图标：「铺满」盖满整个形状，「一样大」放在中间，都按图标形状裁切
+                let side = card.imgFit == "fill" ? size : size * 0.62
+                Image(uiImage: ui).resizable().scaledToFill().frame(width: side, height: side).clipShape(cs)
+            } else if card.ic == "text" {
                 Text(card.text.isEmpty ? String(card.name.prefix(1)) : card.text)
                     .font(.system(size: size * 0.31, weight: .bold, design: .rounded)).foregroundStyle(Color(hex: card.hex))
                     .lineLimit(1).minimumScaleFactor(0.5)
@@ -72,6 +77,41 @@ struct WidgetDot: View {
             }
         }
         .frame(width: size, height: size)
+    }
+}
+
+/// 小组件里解码照片图标：先缩成小图，省内存（小组件内存很紧）
+enum WidgetImages {
+    static func icon(_ c: Card) -> UIImage? {
+        guard let ui = ImageData.image(c.icImg) else { return nil }
+        return ui.preparingThumbnail(of: CGSize(width: 132, height: 132)) ?? ui
+    }
+}
+
+/// 插画式小组件：左上角一句话，右下角一幅小插画（笔记小组件、打卡全部完成时共用）
+struct IllustratedCard: View {
+    @Environment(\.widgetFamily) private var family
+    let title: String
+    let sub: String
+    let art: String
+    var artWidth: CGFloat
+    private var ink: Color { Theme.adaptive("#1C1C1E", "#F2F2F7") }
+
+    var body: some View {
+        ZStack(alignment: .bottomTrailing) {
+            Image(art).resizable().scaledToFit().frame(width: artWidth)
+                .padding(.trailing, -6).padding(.bottom, -8)
+            VStack(alignment: .leading, spacing: family == .systemSmall ? 4 : 6) {
+                Text(title)
+                    .font(.system(size: family == .systemSmall ? 16 : family == .systemMedium ? 20 : 23, weight: .bold))
+                    .foregroundStyle(ink).lineLimit(family == .systemSmall ? 3 : 2).minimumScaleFactor(0.8)
+                Text(sub)
+                    .font(.system(size: family == .systemSmall ? 11.5 : 13.5))
+                    .foregroundStyle(ink.opacity(0.5)).lineLimit(2)
+            }
+            .frame(maxWidth: family == .systemMedium ? 190 : .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
@@ -89,6 +129,17 @@ struct HabitWidgetView: View {
     private var page: Int { entry.page % pages }
 
     var body: some View {
+        if entry.allDone {
+            // 全部打完：左上角一句话，右下角盆栽（小号 1 盆、中号 3 盆、大号一排 5 盆）
+            IllustratedCard(title: "今天都完成啦", sub: "一点一点，都在慢慢长大。",
+                            art: family == .systemSmall ? "wg_pot1" : family == .systemMedium ? "wg_pots3" : "wg_pots5",
+                            artWidth: family == .systemSmall ? 62 : family == .systemMedium ? 132 : 300)
+        } else {
+            list
+        }
+    }
+
+    private var list: some View {
         VStack(spacing: 6) {
             HStack(alignment: .center, spacing: 6) {
                 Text("今日打卡").font(.system(size: 12.5, weight: .semibold))
@@ -107,7 +158,9 @@ struct HabitWidgetView: View {
                 }
             }
             .foregroundStyle(Theme.adaptive("#1C1C1E", "#F2F2F7"))
-            if entry.cards.isEmpty || entry.allDone {
+            if entry.allDone {
+                EmptyView()
+            } else if entry.cards.isEmpty {
                 VStack(spacing: 6) {
                     Image("prog_palm").resizable().scaledToFit().frame(width: family == .systemSmall ? 44 : 52)
                         .saturation(entry.allDone ? 1 : 0).opacity(entry.allDone ? 1 : 0.6)
@@ -175,73 +228,26 @@ struct WidgetBG: View {
 struct JournalWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: HabitEntry
-    private var ink: Color { Theme.adaptive("#1C1C1E", "#F2F2F7") }
+
+    /// 不显示笔记内容（放在桌面上容易被别人看到），只放一句温柔的提示，每天换一句
+    static let prompts: [(String, String)] = [
+        ("今天有什么值得记下的小事？", "写下来，日子会更清楚。"),
+        ("今天过得好吗？", "随手记两句，留给以后的自己。"),
+        ("有什么想留住的瞬间？", "点一下，把它写进今天。"),
+        ("今天有让你开心的事吗？", "哪怕很小，也值得记一笔。"),
+        ("累了的话，就写几句吧。", "说给自己听，也很好。"),
+        ("今天的你，辛苦啦。", "想说的话，都可以放在这里。"),
+        ("今天学到了什么新东西？", "记下来，它就是你的了。")
+    ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("笔记").font(.system(size: 12.5, weight: .semibold))
-                Spacer()
-                Text("今天 \(entry.journal.count) 篇").font(.system(size: 12.5)).opacity(0.6)
-            }
-            .foregroundStyle(ink)
-            switch family {
-            case .systemSmall:
-                VStack(spacing: 6) {
-                    bubble.frame(width: 62, height: 55)
-                    Text("写一篇").font(.system(size: 12.5)).foregroundStyle(ink.opacity(0.7))
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            case .systemMedium:
-                HStack(spacing: 10) {
-                    bubble.frame(width: 38, height: 34)
-                    VStack(alignment: .leading, spacing: 2) {
-                        if let last = entry.journal.last {
-                            Text(last.displayTitle).font(.system(size: 14, weight: .semibold)).foregroundStyle(ink).lineLimit(1)
-                            Text(String(last.text.prefix(24))).font(.system(size: 12)).foregroundStyle(ink.opacity(0.6)).lineLimit(1)
-                        } else {
-                            Text("今天想记点什么？").font(.system(size: 14, weight: .semibold)).foregroundStyle(ink)
-                            Text("点这里开始写").font(.system(size: 12)).foregroundStyle(ink.opacity(0.6))
-                        }
-                    }
-                }
-                lines(2)
-            default:
-                VStack(alignment: .leading, spacing: 8) {
-                    if entry.journal.isEmpty {
-                        Text("今天还没有笔记").font(.system(size: 13)).foregroundStyle(ink.opacity(0.6))
-                    }
-                    ForEach(entry.journal.suffix(3).reversed()) { e in
-                        VStack(alignment: .leading, spacing: 1) {
-                            HStack {
-                                Text(e.displayTitle).font(.system(size: 13.5, weight: .semibold)).foregroundStyle(ink).lineLimit(1)
-                                Spacer()
-                                Text(DK.hm(e.c)).font(.system(size: 11.5)).foregroundStyle(ink.opacity(0.5))
-                            }
-                            Text(String(e.text.prefix(30))).font(.system(size: 12)).foregroundStyle(ink.opacity(0.6)).lineLimit(1)
-                        }
-                    }
-                }
-                lines(4)
-                Spacer(minLength: 0)
-                HStack(spacing: 6) {
-                    bubble.frame(width: 20, height: 18)
-                    Text("点这里写一篇").font(.system(size: 13, weight: .semibold)).foregroundStyle(Color(hex: "#4FAE78"))
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
-    }
-
-    private var bubble: some View {
-        Image("evb_jr").renderingMode(.template).resizable().scaledToFit().foregroundStyle(Color(hex: "#4FAE78"))
-    }
-
-    private func lines(_ n: Int) -> some View {
-        VStack(spacing: 10) {
-            ForEach(0..<n, id: \.self) { _ in Rectangle().fill(ink.opacity(0.08)).frame(height: 1) }
-        }
-        .padding(.top, 4)
+        // 按日期每天换一句（和 App 里「小组件」页的预览用同一个算法）
+        let dc = DK.calendar.dateComponents([.year, .month, .day], from: entry.date)
+        var utc = Calendar(identifier: .gregorian); utc.timeZone = TimeZone(identifier: "UTC")!
+        let day = Int(((utc.date(from: dc) ?? entry.date).timeIntervalSince1970 / 86400).rounded())
+        let p = Self.prompts[day % Self.prompts.count]
+        IllustratedCard(title: p.0, sub: p.1, art: "wg_bubble",
+                        artWidth: family == .systemSmall ? 64 : family == .systemMedium ? 96 : 150)
     }
 }
 
@@ -255,7 +261,7 @@ struct JournalWidget: Widget {
                 .widgetURL(URL(string: "xiaoman://journal"))
         }
         .configurationDisplayName("笔记")
-        .description("点一下直接写今天的笔记。")
+        .description("点一下直接写今天的笔记，桌面上不会显示笔记内容。")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

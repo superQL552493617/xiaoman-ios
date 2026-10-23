@@ -98,11 +98,21 @@ struct WebRootView: View {
     @State private var splashGone = false
     @State private var minShown = false
 
+    @State private var pendingRoute: String?
+
+    /// 桌面小组件点进来：网页准备好、开屏页结束后交给网页处理（网页会先等密码 / 面容 ID 验证）
+    private func route(_ r: String) {
+        if splashGone && bridge.ready {
+            bridge.webView?.evaluateJavaScript("window.__xmRoute&&window.__xmRoute('\(r)')", completionHandler: nil)
+        } else { pendingRoute = r }
+    }
+
     private func endSplash() {
         guard !splashGone else { return }
         splashGone = true
         // 告诉网页开屏结束了：开着面容 ID 时，这时才弹出识别（锁屏遮罩早已在下面盖好）
         bridge.webView?.evaluateJavaScript("window.__XM_SPLASH_DONE=true;window.__xmSplashDone&&window.__xmSplashDone()", completionHandler: nil)
+        if let r = pendingRoute { pendingRoute = nil; DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { route(r) } }
     }
 
     var body: some View {
@@ -124,6 +134,10 @@ struct WebRootView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { minShown = true; if bridge.ready { endSplash() } }
             }
             .onChange(of: bridge.ready) { _, r in if r && minShown { endSplash() } }
+            .onOpenURL { url in
+                // xiaoman://journal 写今天的笔记；xiaoman://today 回到今天的打卡页
+                if let h = url.host, ["journal", "today"].contains(h) { route(h) }
+            }
             .sheet(item: $bridge.feedback) { f in
                 NavigationStack {
                     WebFeedbackView(fields: f.fields, url: f.url)
@@ -350,6 +364,15 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             // 打卡音效用原生播放（跟随静音键、和别的 App 的音乐混音），网页不再用 <audio>，锁屏就不会出现「正在播放」小窗
             if let n = body["n"] as? Int { SFX.play(n) } else if let d = body["n"] as? Double { SFX.play(Int(d)) }
             replyHandler(true, nil)
+        case "appicon":
+            // 换桌面图标：空字符串 = 默认（小树），"sun" = 太阳
+            let n = body["name"] as? String ?? ""
+            let target: String? = n == "sun" ? "AppIconSun" : nil
+            guard UIApplication.shared.supportsAlternateIcons else { replyHandler(false, nil); return }
+            if UIApplication.shared.alternateIconName == target { replyHandler(true, nil); return }
+            UIApplication.shared.setAlternateIconName(target) { err in
+                DispatchQueue.main.async { replyHandler(err == nil, nil) }
+            }
         case "faceid":
             let ctx = LAContext()
             var err: NSError?
