@@ -338,3 +338,21 @@ if MODE.startswith("attach"):
     if ok:
         r = api("PATCH", f"/v1/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": ok[0]["id"]}})
         print("ATTACHED", ok[0]["attributes"]["version"], r is not None)
+
+if MODE.startswith("draft"):
+    aid = app_id()
+    subs, _ = all_pages(f"/v1/apps/{aid}/reviewSubmissions")
+    for x in subs:
+        print("submission", x["id"], x["attributes"].get("state"), x["attributes"].get("submittedDate"))
+        items, inc = all_pages(f"/v1/reviewSubmissions/{x['id']}/items", {"include": "appStoreVersion"})
+        for it in items:
+            rels = {k: (v.get("data") or {}).get("id") for k, v in it.get("relationships", {}).items() if isinstance(v, dict) and v.get("data")}
+            print("  item", it["attributes"].get("state"), rels)
+    vers, _ = all_pages(f"/v1/apps/{aid}/appStoreVersions")
+    for v in vers: print("version", v["attributes"]["versionString"], v["attributes"].get("appStoreState"))
+    grps, _ = all_pages(f"/v1/apps/{aid}/subscriptionGroups")
+    for g in grps:
+        ss, _ = all_pages(f"/v1/subscriptionGroups/{g['id']}/subscriptions")
+        for sb in ss: print("sub", sb["attributes"].get("productId"), sb["attributes"].get("state"))
+    iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
+    for p in iaps: print("iap", p["attributes"].get("productId"), p["attributes"].get("state"))
