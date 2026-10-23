@@ -1,0 +1,80 @@
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::setChannelCount(16958611125238628366) 2
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::setChannelCountMode(16958611125238628366) 0
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::setChannelInterpretation(16958611125238628366) 0
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::setTypeForBindings(16958611125238628365) sine
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::setPeriodicWave(16958611125238628365) sample rate = 44100, wave size = 4096, rate scale = 0.09287982
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::connect(16958611125238628365) NodeTypeGain, output = 0, input = 0
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::connect(16958611125238628366) NodeTypeGain, output = 0, input = 0
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::startLater(16958611125238628365) 0.18000000000000002
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::stopLater(16958611125238628365) 0.5
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::startRendering(16958611125238628353)
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] BaseAudioContext::finishedRendering(17317157382015260479)
+2026-10-23 10:10:44.413 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] BaseAudioContext::uninitialize(17317157382015260479)
+2026-10-23 10:10:44.415 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] BaseAudioContext::finishedRendering(16958611125238657618)
+2026-10-23 10:10:44.415 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] BaseAudioContext::uninitialize(16958611125238657618)
+2026-10-23 10:10:44.713 Df DailyReview[11877:9674] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-10-23 10:10:44.725 Df DailyReview[11877:9674] [com.apple.xpc:connection] [0x102e07df0] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-10-23 10:10:44.725 A  DailyReview[11877:9674] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-10-23 10:10:44.725 Df DailyReview[11877:9674] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.site.xiaomanhabit.app, euid = 501, uid = 501, platform = 7
+2026-10-23 10:10:44.726 E  DailyReview[11877:9674] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-10-23 10:10:44.727 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Removing all pending notification requests
+2026-10-23 10:10:44.728 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Adding notification request 6ACF-A996 to destinations: Default, contentDate: (null)
+2026-10-23 10:10:44.730 Df DailyReview[11877:9691] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Added notification request: [ hasError: 0 hasCompletionHandler: 1 ]
+2026-10-23 10:10:44.749 Df DailyReview[11877:9683] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-10-23 10:10:44.916 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x1140d80c0 - [PID=11882, throttler=0x1140ac150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-23 10:10:44.916 Df DailyReview[11877:96c4] [com.apple.WebKit:Process] WebContent[11882] 0x104013a08 - [webPageID=10] WebPage::runJavaScriptInFrameInScriptWorld: frameID=0
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221763)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221764)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221765)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221766)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221767)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221768)
+2026-10-23 10:10:44.924 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221769)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221762)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221770)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628355)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628356)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628357)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628358)
+2026-10-23 10:10:44.925 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628359)
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628360)
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628361)
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628362)
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628363)
+2026-10-23 10:10:44.926 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x1140d80c0 - [PID=11882, throttler=0x1140ac150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628365)
+2026-10-23 10:10:44.926 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(17317157382015221761)
+2026-10-23 10:10:44.927 Df DailyReview[11877:96c4] [com.apple.WebKit:Process] WebContent[11882] 0x104013a08 - [webPageID=10] WebPage::runJavaScriptInFrameInScriptWorld: Request to run JavaScript succeeded
+2026-10-23 10:10:45.026 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628364)
+2026-10-23 10:10:45.026 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628354)
+2026-10-23 10:10:45.026 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628366)
+2026-10-23 10:10:45.026 Df DailyReview[11877:96c4] [com.apple.WebKit:Media] WebContent[11882] AudioNode::~AudioNode(16958611125238628353)
+2026-10-23 10:10:45.281 Df DailyReview[11877:9674] [com.apple.WebKit:ViewState] 0x104048400 (pageProxyID=9) -[WKWebView _didCommitLayerTree:] - received a commit (2) while deferring visible content rect updates (dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-10-23 10:10:45.284 Df DailyReview[11877:9674] [com.apple.WebKit:ViewState] 0x104048400 (pageProxyID=9) -[WKWebView _updateVisibleContentRects:] - performing first visible content rect update after deferring updates
+2026-10-23 10:10:46.731 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x1140d80c0 - [PID=11882, throttler=0x1140ac150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-23 10:10:46.731 Df DailyReview[11877:96c4] [com.apple.WebKit:Process] WebContent[11882] 0x104013a08 - [webPageID=10] WebPage::runJavaScriptInFrameInScriptWorld: frameID=0
+2026-10-23 10:10:46.733 A  DailyReview[11877:9674] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-10-23 10:10:46.734 Df DailyReview[11877:9674] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.site.xiaomanhabit.app, euid = 501, uid = 501, platform = 7
+2026-10-23 10:10:46.734 Df DailyReview[11877:96c4] [com.apple.WebKit:Process] WebContent[11882] 0x104013a08 - [webPageID=10] WebPage::runJavaScriptInFrameInScriptWorld: Request to run JavaScript succeeded
+2026-10-23 10:10:46.738 E  DailyReview[11877:9674] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-10-23 10:10:46.741 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x1140d80c0 - [PID=11882, throttler=0x1140ac150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'WebPageProxy::runJavaScriptInFrameInScriptWorld'
+2026-10-23 10:10:47.046 A  DailyReview[11877:9674] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-10-23 10:10:47.046 Df DailyReview[11877:9674] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.site.xiaomanhabit.app, euid = 501, uid = 501, platform = 7
+2026-10-23 10:10:47.047 E  DailyReview[11877:9674] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-10-23 10:10:47.051 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Removing all pending notification requests
+2026-10-23 10:10:47.052 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Adding notification request 6ACF-A996 to destinations: Default, contentDate: (null)
+2026-10-23 10:10:47.058 Df DailyReview[11877:9684] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Added notification request: [ hasError: 0 hasCompletionHandler: 1 ]
+2026-10-23 10:10:47.064 Df DailyReview[11877:9691] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-10-23 10:10:47.117 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x11413c100 NavigationState is releasing background process assertion because a page load completed
+2026-10-23 10:10:47.117 Df DailyReview[11877:9674] [com.apple.WebKit:ProcessSuspension] 0x1140d8240 - [PID=11882, throttler=0x1140ac150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-10-23 10:10:47.390 A  DailyReview[11877:9674] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-10-23 10:10:47.390 Df DailyReview[11877:9674] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.site.xiaomanhabit.app, euid = 501, uid = 501, platform = 7
+2026-10-23 10:10:47.391 E  DailyReview[11877:9674] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-10-23 10:10:47.709 A  DailyReview[11877:9674] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-10-23 10:10:47.710 Df DailyReview[11877:9674] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.site.xiaomanhabit.app, euid = 501, uid = 501, platform = 7
+2026-10-23 10:10:47.710 E  DailyReview[11877:9674] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-10-23 10:10:47.712 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Removing all pending notification requests
+2026-10-23 10:10:47.713 Df DailyReview[11877:9674] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Adding notification request 6ACF-A996 to destinations: Default, contentDate: (null)
+2026-10-23 10:10:47.716 Df DailyReview[11877:9691] [com.apple.UserNotifications:Connections] [site.xiaomanhabit.app] Added notification request: [ hasError: 0 hasCompletionHandler: 1 ]
+2026-10-23 10:10:47.717 Df DailyReview[11877:9684] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-10-23 10:10:54.116 Df DailyReview[11877:96c4] [com.apple.WebKit:PerformanceLogging] WebContent[11882]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 57073600 bytes of memory after the page load.
