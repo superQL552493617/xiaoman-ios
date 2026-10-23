@@ -161,6 +161,18 @@ def first(path):
     j = api("GET", path); d = j and j.get("data")
     return (d[0] if isinstance(d, list) and d else d) if d else None
 
+def avail(aid):
+    # 只在中国大陆上架：所有地区都要列出来，中国大陆 = 上架，其他 = 不上架
+    terrs, _ = all_pages("/v1/territories", {"limit": 200})
+    ids = [t["id"] for t in terrs]
+    data = [{"type": "territoryAvailabilities", "id": "${t%s}" % t} for t in ids]
+    inc = [{"type": "territoryAvailabilities", "id": "${t%s}" % t, "attributes": {"available": t == "CHN"},
+            "relationships": {"territory": rel("territories", t)}} for t in ids]
+    inc += [{"type": "territories", "id": t} for t in ids]
+    av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": False},
+        "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": data}}}, "included": inc})
+    print("availability", "ok" if av else "failed", len(ids), "territories")
+
 def meta():
     aid = app_id()
     inf = first(f"/v1/apps/{aid}/appInfos")
@@ -200,12 +212,7 @@ def meta():
     if bl:
         b = bl[0]
         api("PATCH", f"/v1/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": b["id"]}}) and print("ok build", b["attributes"]["version"])
-    # 只在中国大陆上架
-    av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": False},
-        "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": [{"type": "territoryAvailabilities", "id": "${chn}"}]}}},
-        "included": [{"type": "territoryAvailabilities", "id": "${chn}", "attributes": {"available": True},
-                      "relationships": {"territory": rel("territories", "CHN")}}]})
-    print("availability", "ok" if av else "failed")
+    avail(aid)
     # 免费下载
     pts, _ = all_pages(f"/v1/apps/{aid}/appPricePoints", {"filter[territory]": "CHN", "limit": 200})
     free = [p for p in pts if float(p["attributes"].get("customerPrice") or 0) == 0]
@@ -217,6 +224,9 @@ def meta():
         print("price free", "ok" if ps else "failed")
     else:
         print("no free price point found")
+
+if MODE == "avail":
+    avail(app_id())
 
 if MODE == "meta":
     meta(); status()
