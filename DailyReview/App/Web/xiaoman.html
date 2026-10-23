@@ -3957,6 +3957,7 @@ sh.classList.add('tall');
 $('#gdX',sh).onclick=close;
 $('#gdReplay',sh).onclick=()=>{close();const go=()=>{SNAV&&SNAV.close();setTimeout(()=>startGuide(true),dur(420))};setTimeout(go,dur(300))};
 }
+const ICP_NO='鄂ICP备2026060859号-1A';   // App 备案号：显示在「我的」底部和「关于」里，点一下打开工信部备案查询网站
 function openAbout(){
 const {sh,close}=openSheet(`
 <div class="sheet-head"><button class="pe-x" id="abX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><h3>关于</h3><span style="width:36px"></span></div>
@@ -3967,7 +3968,8 @@ const {sh,close}=openSheet(`
 <div class="li"><span class="t">没有广告<small>不会用弹窗和连续天数制造焦虑</small></span></div>
 <div class="li"><span class="t">数据归你<small>保存在你的手机上，可随时导出备份</small></span></div>
 <div class="li"><span class="t">图标来源<small>部分图标来自 OpenMoji，CC BY-SA 4.0</small></span></div>
-</div>`);
+</div>
+<a class="me-icp" style="margin-top:18px" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${ICP_NO}</a>`);
 $('#abX',sh).onclick=close;
 }
 
@@ -5498,7 +5500,7 @@ $('#view').innerHTML=`
 </div>
 </div>
 <div class="me-grid">${tiles.map(([id,ic,name])=>`<button class="me-tile" data-go="${id}"><span class="me-tic">${artSVG(id)||mi(ic)}</span><span>${name}</span></button>`).join('')}</div>
-<button class="me-ver" id="meVer">${IN_APP?`当前版本 V${NV.v}${NV.b?`（${NV.b}）`:''}${DEBUG_ON()?' · 调试中':''}`:`当前版本 V${APP_VERSION}（测试版 ${APP_BUILD}${DEBUG_ON()?' · 调试中':''}）`}<b>检查更新</b></button>`;
+<button class="me-ver" id="meVer">${IN_APP?`当前版本 V${NV.v}${NV.b?`（${NV.b}）`:''}${DEBUG_ON()?' · 调试中':''}`:`当前版本 V${APP_VERSION}（测试版 ${APP_BUILD}${DEBUG_ON()?' · 调试中':''}）`}<b>检查更新</b></button><a class="me-icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${ICP_NO}</a>`;
 $('#meSet').onclick=openSettingsSheet;
 $('#meHelp').onclick=openFeedback;
 $('#meAva').onclick=openAccount;
@@ -5956,6 +5958,8 @@ body.dark .gd-card{background:#262624;color:#F2EDE4}body.dark .gd-d{color:#B8B0A
 .gd-ci img,.gd-ci svg{width:19px;height:19px}
 .gd-own{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px dashed #D9CFBF;background:none;border-radius:14px;padding:10px;font:inherit;font-size:14px;color:#7D7266;min-height:44px}
 body.dark .gd-chip{background:#2F2E2B;border-color:#3A3732;color:#F2EDE4}body.dark .gd-chip.on{background:#3A3420;border-color:#F5C542}
+.me-ver:has(+ .me-icp){margin-bottom:0!important}.me-ver + .me-icp{margin:0 auto 96px!important}
+.me-icp{display:block;text-align:center;margin:6px auto 0;font-size:11.5px;color:var(--ink3,#A39888);text-decoration:none;padding:6px 10px;width:max-content}
 </style>
 </body>
 </html>
