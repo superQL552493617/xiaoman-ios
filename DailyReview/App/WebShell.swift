@@ -149,7 +149,7 @@ struct WebRootView: View {
             }
             .sheet(isPresented: Binding(get: { bridge.doc != nil }, set: { if !$0 { bridge.doc = nil } })) {
                 NavigationStack {
-                    DocView(title: bridge.doc == "privacy" ? "隐私政策" : "用户协议", text: bridge.doc == "privacy" ? LegalText.privacy : LegalText.terms)
+                    DocView(title: bridge.doc == "privacy" ? "隐私政策" : bridge.doc == "credits" ? "致谢与版权" : "用户协议", text: bridge.doc == "privacy" ? LegalText.privacy : bridge.doc == "credits" ? LegalText.credits : LegalText.terms)
                         .toolbar { ToolbarItem(placement: .topBarLeading) { Button("关闭") { bridge.doc = nil } } }
                 }
             }
@@ -442,7 +442,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
                     replyHandler(r, nil)
                 }
             case "doc":
-                doc = (body["doc"] as? String) == "privacy" ? "privacy" : "terms"
+                let d = body["doc"] as? String
+                doc = d == "privacy" ? "privacy" : d == "credits" ? "credits" : "terms"
                 replyHandler(true, nil)
             default:
                 Task { @MainActor in

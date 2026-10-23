@@ -4566,7 +4566,8 @@ return `<div class="li ms-row${m.on?'':' off'}" data-id="${id}"><span class="row
 ${swHTML('ms-'+id,m.on,n)}<span class="ms-h" aria-label="拖动排序">${mi('grip',20,2.4)}</span></div>`}).join('')}
 <div class="li ms-row fixed"><span class="row-ic">${mi('modules',20,2)}</span><span class="t">模块设置<small>始终显示，方便找回隐藏的模块</small></span></div>
 </div>
-<button class="btn sec" id="msReset" style="margin-top:14px">恢复默认顺序</button>`;
+<button class="btn sec" id="msReset" style="margin-top:14px">恢复默认顺序</button>
+<a class="me-icp" style="margin:28px auto 8px" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${ICP_NO}</a>`;
 backToMe();
 const store=()=>{S.prefs.modules=$$('#msList .ms-row[data-id]').map(r=>({id:r.dataset.id,on:!r.classList.contains('off')}));save()};
 $$('#msList .ms-row[data-id]').forEach(r=>{
@@ -4615,6 +4616,23 @@ const VIP_PERKS=[['shield','纯净无广告','没有弹窗打扰，坚持起来�
 ['heart','支持小满走得更远','你的支持会变成更多好用的小功能']];
 const VIP_FREE_TEXT='打卡、闹钟提醒、统计、笔记、小组件、主题背景和数据备份，所有人都能免费用。';
 const vipPost=m=>window.webkit.messageHandlers.native.postMessage(Object.assign({cmd:'vip'},m));
+/* 用户协议 / 隐私政策 / 致谢：App 里用原生页面显示全文 */
+function openDoc(k){if(IN_APP)vipPost({op:'doc',doc:k}).catch(()=>{});else toast('正式版里可以查看完整内容')}
+/* 首次打开：先请用户阅读并同意《用户协议》和《隐私政策》（国内应用商店和工信部的要求）；政策有重要更新时改日期会再问一次 */
+const POLICY_VER='2026-10-23';
+function needConsent(){return IN_APP&&S.prefs.agreed!==POLICY_VER}
+function showConsent(){if(!needConsent()||document.querySelector('.pc'))return;
+const ov=document.createElement('div');ov.className='pc';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','用户协议和隐私政策');
+const main=`<div class="pc-card"><b class="pc-t">欢迎使用小满记</b>
+<p>在开始之前，请花一分钟阅读<button class="pc-l" data-d="terms">《用户协议》</button>和<button class="pc-l" data-d="privacy">《隐私政策》</button>。</p>
+<p class="pc-s">· 不用注册登录，你的打卡、日志、笔记都只保存在这台手机上<br>· 相册、相机、通知、面容 ID 只在你用到相关功能时才会请求<br>· 我们没有服务器，不收集、不上传你的个人数据</p>
+<button class="pc-ok">同意并继续</button><button class="pc-no">不同意</button></div>`;
+const no=`<div class="pc-card"><b class="pc-t">需要你的同意</b><p>小满记需要你同意《用户协议》和《隐私政策》后才能使用。如果不同意，可以直接退出 App，我们不会保存任何信息。</p>
+<button class="pc-ok" id="pcBack">再看看</button></div>`;
+const bind=()=>{$$('.pc-l',ov).forEach(b=>b.onclick=()=>openDoc(b.dataset.d));
+$('.pc-ok',ov).onclick=()=>{if($('#pcBack',ov)){ov.innerHTML=main;bind();return}S.prefs.agreed=POLICY_VER;saveNow();buzz();ov.classList.remove('show');setTimeout(()=>ov.remove(),dur(260))};
+const n=$('.pc-no',ov);n&&(n.onclick=()=>{ov.innerHTML=no;bind()})};
+ov.innerHTML=main;document.body.append(ov);bind();requestAnimationFrame(()=>ov.classList.add('show'))}
 /* App 告诉网页当前的会员状态（以 App Store 为准） */
 window.__xmVipSync=function(d,n){
 if(!S){if((n||0)<40)setTimeout(()=>window.__xmVipSync(d,(n||0)+1),500);return}
@@ -4929,7 +4947,7 @@ const a=document.createElement('a');a.href=url;a.download='打卡总结.png';doc
 function openSumRules(){
 const {sh,close}=openSheet(`<div class="sheet-head"><span style="width:36px"></span><h3>打卡总结说明</h3><button class="pe-x" id="srX" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <div class="si">${(AI_READY?['week','month','year']:['week']).map(per=>{const R0=SUM_RULE[per],ai=per!=='week';return `<div class="sr sg-${per}"><div class="sr-h">${ai?AI_BOT:WK_SVG}<b>${SUM_TITLE[per]}</b><em class="si-who${ai?' vip':''}">${R0.who}</em></div><p><span>时间</span>${R0.when}</p><p><span>数据</span>${R0.data}</p><p><span>方式</span>${R0.how}</p>${ai?`<p><span>次数</span>每期一份；数据有变化时可重新生成，最多 ${SUM_MAX_REGEN} 次。</p>`:''}</div>`}).join('')}
-<p class="s2-note" style="margin-top:4px">默认生成最近结束的一期；在统计页切到更早的周、月、年，再点按钮就能生成那一期。</p></div>`);
+<p class="s2-note" style="margin-top:4px">${AI_READY?'默认生成最近结束的一期；在统计页切到更早的周、月、年，再点按钮就能生成那一期。':'默认生成最近结束的一周；在统计页切到更早的周，再点按钮就能生成那一周。'}</p></div>`);
 $('#srX',sh).onclick=close}
 function renderAI(){
 const st=periodStats(aiPer,aiOff),elapsed=Math.round((st.end-st.s)/864e5)+1,full=Math.round((st.e-st.s)/864e5)+1,
@@ -4959,12 +4977,12 @@ ${st.evs.length?`<div class="s2-ev">${st.evs.map(e=>{const c=cardAny(e.id),E=EV[
 <span class="s2-ec">${c?avatarHTML(c,30):''}</span><span class="ev-t"><b>${E.txt(esc(e.name))}</b><small>${d.getMonth()+1}月${d.getDate()}日</small></span></div>`}).join('')}</div>`
 :'<p class="hint" style="margin:0 4px 6px">这段时间没有新增、删除或恢复习惯</p>'}</section>
 <section class="s2-card s2-ai"><h3 class="s2-h">打卡总结${nHist?`<button class="s2-hist" id="sumHist">${mi('clock',14,2.2)}往期总结 ${nHist}</button>`:''}<button class="s2-info" id="sumInfo" aria-label="总结说明"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2M12 7.8v.1"/></svg></button></h3>
-<div class="s2-gen s3">${['week','month','year'].map(per=>{const t=sumTarget(per),ai=per!=='week';
+<div class="s2-gen ${AI_READY?'s3':'s1'}">${(AI_READY?['week','month','year']:['week']).map(per=>{   /* 首发版不显示还没上线的 AI 总结（审核不允许「即将上线」） */const t=sumTarget(per),ai=per!=='week';
 if(ai&&!AI_READY)return `<button data-sum="${per}" class="sg-${per} soon">${AI_BOT}<span class="gt"><b>${SUM_NAME[per]}</b><small>功能升级中，敬请期待</small></span><em class="soon-tag">即将上线</em></button>`;
 return `<button data-sum="${per}" class="sg-${per}">${ai?AI_BOT:WK_SVG}<span class="gt"><b>${SUM_NAME[per]}</b><small>${sumStatus(t)}</small></span>${ai&&!S.vip?`<span class="ai-lk">${mi('lock',12,2.4)}</span>`:''}</button>`}).join('')}</div>
 ${AI_READY?`<div class="s2-consent"><span class="t"><b>允许 AI 读取打卡日志和笔记</b><small>${S.prefs.aiLogs?'开：月度、年度总结会结合你写下的内容':'关：月度、年度总结只分析打卡数据'}</small></span>${swHTML('aiLogs',S.prefs.aiLogs,'允许 AI 读取打卡日志和笔记')}</div>`:''}
 <div class="ai-body" id="aiBody">${last?`<p class="s2-tag">${S.aiLast.label}</p>`+sumResultHTML(S.aiCache[S.aiLast.key]):''}</div>
-<p class="s2-note">${AI_READY?'周总结在手机上直接统计，不联网，每周 1 次；月度、年度总结需要联网由 AI 生成，日志和笔记只有在你允许后才会用到。':'周总结在手机上直接统计，不联网，每周 1 次。AI 月度、年度总结升级中，敬请期待。'}</p>
+<p class="s2-note">${AI_READY?'周总结在手机上直接统计，不联网，每周 1 次；月度、年度总结需要联网由 AI 生成，日志和笔记只有在你允许后才会用到。':'周总结在手机上直接统计，不联网，每周 1 次。'}</p>
 </section>
 </div>`;
 bindPeriod('aiSeg',()=>({per:aiPer,off:aiOff}),(p,o)=>{aiPer=p;aiOff=o},renderAI);
@@ -5206,7 +5224,12 @@ ${IN_APP?'':`<div class="li"><span class="st-ic">${mi('globe',22,1.9)}</span><sp
 <label class="st-lang">${(LANGS.find(x=>x[0]===(P.lang||'zh-Hans'))||LANGS[0])[1]}<i>⌃<br>⌄</i><select id="stLang" aria-label="语言">${LANGS.map(([k,n])=>`<option value="${k}" ${(P.lang||'zh-Hans')===k?'selected':''}>${n}</option>`).join('')}</select></label></div>`}
 </div>
 <div class="list glass st-list">
-<button class="li" id="stCache"><span class="st-ic">${mi('image',22,1.9)}</span><span class="t">清空本地缓存图片</span>${ar}</button>
+<button class="li" data-doc2="terms"><span class="st-ic">${mi('guide',22,1.9)}</span><span class="t">用户协议</span>${ar}</button>
+<button class="li" data-doc2="privacy"><span class="st-ic">${mi('lockf',22,1.9)}</span><span class="t">隐私政策</span>${ar}</button>
+<button class="li" data-doc2="credits"><span class="st-ic">${mi('info',22,1.9)}</span><span class="t">致谢与版权</span>${ar}</button>
+</div>
+<div class="list glass st-list">
+${IN_APP?'':`<button class="li" id="stCache"><span class="st-ic">${mi('image',22,1.9)}</span><span class="t">清空本地缓存图片</span>${ar}</button>`}
 <button class="li" id="stReset"><span class="st-ic">${mi('undo',22,1.9)}</span><span class="t">重置清零习惯记录</span>${ar}</button>
 </div>
 ${IN_APP?'':`<div class="list glass st-list">
@@ -5264,7 +5287,8 @@ $('#stHaptic',sh).onclick=()=>{P.haptic=P.haptic===false;save();redraw();buzz()}
 $('#stDark',sh).onclick=()=>{P.mode=(P.mode||'system')==='system'?'light':'system';save();applyTheme();redraw()};
 $('#stBadge',sh).onclick=()=>{P.noBadge=!P.noBadge;save();buzz();redraw()};
 $('#stLang',sh)&&($('#stLang',sh).onchange=e=>{P.lang=e.target.value;save();redraw();if(P.lang!=='zh-Hans')toast('原型目前只有简体中文，正式版会切换界面语言')});
-$('#stCache',sh).onclick=()=>plainConfirm('清空本地缓存图片？','只清理缓存，不会删除你的头像和卡片图片。','清空',()=>toast('已清空缓存'));
+$$('[data-doc2]',sh).forEach(b=>b.onclick=()=>openDoc(b.dataset.doc2));
+$('#stCache',sh)&&($('#stCache',sh).onclick=()=>plainConfirm('清空本地缓存图片？','只清理缓存，不会删除你的头像和卡片图片。','清空',()=>toast('已清空缓存')));
 $('#stReset',sh).onclick=()=>plainConfirm('重置清零习惯记录？','所有日期的打卡记录都会清空，卡片和笔记保留。这一步不能撤销。','清零',()=>{
 plainConfirm('再确认一次','真的要清空全部打卡记录吗？','确认清零',()=>{S.records={};save();close();toast('打卡记录已清零');render()})});
 $('#stQuit',sh)&&($('#stQuit',sh).onclick=()=>plainConfirm('注销账户？','注销后，账号和云端数据会被永久删除。原型里不会真的删除数据。','注销',()=>toast('原型中已模拟注销')));
@@ -5452,7 +5476,7 @@ let GUIDE_SHOWN_THIS_LAUNCH=false;
 function maybeGuide(){const testEvery=IN_APP&&window.__XM_TEST__===true&&!GUIDE_SHOWN_THIS_LAUNCH;
 if(S.prefs.guided&&!testEvery)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided&&!testEvery){clearInterval(t);return}
 const from=S.prefs.guideStep||0;
-const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!LOCKED&&!document.querySelector('.lk,.sheet.show,.jr.show,.fn,.gd,#dName')&&tab==='today'&&document.querySelector('#pane')&&(from<2||document.querySelector('#pane .grid .cw'));
+const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!needConsent()&&!LOCKED&&!document.querySelector('.lk,.pc,.sheet.show,.jr.show,.fn,.gd,#dName')&&tab==='today'&&document.querySelector('#pane')&&(from<2||document.querySelector('#pane .grid .cw'));
 if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd')){GUIDE_SHOWN_THIS_LAUNCH=true;startGuide(testEvery,testEvery?0:from)}},dur(500))}else if(n>1200)clearInterval(t)},500)}
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
@@ -5500,13 +5524,13 @@ $('#view').innerHTML=`
 </div>
 </div>
 <div class="me-grid">${tiles.map(([id,ic,name])=>`<button class="me-tile" data-go="${id}"><span class="me-tic">${artSVG(id)||mi(ic)}</span><span>${name}</span></button>`).join('')}</div>
-<button class="me-ver" id="meVer">${IN_APP?`当前版本 V${NV.v}${NV.b?`（${NV.b}）`:''}${DEBUG_ON()?' · 调试中':''}`:`当前版本 V${APP_VERSION}（测试版 ${APP_BUILD}${DEBUG_ON()?' · 调试中':''}）`}<b>检查更新</b></button><a class="me-icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${ICP_NO}</a>`;
+<button class="me-ver" id="meVer">${IN_APP?`当前版本 V${NV.v}${NV.b?`（${NV.b}）`:''}${DEBUG_ON()?' · 调试中':''}`:`当前版本 V${APP_VERSION}（测试版 ${APP_BUILD}${DEBUG_ON()?' · 调试中':''}）`}<b>检查更新</b></button>`;
 $('#meSet').onclick=openSettingsSheet;
 $('#meHelp').onclick=openFeedback;
 $('#meAva').onclick=openAccount;
 $('#meVip').onclick=openVip;
 $('#meVer').onclick=e=>{const n=Date.now();VER_TAPS=VER_TAPS.filter(t=>n-t<1500);VER_TAPS.push(n);
-if(VER_TAPS.length>=5){VER_TAPS=[];setDebug(!DEBUG_ON());return}if(VER_TAPS.length===1)setTimeout(()=>{if(VER_TAPS.length===1){VER_TAPS=[];openAppStore()}},400)};
+if(VER_TAPS.length>=5&&(!IN_APP||window.__XM_TEST__===true)){VER_TAPS=[];setDebug(!DEBUG_ON());return}/* 正式版不开调试工具 */if(VER_TAPS.length===1)setTimeout(()=>{if(VER_TAPS.length===1){VER_TAPS=[];openAppStore()}},400)};
 $('#meJr').onclick=()=>openJournalList();
 $$('.me-tile').forEach(b=>b.onclick=()=>{
 const g=b.dataset.go;
@@ -5746,7 +5770,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRo
 addEventListener('focus',checkDayRoll);addEventListener('pageshow',checkDayRoll);
 /* 开屏页结束的信号由 App 发来；页面重新载入（比如小组件改了数据）时没有开屏页，4 秒后当作已结束，免得锁屏一直等 */
 if(IN_APP)setTimeout(()=>{if(!window.__XM_SPLASH_DONE){window.__XM_SPLASH_DONE=true;const f=window.__xmSplashDone;window.__xmSplashDone=null;f&&f()}},4000);
-load().then(()=>{syncNoteFont();setTimeout(maybeGuide,800);setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
+load().then(()=>{syncNoteFont();if(needConsent()){const w=()=>window.__XM_SPLASH_DONE?showConsent():setTimeout(w,300);w()}setTimeout(maybeGuide,800);setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
 </script>
 <!-- size variables (defaults are the design values; the tuner panel has been removed) -->
 <style>
@@ -5960,6 +5984,19 @@ body.dark .gd-card{background:#262624;color:#F2EDE4}body.dark .gd-d{color:#B8B0A
 body.dark .gd-chip{background:#2F2E2B;border-color:#3A3732;color:#F2EDE4}body.dark .gd-chip.on{background:#3A3420;border-color:#F5C542}
 .me-ver:has(+ .me-icp){margin-bottom:0!important}.me-ver + .me-icp{margin:0 auto 96px!important}
 .me-icp{display:block;text-align:center;margin:6px auto 0;font-size:11.5px;color:var(--ink3,#A39888);text-decoration:none;padding:6px 10px;width:max-content}
+
+/* 首次打开：用户协议和隐私政策 */
+.pc{position:fixed;inset:0;z-index:95;background:rgba(20,18,16,.55);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+.pc.show{opacity:1}
+.pc-card{width:100%;max-width:400px;background:#FFFDF8;color:#3E3532;border-radius:24px;padding:24px 22px 18px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.pc-t{display:block;font-size:20px;margin-bottom:12px;text-align:center}
+.pc-card p{margin:0 0 10px;font-size:14.5px;line-height:1.7}
+.pc-s{color:#7D7266;font-size:13px!important;background:#F6F2EA;border-radius:14px;padding:10px 12px}
+.pc-l{border:0;background:none;color:#D9822B;font:inherit;padding:0;font-weight:600}
+.pc-ok{display:block;width:100%;margin-top:8px;border:0;border-radius:999px;background:#F5C542;color:#3E3532;font:inherit;font-weight:700;font-size:16px;min-height:48px}
+.pc-no{display:block;width:100%;margin-top:6px;border:0;background:none;color:#A39888;font:inherit;font-size:14px;min-height:44px}
+body.dark .pc-card{background:#262624;color:#F2EDE4}body.dark .pc-s{background:#2F2E2B;color:#B8B0A4}
+.s2-gen.s1{display:grid;grid-template-columns:1fr}
 </style>
 </body>
 </html>

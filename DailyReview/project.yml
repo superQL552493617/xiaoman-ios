@@ -39,7 +39,7 @@ targets:
             CFBundleURLSchemes: [xiaoman]
         LSSupportsOpeningDocumentsInPlace: true
         ITSAppUsesNonExemptEncryption: false
-        NSFaceIDUsageDescription: 用面容 ID 解锁小满，保护你的打卡和笔记
+        NSFaceIDUsageDescription: 用面容 ID 解锁小满记，保护你的打卡和笔记
         NSPhotoLibraryUsageDescription: 选择照片作为头像或习惯图标
         NSCameraUsageDescription: 拍照作为头像或习惯图标
         UIAppFonts:
