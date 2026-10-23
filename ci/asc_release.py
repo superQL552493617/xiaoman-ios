@@ -329,3 +329,12 @@ if MODE == "canceldraft":
                 print("canceled empty draft", x["id"], r is not None)
     time.sleep(5)
     status()
+
+if MODE.startswith("attach"):
+    aid = app_id(); ver, _ = version_and_loc(aid)
+    bl, _ = all_pages("/v1/builds", {"filter[app]": aid, "sort": "-uploadedDate", "limit": 3})
+    for b in bl: print("build", b["attributes"]["version"], b["attributes"].get("processingState"))
+    ok = [b for b in bl if b["attributes"].get("processingState") == "VALID"]
+    if ok:
+        r = api("PATCH", f"/v1/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": ok[0]["id"]}})
+        print("ATTACHED", ok[0]["attributes"]["version"], r is not None)
