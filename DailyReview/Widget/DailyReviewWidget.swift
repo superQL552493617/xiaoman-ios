@@ -240,12 +240,17 @@ struct JournalWidgetView: View {
         ("今天学到了什么新东西？", "记下来，它就是你的了。")
     ]
 
-    var body: some View {
-        // 按日期每天换一句（和 App 里「小组件」页的预览用同一个算法）
+    /// 按日期每天换一句（和 App 里「小组件」页的预览用同一个算法）
+    private var prompt: (String, String) {
         let dc = DK.calendar.dateComponents([.year, .month, .day], from: entry.date)
-        var utc = Calendar(identifier: .gregorian); utc.timeZone = TimeZone(identifier: "UTC")!
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
         let day = Int(((utc.date(from: dc) ?? entry.date).timeIntervalSince1970 / 86400).rounded())
-        let p = Self.prompts[day % Self.prompts.count]
+        return Self.prompts[((day % Self.prompts.count) + Self.prompts.count) % Self.prompts.count]
+    }
+
+    var body: some View {
+        let p = prompt
         IllustratedCard(title: p.0, sub: p.1, art: "wg_bubble",
                         artWidth: family == .systemSmall ? 64 : family == .systemMedium ? 96 : 150)
     }
