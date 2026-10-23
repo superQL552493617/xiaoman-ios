@@ -1321,7 +1321,7 @@ addEventListener('pagehide',()=>{if(saveT)saveNow()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&saveT)saveNow()});
 addEventListener('beforeunload',()=>{if(saveT)saveNow()});
 function seed(){
-const cards=DEFAULTS.map(c=>({...c}));
+const cards=[];   // 新用户没有预装习惯：在新手引导里自己挑，或自己新建
 const notes={
 'sys-en':['今天状态不佳，只记了10个单词','跟读了一篇演讲，连读顺多了','复习了上周的错词'],
 'sys-read':['读到一个很喜欢的句子，抄在本子上了','这一章有点难，明天再读一遍'],
@@ -1342,7 +1342,7 @@ note:pool&&(c.type==='note'||Math.random()<.3)?pool[Math.floor(Math.random()*poo
 });
 if(Object.keys(day).length) records[k]=day;
 }
-return {cards,records,alarms:{},prefs:{remind:true,time:'21:30',hints:0},feedback:[],demo:false};
+return {cards,groups:[],records,alarms:{},prefs:{remind:true,time:'21:30',hints:0},feedback:[],demo:false};
 }
 const cardById=id=>S.cards.find(c=>c.id===id);
 function getRec(k,id,create){

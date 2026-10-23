@@ -33,7 +33,7 @@ struct HabitEntry: TimelineEntry {
     }
 
     static var sample: HabitEntry {
-        let s = AppState.seeded()
+        let s = AppState.sample()
         return HabitEntry(date: Date(), cards: s.cards, done: Set(s.cards.prefix(2).map { $0.id }), shape: "circle", line: "solid",
                           opts: WidgetPrefs(), journal: [])
     }

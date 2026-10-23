@@ -568,7 +568,15 @@ struct AppState: Codable {
     }
 
     /// 第一次打开时的示例习惯（和原型一致）
+    /// 新用户：没有预装习惯，在新手引导里自己挑（原生版也一样）
     static func seeded() -> AppState {
+        var s = AppState()
+        s.prefs.localId = "L" + String(UUID().uuidString.prefix(6))
+        return s
+    }
+
+    /// 小组件库里的预览图用的示例习惯
+    static func sample() -> AppState {
         var s = AppState()
         let g1 = HabitGroup(id: "g-study", name: "学习成长"), g2 = HabitGroup(id: "g-life", name: "生活日常")
         s.groups = [g1, g2]
