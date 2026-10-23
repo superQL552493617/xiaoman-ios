@@ -1,0 +1,33 @@
+    cd DailyReview
+    
+DailyReview/App/Services.swift:178:62: error: main actor-isolated property 's' can not be referenced from a nonisolated context
+    func rescheduleAll(_ store: Store) { rescheduleAll(store.s) }
+                                                             ^
+DailyReview/App/Store.swift:7:20: note: property declared here
+    @Published var s: AppState { didSet { if oldValue.prefs.appFont != s.prefs.appFont { AppFont.current = s.prefs.appFont } } }
+                   ^
+DailyReview/App/Services.swift:178:10: note: add '@MainActor' to make instance method 'rescheduleAll' part of global actor 'MainActor'
+--
+         ^
+    @MainActor 
+DailyReview/App/Services.swift:186:38: error: main actor-isolated property 's' cannot be accessed from outside of the actor
+            self.rescheduleAll(store.s)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~^~
+            await 
+DailyReview/App/Services.swift:193:21: error: call to main actor-isolated static method 'cancelAll()' in a synchronous nonisolated context
+        HabitAlarms.cancelAll()
+                    ^
+DailyReview/App/Alarms.swift:15:17: note: calls to static method 'cancelAll()' from outside of its actor context are implicitly asynchronous
+    static func cancelAll() {
+                ^
+DailyReview/App/Services.swift:190:10: note: add '@MainActor' to make instance method 'rescheduleAll' part of global actor 'MainActor'
+--
+         ^
+    @MainActor 
+DailyReview/App/Services.swift:249:36: error: call to main actor-isolated static method 'attachment(_:id:)' in a synchronous nonisolated context
+        ct.attachments = AlarmIcon.attachment(c, id: "\(occ)#\(k)")
+                                   ^
+DailyReview/App/Services.swift:124:17: note: calls to static method 'attachment(_:id:)' from outside of its actor context are implicitly asynchronous
+    static func attachment(_ c: Card?, id: String) -> [UNNotificationAttachment] {
+                ^
+DailyReview/App/Services.swift:247:18: note: add '@MainActor' to make instance method 'alarmRequest(occ:name:card:h:m:tone:k:snooze:at:c:)' part of global actor 'MainActor'

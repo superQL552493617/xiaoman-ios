@@ -1,0 +1,300 @@
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/IconCatalog.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/JournalViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/LegalText.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MeView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Model.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MorePages.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MoreViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/OpenAppIntent.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Persistence.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PersonalViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PopMenu.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/ProtoCard.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ DailyReview (in target 'DailyReview' from project 'DailyReview')
+
+EmitSwiftModule normal arm64 (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftDriverJobDiscovery normal x86_64 Emitting module for DailyReview (in target 'DailyReview' from project 'DailyReview')
+
+SwiftDriver\ Compilation\ Requirements DailyReview normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DailyReview -Onone -enforce-exclusivity\=checked @/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target x86_64-apple-ios17.0-simulator -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -F /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-dc75598d0054f22ec865fa860f139d72e244bd9a5feaf902f95f61bf06266e52.sdkstatcache -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources-normal/x86_64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/x86_64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview-Swift.h -working-directory /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for DailyReview (in target 'DailyReview' from project 'DailyReview')
+
+SwiftDriver\ Compilation\ Requirements DailyReview normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DailyReview -Onone -enforce-exclusivity\=checked @/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -F /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-dc75598d0054f22ec865fa860f139d72e244bd9a5feaf902f95f61bf06266e52.sdkstatcache -output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/arm64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview-Swift.h -working-directory /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ AlarmCenter.swift,\ Alarms.swift,\ Backup.swift,\ CardShapes.swift,\ CheckDialog.swift,\ Common.swift,\ DailyReviewApp.swift,\ DataViews.swift,\ DateUtil.swift,\ DesignerView.swift,\ HabitIconView.swift,\ HabitsView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/AlarmCenter.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Alarms.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Backup.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/CardShapes.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/CheckDialog.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Common.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DailyReviewApp.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DataViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/DateUtil.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DesignerView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/HabitIconView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/HabitsView.swift (in target 'DailyReview' from project 'DailyReview')
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/AlarmCenter.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Alarms.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Backup.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/CardShapes.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/CheckDialog.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Common.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DailyReviewApp.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DataViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/DateUtil.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DesignerView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/HabitIconView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/HabitsView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftMergeGeneratedHeaders /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/DailyReview-Swift.h /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview-Swift.h /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview-Swift.h (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview-Swift.h -arch x86_64 /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview-Swift.h -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/DailyReview-Swift.h
+
+SwiftDriverJobDiscovery normal x86_64 Compiling AlarmCenter.swift, Alarms.swift, Backup.swift, CardShapes.swift, CheckDialog.swift, Common.swift, DailyReviewApp.swift, DataViews.swift, DateUtil.swift, DesignerView.swift, HabitIconView.swift, HabitsView.swift (in target 'DailyReview' from project 'DailyReview')
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftmodule (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.swiftmodule
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftdoc (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.swiftdoc
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.abi.json (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/x86_64-apple-ios-simulator.abi.json
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftmodule (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftmodule /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftdoc (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftdoc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.abi.json (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.abi.json /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftsourceinfo (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo
+
+Copy /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftsourceinfo (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/arm64/DailyReview.swiftsourceinfo /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/DailyReview.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ IconCatalog.swift,\ JournalViews.swift,\ LegalText.swift,\ MeView.swift,\ Model.swift,\ MorePages.swift,\ MoreViews.swift,\ OpenAppIntent.swift,\ Persistence.swift,\ PersonalViews.swift,\ PopMenu.swift,\ ProtoCard.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/IconCatalog.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/JournalViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/LegalText.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MeView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Model.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MorePages.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MoreViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/OpenAppIntent.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Persistence.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PersonalViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PopMenu.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/ProtoCard.swift (in target 'DailyReview' from project 'DailyReview')
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/IconCatalog.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/JournalViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/LegalText.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MeView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Model.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MorePages.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MoreViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/OpenAppIntent.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Persistence.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PersonalViews.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PopMenu.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal arm64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/ProtoCard.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 Compiling\ ProtoTheme.swift,\ Purchases.swift,\ RootView.swift,\ Services.swift,\ Stats.swift,\ StatsView.swift,\ Store.swift,\ Theme.swift,\ TodayView.swift,\ ToggleHabitIntent.swift,\ WebShell.swift,\ GeneratedAssetSymbols.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ProtoTheme.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Purchases.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/RootView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Stats.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/StatsView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Store.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Theme.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/TodayView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ToggleHabitIntent.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/WebShell.swift /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'DailyReview' from project 'DailyReview')
+Failed frontend command:
+/Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/AlarmCenter.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Alarms.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Backup.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/CardShapes.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/CheckDialog.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Common.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DailyReviewApp.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DataViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/DateUtil.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/DesignerView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/HabitIconView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/HabitsView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/IconCatalog.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/JournalViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/LegalText.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MeView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Model.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MorePages.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/MoreViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/OpenAppIntent.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Persistence.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PersonalViews.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/PopMenu.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/ProtoCard.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ProtoTheme.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Purchases.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/RootView.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Stats.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/StatsView.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Store.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Theme.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/TodayView.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ToggleHabitIntent.swift -primary-file /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/WebShell.swift -primary-file /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/GeneratedAssetSymbols.swift -supplementary-output-file-map /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/supplementaryOutputs-9 -target x86_64-apple-ios17.0-simulator -module-can-import-version AlarmKit 2303.2.4 1.0.0 -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -disable-cross-import-overlay-search -swift-module-cross-import AppIntents /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/AppIntents.framework/Modules/AppIntents.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import AppIntents /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/AppIntents.framework/Modules/AppIntents.swiftcrossimport/UIKit.swiftoverlay -swift-module-cross-import AppIntents /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/AppIntents.framework/Modules/AppIntents.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import AppIntents /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/AppIntents.framework/Modules/AppIntents.swiftcrossimport/UIKit.swiftoverlay -swift-module-cross-import PhotosUI /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/PhotosUI.framework/Modules/PhotosUI.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import PhotosUI /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/PhotosUI.framework/Modules/PhotosUI.swiftcrossimport/WidgetKit.swiftoverlay -swift-module-cross-import PhotosUI /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/PhotosUI.framework/Modules/PhotosUI.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import PhotosUI /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/PhotosUI.framework/Modules/PhotosUI.swiftcrossimport/WidgetKit.swiftoverlay -swift-module-cross-import RelevanceKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/RelevanceKit.framework/Modules/RelevanceKit.swiftcrossimport/MapKit.swiftoverlay -swift-module-cross-import RelevanceKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/RelevanceKit.framework/Modules/RelevanceKit.swiftcrossimport/MapKit.swiftoverlay -swift-module-cross-import StoreKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/StoreKit.framework/Modules/StoreKit.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import StoreKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/StoreKit.framework/Modules/StoreKit.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import WebKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Cryptexes/OS/System/Library/Frameworks/WebKit.framework/Modules/WebKit.swiftcrossimport/SwiftUI.swiftoverlay -swift-module-cross-import WebKit /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/WebKit.framework/Modules/WebKit.swiftcrossimport/SwiftUI.swiftoverlay -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libAppIntentsMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#AppIntentsMacros -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview-dependencies-1.json -enable-objc-interop -sdk /Applications/Xcode_26.3.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -I /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -F /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/DailyReview_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview -enable-anonymous-context-mangled-names -file-compilation-dir /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-dc75598d0054f22ec865fa860f139d72e244bd9a5feaf902f95f61bf06266e52.sdkstatcache -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-generated-files.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-own-target-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DailyReview-project-headers.hmap -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources-normal/x86_64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/x86_64 -Xcc -I/Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name DailyReview -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.2 -target-sdk-name iphonesimulator26.2 -clang-target x86_64-apple-ios26.2-simulator -in-process-plugin-server-path /Applications/Xcode_26.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/ProtoTheme.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Purchases.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/RootView.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Services.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Stats.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/StatsView.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Store.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Theme.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/TodayView.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/ToggleHabitIntent.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/WebShell.o -o /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/GeneratedAssetSymbols.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/ProtoTheme.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Purchases.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/RootView.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Services.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Stats.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/StatsView.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Store.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/Theme.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/TodayView.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/ToggleHabitIntent.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/WebShell.o -index-unit-output-path /DailyReview.build/Debug-iphonesimulator/DailyReview.build/Objects-normal/x86_64/GeneratedAssetSymbols.o -index-store-path /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ProtoTheme.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Purchases.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/RootView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:178:62: error: main actor-isolated property 's' can not be referenced from a nonisolated context
+    func rescheduleAll(_ store: Store) { rescheduleAll(store.s) }
+                                                             ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Store.swift:7:20: note: property declared here
+    @Published var s: AppState { didSet { if oldValue.prefs.appFont != s.prefs.appFont { AppFont.current = s.prefs.appFont } } }
+                   ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:178:10: note: add '@MainActor' to make instance method 'rescheduleAll' part of global actor 'MainActor'
+    func rescheduleAll(_ store: Store) { rescheduleAll(store.s) }
+         ^
+    @MainActor 
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:186:38: error: main actor-isolated property 's' cannot be accessed from outside of the actor
+            self.rescheduleAll(store.s)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~^~
+            await 
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:193:21: error: call to main actor-isolated static method 'cancelAll()' in a synchronous nonisolated context
+        HabitAlarms.cancelAll()
+                    ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Alarms.swift:15:17: note: calls to static method 'cancelAll()' from outside of its actor context are implicitly asynchronous
+    static func cancelAll() {
+                ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:190:10: note: add '@MainActor' to make instance method 'rescheduleAll' part of global actor 'MainActor'
+    func rescheduleAll(_ s: AppState) {
+         ^
+    @MainActor 
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:249:36: error: call to main actor-isolated static method 'attachment(_:id:)' in a synchronous nonisolated context
+        ct.attachments = AlarmIcon.attachment(c, id: "\(occ)#\(k)")
+                                   ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:124:17: note: calls to static method 'attachment(_:id:)' from outside of its actor context are implicitly asynchronous
+    static func attachment(_ c: Card?, id: String) -> [UNNotificationAttachment] {
+                ^
+/Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift:247:18: note: add '@MainActor' to make instance method 'alarmRequest(occ:name:card:h:m:tone:k:snooze:at:c:)' part of global actor 'MainActor'
+    private func alarmRequest(occ: String, name: String, card: String, h: Int, m: Int, tone: Int, k: Int, snooze: Bool, at: Date, c: Card? = nil) -> UNNotificationRequest {
+                 ^
+    @MainActor 
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Stats.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/StatsView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Store.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Theme.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/TodayView.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ToggleHabitIntent.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/WebShell.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftCompile normal x86_64 /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'DailyReview' from project 'DailyReview')
+    cd /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling AlarmCenter.swift, Alarms.swift, Backup.swift, CardShapes.swift, CheckDialog.swift, Common.swift, DailyReviewApp.swift, DataViews.swift, DateUtil.swift, DesignerView.swift, HabitIconView.swift, HabitsView.swift (in target 'DailyReview' from project 'DailyReview')
+
+** BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal x86_64 Compiling\ ProtoTheme.swift,\ Purchases.swift,\ RootView.swift,\ Services.swift,\ Stats.swift,\ StatsView.swift,\ Store.swift,\ Theme.swift,\ TodayView.swift,\ ToggleHabitIntent.swift,\ WebShell.swift,\ GeneratedAssetSymbols.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ProtoTheme.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Purchases.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/RootView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Stats.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/StatsView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Store.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/Theme.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/TodayView.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/Shared/ToggleHabitIntent.swift /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/WebShell.swift /Users/runner/Library/Developer/Xcode/DerivedData/DailyReview-fdqwfbzqrmeqthbdpzhxywviqzbn/Build/Intermediates.noindex/DailyReview.build/Debug-iphonesimulator/DailyReview.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'DailyReview' from project 'DailyReview')
+	SwiftCompile normal x86_64 /Users/runner/work/xiaoman-ios/xiaoman-ios/DailyReview/App/Services.swift (in target 'DailyReview' from project 'DailyReview')
+	Building project DailyReview with scheme DailyReview and configuration Debug
+(3 failures)
