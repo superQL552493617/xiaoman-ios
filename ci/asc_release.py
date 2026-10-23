@@ -282,6 +282,9 @@ def review_detail():
 
 def submit():
     aid = app_id(); ver, _ = version_and_loc(aid)
+    bl, _ = all_pages("/v1/builds", {"filter[app]": aid, "sort": "-uploadedDate", "limit": 5, "filter[processingState]": "VALID"})
+    if bl:
+        api("PATCH", f"/v1/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": bl[0]["id"]}}) and print("ok build", bl[0]["attributes"]["version"])
     # 第一次的会员商品要和这个版本一起送审
     grps, _ = all_pages(f"/v1/apps/{aid}/subscriptionGroups")
     for g in grps:
