@@ -126,7 +126,7 @@ struct HabitWidgetView: View {
 
     private var n: Int { family == .systemSmall ? 4 : family == .systemMedium ? 8 : 16 }
     private var cols: Int { family == .systemSmall ? 2 : 4 }
-    private var dot: CGFloat { family == .systemLarge ? 38 : 36 }
+    private var dot: CGFloat { family == .systemLarge ? 38 : family == .systemSmall ? 34 : 36 }
     /// 放不下时分页：右上角「›」翻到下一组
     private var pages: Int { max(1, Int(ceil(Double(entry.left.count) / Double(n)))) }
     private var famKey: String { family == .systemSmall ? "s" : family == .systemMedium ? "m" : "l" }
@@ -175,7 +175,7 @@ struct HabitWidgetView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 let items = Array(entry.left.dropFirst(page * n).prefix(n))
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: cols), spacing: 4) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: cols), spacing: family == .systemSmall ? 14 : 8) {   // 上下留开一点，不挨在一起
                     ForEach(items) { c in item(c) }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)

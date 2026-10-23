@@ -1539,10 +1539,12 @@ rp.animate([{transform:'scale(1)',opacity:op},{transform:`scale(${scale})`,opaci
 (function shapeSetup(){
 const defs=document.querySelector('svg defs');const bb=d=>d.replace(/-?\d+(\.\d+)?/g,n=>(+n/100).toFixed(4));
 let clips='',css='';
+/* 照片图标：先放圆角矩形的裁切，后面各形状的规则会覆盖它（非圆形时 body 上同时有 shape-square 和具体形状） */
+css+=`body.shape-square .dot .ic-img{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
 Object.keys(SHAPE_D).filter(k=>k!=='square').forEach(k=>{clips+=`<clipPath id="clip-${k}" clipPathUnits="objectBoundingBox"><path d="${bb(SHAPE_D[k])}"/></clipPath>`;
 css+=`body.shape-${k} .fill,.cw.shp-${k} .fill,body.shape-${k} .dot .ic-img,.cw.shp-${k} .dot .ic-img{border-radius:0!important;clip-path:url(#clip-${k})!important;-webkit-clip-path:url(#clip-${k})!important}`});
 defs&&defs.insertAdjacentHTML('beforeend',clips);
-css+=`.cw.shp-circle .fill,.cw.shp-circle .dot .ic-img{border-radius:50%!important;clip-path:none!important;-webkit-clip-path:none!important}.cw.shp-square .fill,body.shape-square .dot .ic-img,.cw.shp-square .dot .ic-img{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
+css+=`.cw.shp-circle .fill,.cw.shp-circle .dot .ic-img{border-radius:50%!important;clip-path:none!important;-webkit-clip-path:none!important}.cw.shp-square .fill,.cw.shp-square .dot .ic-img{border-radius:0!important;clip-path:url(#clipSq)!important;-webkit-clip-path:url(#clipSq)!important}`;
 css+=`body.shape-onigiri .cic,.cw.shp-onigiri .cic{transform:translateY(7%) scale(.86)!important}body.shape-heart .cic,.cw.shp-heart .cic{transform:translateY(-3%) scale(.84)!important}body.shape-flower .cic,body.shape-scallop .cic,.cw.shp-flower .cic,.cw.shp-scallop .cic{transform:scale(.92)!important}`;
 const L=(k,r)=>`body.line-${k} ${r},.ln-opt.ln-${k} ${r}`;
 css+=`${L('solid','.ring *')}{stroke-dasharray:none!important}${L('dash','.ring *')}{stroke-dasharray:2.3 1.7!important}`;
@@ -5390,45 +5392,64 @@ const go=()=>setTimeout(()=>{if(LOCKED)tryFace()},dur(350));
 if(IN_APP&&!window.__XM_SPLASH_DONE)window.__xmSplashDone=()=>{window.__xmSplashDone=null;go()};else go();
 }
 
-/* ================= 首次使用引导（4 步，可跳过；只出现一次，「使用说明」里可以再看） ================= */
+/* ================= 首次使用引导（可跳过；只出现一次，「使用指南」里可以再看）
+   第 2 步先选几个常见习惯一键添加（也可以自己新建），有了习惯再教怎么打卡 ================= */
+const GUIDE_TPL=[['喝水','C-WATER','#50A8B0'],['早睡','C-BED','#8A63D2'],['早起','23F0','#FF9F0A'],['读书','1F4DA','#F29D38'],['运动','C-DUMBBELL','#3D8FE0'],
+['冥想','1F9D8','#A58BD6'],['吃早餐','1F373','#F5C542'],['护肤','1F9F4','#F3A6B8'],['记账','1F4B3','#7DBF8A'],['背单词','1F4DD','#00B0FF']];
 const GUIDE_STEPS=[
-{t:'欢迎来到小满记',d:'每天一点点，日子就慢慢满了。<br>花 20 秒，认识一下怎么打卡吧。',sel:null},
+{t:'欢迎来到小满记',d:'每天一点点，日子就慢慢满了。<br>花 30 秒，开始你的第一个习惯吧。',sel:null},
+{t:'选几个想坚持的小习惯',d:'点一下选中，可以多选，之后随时能改。',sel:null,tpl:true},
 {t:'点一下圆圈，就完成打卡',d:'再点已打卡的圆圈，可以写打卡日志，或者取消打卡。<br>长按圆圈还能拖动排序。',sel:'#pane .grid .cw'},
 {t:'左右滑动，切换日期',d:'在这片区域左右滑，就能回到前一天补打卡。<br>点顶部的日期，可以展开一周的日期栏。',sel:'#pane .grid'},
-{t:'新建习惯，设置提醒',d:'点「+」添加自己的习惯，选图标、颜色和打卡日，<br>还能设闹钟，到点提醒你。',sel:'#pane .th-add'},
+{t:'随时新建习惯，设置提醒',d:'点「+」添加更多习惯，选图标、颜色和打卡日，<br>还能设闹钟，到点提醒你。',sel:'#pane .th-add'},
 {t:'把小满装扮成你喜欢的样子',d:'在「我的」里换主题、字体、小组件，<br>还可以加密码锁，日记只给自己看。',sel:'#tabbar'}];
-function startGuide(force){
+function startGuide(force,from=0){
 if(!force&&(S.prefs.guided||document.querySelector('.gd')))return;
 if(tab!=='today'){tab='today';render()}
-let i=0;const ov=document.createElement('div');ov.className='gd';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','新手引导');
-ov.innerHTML=`<div class="gd-hole"></div><div class="gd-card"><button class="gd-skip">跳过</button><b class="gd-t"></b><p class="gd-d"></p>
+let i=from;const picked=new Set();
+const ov=document.createElement('div');ov.className='gd';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','新手引导');
+ov.innerHTML=`<div class="gd-hole"></div><div class="gd-card"><button class="gd-skip">跳过</button><b class="gd-t"></b><p class="gd-d"></p><div class="gd-tpl" hidden></div>
 <div class="gd-foot"><span class="gd-dots">${GUIDE_STEPS.map(()=>'<i></i>').join('')}</span><button class="gd-next"></button></div></div>`;
 document.body.append(ov);
-const hole=$('.gd-hole',ov),card=$('.gd-card',ov);
-const end=()=>{S.prefs.guided=1;save();ov.classList.remove('show');setTimeout(()=>ov.remove(),dur(260));removeEventListener('resize',place)};
+const hole=$('.gd-hole',ov),card=$('.gd-card',ov),tplBox=$('.gd-tpl',ov);
+const end=(done=true)=>{if(done){S.prefs.guided=1;delete S.prefs.guideStep;save()}ov.classList.remove('show');setTimeout(()=>ov.remove(),dur(260));removeEventListener('resize',place)};
 function place(){const st=GUIDE_STEPS[i],el=st.sel&&document.querySelector(st.sel);
 if(el){el.scrollIntoView({block:'center',behavior:'instant'})}
 const r=el?el.getBoundingClientRect():null,pad=8;
 if(r){Object.assign(hole.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px',borderRadius:(st.sel==='#pane .grid .cw'||st.sel==='#pane .th-add'?'50%':'22px'),opacity:1})}
 else Object.assign(hole.style,{left:'50%',top:'45%',width:'0px',height:'0px',opacity:0});
 const ch=card.offsetHeight,below=r&&r.bottom+pad+16+ch<innerHeight-20;
-card.style.top=(!r?Math.max(80,innerHeight*.5-ch/2):below?r.bottom+pad+16:Math.max(20,r.top-pad-16-ch))+'px';
+card.style.top=(!r?Math.max(60,innerHeight*.5-ch/2):below?r.bottom+pad+16:Math.max(20,r.top-pad-16-ch))+'px';
 ov.classList.toggle('nohole',!r)}
+const drawTpl=()=>{const have=new Set(S.cards.map(c=>c.name));
+tplBox.innerHTML=GUIDE_TPL.map(([n,ic,hex])=>{const c={ic:'icon',icon:ic,hex,name:n},col=COL(c),on=picked.has(n),had=have.has(n);
+return `<button class="gd-chip${on||had?' on':''}" data-tpl="${n}" ${had?'disabled':''} aria-pressed="${on||had}"><span class="gd-ci" style="background:${col.b}">${iconHTML(c)}</span><span>${n}</span></button>`}).join('')+
+`<button class="gd-own" id="gdOwn">${mi('pen',16,2)}我想自己新建一个</button>`;
+$$('[data-tpl]',tplBox).forEach(b=>b.onclick=()=>{const n=b.dataset.tpl;picked.has(n)?picked.delete(n):picked.add(n);buzz();drawTpl()});
+$('#gdOwn',tplBox).onclick=()=>{buzz();S.prefs.guideStep=2;save();end(false);setTimeout(()=>{openDesigner(null);maybeGuide()},dur(280))}};
 const show=()=>{const st=GUIDE_STEPS[i];$('.gd-t',ov).textContent=st.t;$('.gd-d',ov).innerHTML=st.d;
+tplBox.hidden=!st.tpl;if(st.tpl)drawTpl();
 $$('.gd-dots i',ov).forEach((x,k)=>x.classList.toggle('on',k===i));
-$('.gd-next',ov).textContent=i===0?'开始':i===GUIDE_STEPS.length-1?'开始使用':'下一步';
+$('.gd-next',ov).textContent=i===0?'开始':st.tpl?'添加并继续':i===GUIDE_STEPS.length-1?'开始使用':'下一步';
 $('.gd-skip',ov).hidden=i===GUIDE_STEPS.length-1;place();
 card.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:dur(260),easing:'ease-out'})};
-$('.gd-next',ov).onclick=()=>{buzz();if(i>=GUIDE_STEPS.length-1){end();return}i++;show()};
+$('.gd-next',ov).onclick=()=>{buzz();const st=GUIDE_STEPS[i];
+if(st.tpl){const have=new Set(S.cards.map(c=>c.name));let n=0;
+GUIDE_TPL.filter(([nm])=>picked.has(nm)&&!have.has(nm)).forEach(([name,icon,hex])=>{S.cards.push({id:uid(),name,ic:'icon',icon,text:'',icImg:null,emoji:'✨',type:'check',unit:'',hex,font:'sys',img:null,sys:false,slot:'全天',days:[1,2,3,4,5,6,0],createdAt:TODAY()});n++});
+if(!checkCards().length){toast('先选一个习惯，或者自己新建一个吧','gray');return}
+if(n){save();sel=TODAY();render();toast(`已添加 ${n} 个习惯`)}
+i++;setTimeout(show,n?dur(250):0);return}
+if(i>=GUIDE_STEPS.length-1){end();return}i++;show()};
 $('.gd-skip',ov).onclick=()=>{buzz();end()};
 ov.addEventListener('click',e=>{if(e.target===ov||e.target===hole){e.stopPropagation()}});
 addEventListener('resize',place);
 requestAnimationFrame(()=>{ov.classList.add('show');show()});
 }
-/* 打开 App 后：开屏页、密码锁都结束了再出来 */
-function maybeGuide(){if(S.prefs.guided)return;let n=0;const t=setInterval(()=>{n++;
-const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!LOCKED&&!document.querySelector('.lk,.sheet.show,.jr.show,.fn')&&tab==='today'&&document.querySelector('#pane .grid .cw');
-if(ready){clearInterval(t);setTimeout(()=>startGuide(),dur(500))}else if(n>120)clearInterval(t)},500)}
+/* 打开 App 后：开屏页、密码锁、新建习惯页都结束了再出来 */
+function maybeGuide(){if(S.prefs.guided)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided){clearInterval(t);return}
+const from=S.prefs.guideStep||0;
+const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!LOCKED&&!document.querySelector('.lk,.sheet.show,.jr.show,.fn,.gd,#dName')&&tab==='today'&&document.querySelector('#pane')&&(from<2||document.querySelector('#pane .grid .cw'));
+if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd'))startGuide(false,from)},dur(500))}else if(n>1200)clearInterval(t)},500)}
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
 /* 离开 App 时先盖一层空白锁屏，回来时直接是锁住的样子，不会先闪一下 App 里的内容 */
@@ -5921,6 +5942,16 @@ body.dark .wgx-t b{color:#F2F2F7}body.dark .wgx-t small{color:rgba(235,235,245,.
 .gd-skip[hidden]{display:none}
 body.dark .gd-card{background:#262624;color:#F2EDE4}body.dark .gd-d{color:#B8B0A4}body.dark .gd-dots i{background:#4A4640}
 .wg .wg-cw .dot{outline:1.3px dashed color-mix(in srgb,var(--b) 65%,#2a2a2a);outline-offset:2px;border-radius:50%}
+
+.gd-tpl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.gd-tpl[hidden]{display:none}
+.gd-chip{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:14px;border:1.5px solid #EDE6DA;background:#fff;font:inherit;font-size:14px;color:#3E3532;min-height:44px}
+.gd-chip.on{border-color:#F5C542;background:#FFF7DD}
+.gd-chip[disabled]{opacity:.55}
+.gd-ci{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none}
+.gd-ci img,.gd-ci svg{width:19px;height:19px}
+.gd-own{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px dashed #D9CFBF;background:none;border-radius:14px;padding:10px;font:inherit;font-size:14px;color:#7D7266;min-height:44px}
+body.dark .gd-chip{background:#2F2E2B;border-color:#3A3732;color:#F2EDE4}body.dark .gd-chip.on{background:#3A3420;border-color:#F5C542}
 </style>
 </body>
 </html>
