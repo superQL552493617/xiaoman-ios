@@ -317,3 +317,15 @@ if MODE == "review":
     review_detail()
 if MODE == "submit":
     submit(); status()
+
+if MODE == "canceldraft":
+    aid = app_id()
+    subs, _ = all_pages(f"/v1/apps/{aid}/reviewSubmissions")
+    for x in subs:
+        if x["attributes"].get("state") == "READY_FOR_REVIEW":
+            items, _ = all_pages(f"/v1/reviewSubmissions/{x['id']}/items")
+            if not items:
+                r = api("PATCH", f"/v1/reviewSubmissions/{x['id']}", {"data": {"type": "reviewSubmissions", "id": x["id"], "attributes": {"canceled": True}}})
+                print("canceled empty draft", x["id"], r is not None)
+    time.sleep(5)
+    status()
