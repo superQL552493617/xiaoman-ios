@@ -378,9 +378,9 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             if let n = body["n"] as? Int { SFX.play(n) } else if let d = body["n"] as? Double { SFX.play(Int(d)) }
             replyHandler(true, nil)
         case "appicon":
-            // 换桌面图标：空字符串 = 默认（小树），"sun" = 太阳
+            // 换桌面图标：空字符串 = 默认（太阳），"tree" = 小树
             let n = body["name"] as? String ?? ""
-            let target: String? = n == "sun" ? "AppIconSun" : nil
+            let target: String? = n == "tree" ? "AppIconTree" : nil
             guard UIApplication.shared.supportsAlternateIcons else { replyHandler(false, nil); return }
             if UIApplication.shared.alternateIconName == target { replyHandler(true, nil); return }
             UIApplication.shared.setAlternateIconName(target) { err in

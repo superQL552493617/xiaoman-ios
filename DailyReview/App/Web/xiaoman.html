@@ -3539,7 +3539,7 @@ function pvIcon(i,o={}){const [n,ic]=PV_ICONS[i%PV_ICONS.length],sh=o.shape||cur
 const old=S.prefs.shape;S.prefs.shape=sh;const r=ringSVG();S.prefs.shape=old;
 return `<span class="pv-it"><span class="cw ${o.off?'':'on'} shp-${sh}" style="--a:${col.a};--b:${col.b};--fg:${col.fg}"><span class="dot"><i class="fill"></i>${r}<span class="cic">${ICON_SVG[ic]||''}</span></span></span>${o.noName?'':`<small>${n}</small>`}</span>`}
 const P_MENU=[['theme','p_theme','主题'],['font','p_font','APP 字体'],['palette','p_pal','配色板'],['shape','p_shape','打卡图标'],['layout','p_lay','排列密度'],['quick','p_quick','顶部快捷栏'],['tabbar','tabbar','底部导航样式'],['sound','p_snd','完成音效'],['appicon','p_icon','App 图标']];
-const APP_ICONS=[['tree','小树','appicon_tree.png'],['sun','太阳','appicon_sun.png']];
+const APP_ICONS=[['sun','太阳','appicon_sun.png'],['tree','小树','appicon_tree.png']];   // 默认是太阳
 let palTab='preset',palPick=null;
 function pMenuValue(k){const P=S.prefs;
 if(k==='theme'){if(P.pageBg==='custom')return '自定义背景';const b=PAGE_BGS.find(x=>x[0]===(P.pageBg||'white'));return b?b[1]:'纯白'}
@@ -3550,7 +3550,7 @@ if(k==='quick'){const n=QUICK_ITEMS.filter(x=>quickOn(x[0])).length;return !HOME
 if(k==='tabbar')return ({s:'小',m:'中',l:'大'})[S.prefs.tabSize||'m']+(S.prefs.tabLabel?' · 显示文字':'');
 if(k==='layout')return (LAYOUTS.find(x=>x[0]===(P.layout||'loose'))||LAYOUTS[0])[1];
 if(k==='sound')return soundOn()?SFX.name(sndIn()):'已关闭';
-if(k==='appicon')return (APP_ICONS.find(x=>x[0]===(P.appIcon||'tree'))||APP_ICONS[0])[1];
+if(k==='appicon')return (APP_ICONS.find(x=>x[0]===(P.appIcon||'sun'))||APP_ICONS[0])[1];
 }
 
 /* small menu that pops out right next to the button that opened it */
@@ -3581,7 +3581,7 @@ if(pTab&&!P_MENU.some(m=>m[0]===pTab))pTab=null;
 if(!pTab){
 $('#view').innerHTML=`${pgTop('个性化')}
 <p class="pm-sub">按自己的喜好慢慢装扮</p>
-<div class="list glass pm-list">${P_MENU.map(([k,ic,n])=>`<button class="li" data-pm="${k}"><span class="pm-ic${k==='appicon'?' pm-app':''}">${k==='appicon'?`<img src="${(APP_ICONS.find(x=>x[0]===(S.prefs.appIcon||'tree'))||APP_ICONS[0])[2]}" alt="">`:mi(ic,22,1.9)}</span><span class="t">${n}</span><span class="pm-v">${esc(pMenuValue(k))}</span><span class="ar">›</span></button>`).join('')}</div>`;
+<div class="list glass pm-list">${P_MENU.map(([k,ic,n])=>`<button class="li" data-pm="${k}"><span class="pm-ic${k==='appicon'?' pm-app':''}">${k==='appicon'?`<img src="${(APP_ICONS.find(x=>x[0]===(S.prefs.appIcon||'sun'))||APP_ICONS[0])[2]}" alt="">`:mi(ic,22,1.9)}</span><span class="t">${n}</span><span class="pm-v">${esc(pMenuValue(k))}</span><span class="ar">›</span></button>`).join('')}</div>`;
 backToMe();
 $$('[data-pm]').forEach(b=>b.onclick=()=>{pTab=b.dataset.pm;buzz();renderPersonal();scrollTo(0,0);SNAV&&(SNAV.sh.scrollTop=0);pageSlide(1)});
 return;
@@ -3652,7 +3652,7 @@ ${[['loose','宽敞',3,6],['dense','适中',4,8],['compact','满满',5,10]].map(
 <span class="ly-l"><b>${n}</b><small>${cols} 列</small><i class="ly-r"></i></span>
 <span class="ly-g" style="--cols:${cols}">${Array.from({length:cnt},(_,i)=>pvIcon(i)).join('')}</span></button>`).join('')}
 <p class="pp-ok">${mi('check',18,2.4)}选好就用上了，不用另外保存</p>`;
-if(pTab==='appicon'){const cur=P.appIcon||'tree';
+if(pTab==='appicon'){const cur=P.appIcon||'sun';
 body=`<h3 class="pp-h big">选择你喜欢的 App 图标</h3><p class="pp-sub">换好后，手机桌面上的图标也会跟着变</p>
 <div class="ai-grid">${APP_ICONS.map(([k,n,src])=>`<button class="ai-opt${cur===k?' on':''}" data-aic="${k}" aria-pressed="${cur===k}"><img src="${src}" alt=""><b>${n}</b><i class="ai-r">${cur===k?mi('check',16,3):''}</i></button>`).join('')}</div>`}
 if(pTab==='sound'){const on=soundOn(),kind=P.sndKind||'in',cur=kind==='in'?sndIn():sndOut(),def=kind==='in'?SND_IN_DEFAULT:SND_OUT_DEFAULT;
@@ -3685,8 +3685,8 @@ $$('[data-shape]').forEach(b=>b.onclick=()=>{const k=b.dataset.shape;P.shape=k;s
 const d=$(`[data-shape="${k}"] .dot`);if(d){shapeRipple(d,k);d.animate([{transform:'scale(1)'},{transform:'scale(1.12)',offset:.45},{transform:'scale(1)'}],{duration:dur(420),easing:'ease-out'})}});
 $$('[data-line]').forEach(b=>b.onclick=()=>{P.line=b.dataset.line;save();applyTheme();buzz();re()});
 $$('[data-lay]').forEach(b=>b.onclick=()=>{P.layout=b.dataset.lay;save();applyPageBg();buzz();re()});
-$$('[data-aic]').forEach(b=>b.onclick=async()=>{const k=b.dataset.aic;if((P.appIcon||'tree')===k)return;buzz();
-if(IN_APP){let ok=false;try{ok=await window.webkit.messageHandlers.native.postMessage({cmd:'appicon',name:k==='tree'?'':k})}catch(e){}
+$$('[data-aic]').forEach(b=>b.onclick=async()=>{const k=b.dataset.aic;if((P.appIcon||'sun')===k)return;buzz();
+if(IN_APP){let ok=false;try{ok=await window.webkit.messageHandlers.native.postMessage({cmd:'appicon',name:k==='sun'?'':k})}catch(e){}
 if(!ok){toast('暂时换不了图标，请稍后再试');return}}else toast('正式版里桌面图标会一起换');
 P.appIcon=k;save();re()});
 if(pTab==='palette'){
