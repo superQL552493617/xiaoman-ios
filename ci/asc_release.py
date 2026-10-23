@@ -115,3 +115,108 @@ def status():
 
 if MODE == "status":
     status()
+
+PAGES = "https://superql552493617.github.io/xiaoman-ios/"
+DESC = """小满记，一个简单温柔的习惯打卡和日记 App。每天点亮几个小习惯，写几句日志和笔记，日子就慢慢满了。
+
+【轻轻一点就打卡】
+· 点一下圆圈完成打卡，有动画、音效和震动反馈
+· 再点已打卡的圆圈，写下当时的感受
+· 左右滑动切换日期，忘了也能补打卡
+· 每个习惯可以选图标、颜色、形状和打卡日
+
+【闹钟提醒，不会忘】
+· 每个习惯可以设置多个提醒时间
+· 到点响铃，没打卡会再提醒；已经打卡的不再打扰
+
+【笔记和心情】
+· 随手写笔记，记录每天的心情
+· 回忆页按日期翻看过去的记录
+
+【统计与回顾】
+· 按周、月、年查看完成率和打卡次数
+· 每周生成一份打卡总结
+
+【桌面小组件】
+· 在桌面直接打卡，打完的自动消失
+· 笔记小组件一点就写，桌面上不显示笔记内容
+
+【装扮成你喜欢的样子】
+· 多种主题、字体、图标形状和配色
+· 可以用自己的照片做习惯图标（会员）
+
+【安全和隐私】
+· 不用注册登录，数据只保存在你的手机上
+· 支持密码锁和面容 ID（会员）
+· 随时导出备份
+
+会员说明：
+· 年度卡（首次可免费试用 3 天）、月度卡为自动续期订阅，到期前 24 小时内自动续费，可随时在「设置 → Apple ID → 订阅」中取消；永久会员为一次性购买。
+· 用户协议：""" + PAGES + """terms.html
+· 隐私政策：""" + PAGES + """privacy.html"""
+KEYWORDS = "习惯,打卡,自律,日记,笔记,提醒,闹钟,目标,计划,心情,早起,健身,喝水,读书,小组件"
+PROMO = "每天一点点，日子慢慢满。简单好用的习惯打卡和日记本。"
+
+def first(path):
+    j = api("GET", path); d = j and j.get("data")
+    return (d[0] if isinstance(d, list) and d else d) if d else None
+
+def meta():
+    aid = app_id()
+    inf = first(f"/v1/apps/{aid}/appInfos")
+    loc = first(f"/v1/appInfos/{inf['id']}/appInfoLocalizations")
+    api("PATCH", f"/v1/appInfoLocalizations/{loc['id']}", {"data": {"type": "appInfoLocalizations", "id": loc["id"],
+        "attributes": {"privacyPolicyUrl": PAGES + "privacy.html"}}}) and print("ok privacyPolicyUrl")
+    api("PATCH", f"/v1/appInfos/{inf['id']}", {"data": {"type": "appInfos", "id": inf["id"], "relationships": {
+        "primaryCategory": rel("appCategories", "PRODUCTIVITY"), "secondaryCategory": rel("appCategories", "LIFESTYLE")}}}) and print("ok categories")
+    ar = first(f"/v1/appInfos/{inf['id']}/ageRatingDeclaration")
+    if ar:
+        attrs = {}
+        for k, v in ar["attributes"].items():
+            if k in ("ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "gracRatingClassificationNumber", "developerAgeRatingInfoUrl", "kidsAgeBand"):
+                continue
+            attrs[k] = v
+        enums = ["alcoholTobaccoOrDrugUseOrReferences", "contests", "gamblingSimulated", "gunsOrOtherWeapons", "medicalOrTreatmentInformation",
+                 "profanityOrCrudeHumor", "sexualContentGraphicAndNudity", "sexualContentOrNudity", "horrorOrFearThemes", "matureOrSuggestiveThemes",
+                 "violenceCartoonOrFantasy", "violenceRealisticProlongedGraphicOrSadistic", "violenceRealistic"]
+        bools = ["advertising", "gambling", "healthOrWellnessTopics", "lootBox", "messagingAndChat", "parentalControls", "ageAssurance",
+                 "socialMedia", "socialMediaAgeRestricted", "unrestrictedWebAccess", "userGeneratedContent"]
+        body = {k: "NONE" for k in enums if k in ar["attributes"]}
+        body.update({k: False for k in bools if k in ar["attributes"]})
+        r = api("PATCH", f"/v1/ageRatingDeclarations/{ar['id']}", {"data": {"type": "ageRatingDeclarations", "id": ar["id"], "attributes": body}})
+        if not r:   # 有的字段在这个账号里不能改：逐个试
+            for k, v in body.items():
+                api("PATCH", f"/v1/ageRatingDeclarations/{ar['id']}", {"data": {"type": "ageRatingDeclarations", "id": ar["id"], "attributes": {k: v}}})
+        print("ok ageRating")
+    api("PATCH", f"/v1/apps/{aid}", {"data": {"type": "apps", "id": aid, "attributes": {"contentRightsDeclaration": "USES_THIRD_PARTY_CONTENT"}}}) and print("ok contentRights")
+    ver = [v for v in all_pages(f"/v1/apps/{aid}/appStoreVersions")[0] if v["attributes"].get("appStoreState") in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")][0]
+    api("PATCH", f"/v1/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"],
+        "attributes": {"copyright": "2026 lang qin", "releaseType": "AFTER_APPROVAL"}}}) and print("ok copyright")
+    vl = first(f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")
+    api("PATCH", f"/v1/appStoreVersionLocalizations/{vl['id']}", {"data": {"type": "appStoreVersionLocalizations", "id": vl["id"],
+        "attributes": {"description": DESC, "keywords": KEYWORDS, "promotionalText": PROMO, "supportUrl": PAGES, "marketingUrl": PAGES}}}) and print("ok description")
+    # 选最新处理完成的包
+    bl, _ = all_pages("/v1/builds", {"filter[app]": aid, "sort": "-uploadedDate", "limit": 5, "filter[processingState]": "VALID"})
+    if bl:
+        b = bl[0]
+        api("PATCH", f"/v1/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": b["id"]}}) and print("ok build", b["attributes"]["version"])
+    # 只在中国大陆上架
+    av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": False},
+        "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": [{"type": "territoryAvailabilities", "id": "${chn}"}]}}},
+        "included": [{"type": "territoryAvailabilities", "id": "${chn}", "attributes": {"available": True},
+                      "relationships": {"territory": rel("territories", "CHN")}}]})
+    print("availability", "ok" if av else "failed")
+    # 免费下载
+    pts, _ = all_pages(f"/v1/apps/{aid}/appPricePoints", {"filter[territory]": "CHN", "limit": 200})
+    free = [p for p in pts if float(p["attributes"].get("customerPrice") or 0) == 0]
+    if free:
+        ps = api("POST", "/v1/appPriceSchedules", {"data": {"type": "appPriceSchedules", "relationships": {"app": rel("apps", aid),
+            "baseTerritory": rel("territories", "CHN"), "manualPrices": {"data": [{"type": "appPrices", "id": "${p0}"}]}}},
+            "included": [{"type": "appPrices", "id": "${p0}", "attributes": {"startDate": None},
+                          "relationships": {"appPricePoint": rel("appPricePoints", free[0]["id"])}}]})
+        print("price free", "ok" if ps else "failed")
+    else:
+        print("no free price point found")
+
+if MODE == "meta":
+    meta(); status()
