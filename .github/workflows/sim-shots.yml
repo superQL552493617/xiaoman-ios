@@ -26,7 +26,7 @@ jobs:
       - name: 启动并截图
         run: |
           mkdir -p /tmp/shots
-          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];c=[x for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name'] and 'Pro' in x['name'] and 'Max' not in x['name']];print(c[-1]['udid'])")
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys,os;MAX=os.path.exists('ci/shots_max.txt');d=json.load(sys.stdin)['devices'];c=[x for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name'] and 'Pro' in x['name'] and (('Max' in x['name']) == MAX)];print(c[-1]['udid'])")
           echo "device $UDID"
           xcrun simctl boot $UDID; xcrun simctl bootstatus $UDID -b
           xcrun simctl status_bar $UDID override --time 9:41 --batteryState charged --batteryLevel 100 || true
