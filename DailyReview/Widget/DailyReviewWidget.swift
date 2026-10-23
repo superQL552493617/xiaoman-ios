@@ -177,7 +177,7 @@ struct HabitWidgetView: View {
                 VStack(spacing: 6) {
                     Image("prog_palm").resizable().scaledToFit().frame(width: family == .systemSmall ? 44 : 52)
                         .saturation(entry.allDone ? 1 : 0).opacity(entry.allDone ? 1 : 0.6)
-                    Text(entry.allDone ? "今天都完成啦" : "今天没有需要打卡的习惯").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#6E6E73", "#A1A1A6"))
+                    Text("今天没有需要打卡的习惯").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#6E6E73", "#A1A1A6"))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
