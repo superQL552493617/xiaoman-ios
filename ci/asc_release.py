@@ -168,7 +168,6 @@ def avail(aid):
     data = [{"type": "territoryAvailabilities", "id": "${t%s}" % t} for t in ids]
     inc = [{"type": "territoryAvailabilities", "id": "${t%s}" % t, "attributes": {"available": t == "CHN"},
             "relationships": {"territory": rel("territories", t)}} for t in ids]
-    inc += [{"type": "territories", "id": t} for t in ids]
     av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": False},
         "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": data}}}, "included": inc})
     print("availability", "ok" if av else "failed", len(ids), "territories")
