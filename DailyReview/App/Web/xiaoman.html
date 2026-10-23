@@ -5445,10 +5445,13 @@ addEventListener('resize',place);
 requestAnimationFrame(()=>{ov.classList.add('show');show()});
 }
 /* 打开 App 后：开屏页、密码锁、新建习惯页都结束了再出来 */
-function maybeGuide(){if(S.prefs.guided)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided){clearInterval(t);return}
+/* 测试包：每次打开 App 都出现新手引导，方便查看；正式版只出现一次 */
+let GUIDE_SHOWN_THIS_LAUNCH=false;
+function maybeGuide(){const testEvery=IN_APP&&window.__XM_TEST__===true&&!GUIDE_SHOWN_THIS_LAUNCH;
+if(S.prefs.guided&&!testEvery)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided&&!testEvery){clearInterval(t);return}
 const from=S.prefs.guideStep||0;
 const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!LOCKED&&!document.querySelector('.lk,.sheet.show,.jr.show,.fn,.gd,#dName')&&tab==='today'&&document.querySelector('#pane')&&(from<2||document.querySelector('#pane .grid .cw'));
-if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd'))startGuide(false,from)},dur(500))}else if(n>1200)clearInterval(t)},500)}
+if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd')){GUIDE_SHOWN_THIS_LAUNCH=true;startGuide(testEvery,testEvery?0:from)}},dur(500))}else if(n>1200)clearInterval(t)},500)}
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
 /* 离开 App 时先盖一层空白锁屏，回来时直接是锁住的样子，不会先闪一下 App 里的内容 */
@@ -5739,6 +5742,8 @@ if(tab==='today'){renderToday()}else render()}
 setInterval(checkDayRoll,20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRoll()});
 addEventListener('focus',checkDayRoll);addEventListener('pageshow',checkDayRoll);
+/* 开屏页结束的信号由 App 发来；页面重新载入（比如小组件改了数据）时没有开屏页，4 秒后当作已结束，免得锁屏一直等 */
+if(IN_APP)setTimeout(()=>{if(!window.__XM_SPLASH_DONE){window.__XM_SPLASH_DONE=true;const f=window.__xmSplashDone;window.__xmSplashDone=null;f&&f()}},4000);
 load().then(()=>{syncNoteFont();setTimeout(maybeGuide,800);setTimeout(async()=>{let n=0;for(const c of S.cards||[]){if(c.icImg&&!c.imgTrim){c.icImg=await trimIcon(c.icImg);c.imgTrim=1;n++}}if(n){save();render()}},1200);LAST_TODAY=TODAY();sel=TODAY();STRIP_OPEN=HOME().strip;render();setTimeout(autoSummaries,2500);lockOnStart();flushFeedback();setTimeout(()=>{try{SFX.prerender(sndIn());SFX.prerender(sndOut())}catch(e){}},300)});
 </script>
 <!-- size variables (defaults are the design values; the tuner panel has been removed) -->

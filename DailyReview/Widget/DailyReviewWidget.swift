@@ -134,15 +134,22 @@ struct HabitWidgetView: View {
     private var page: Int { (UserDefaults(suiteName: Persistence.appGroup)?.integer(forKey: "widgetPage_" + famKey) ?? 0) % pages }
 
     var body: some View {
-        if entry.allDone {
-            // 全部打完：左上角一句话，右下角盆栽（小号 1 盆、中号 3 盆、大号一排 5 盆）
-            let t = WidgetDay.pick(WidgetDay.done, entry.date)
-            IllustratedCard(title: t.0, sub: t.1,
-                            art: family == .systemSmall ? "wg_pot1" : family == .systemMedium ? "wg_pots3" : "wg_pots5",
-                            artWidth: family == .systemSmall ? 54 : family == .systemMedium ? 132 : 300)
-        } else {
-            list
+        ZStack {
+            if entry.allDone {
+                // 全部打完：左上角一句话，右下角盆栽（小号 1 盆、中号 3 盆、大号一排 5 盆）
+                // 打完最后一个时：图标先淡出，盆栽从下面慢慢浮上来（系统在两次刷新之间播放这段过渡）
+                let t = WidgetDay.pick(WidgetDay.done, entry.date)
+                IllustratedCard(title: t.0, sub: t.1,
+                                art: family == .systemSmall ? "wg_pot1" : family == .systemMedium ? "wg_pots3" : "wg_pots5",
+                                artWidth: family == .systemSmall ? 54 : family == .systemMedium ? 132 : 300)
+                    .transition(.asymmetric(insertion: .opacity.combined(with: .offset(y: 14)).combined(with: .scale(scale: 0.96, anchor: .bottomTrailing)),
+                                            removal: .opacity))
+            } else {
+                list
+                    .transition(.opacity)
+            }
         }
+        .animation(.easeInOut(duration: 0.9), value: entry.allDone)
     }
 
     private var list: some View {
@@ -176,7 +183,7 @@ struct HabitWidgetView: View {
             } else {
                 let items = Array(entry.left.dropFirst(page * n).prefix(n))
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: cols), spacing: family == .systemSmall ? 14 : 8) {   // 上下留开一点，不挨在一起
-                    ForEach(items) { c in item(c) }
+                    ForEach(items) { c in item(c).transition(.scale(scale: 0.6).combined(with: .opacity)) }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }

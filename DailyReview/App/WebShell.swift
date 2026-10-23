@@ -103,6 +103,7 @@ struct WebRootView: View {
     /// 桌面小组件点进来：网页准备好、开屏页结束后交给网页处理（网页会先等密码 / 面容 ID 验证）
     private func route(_ r: String) {
         if splashGone && bridge.ready {
+            bridge.replayRoute = (r, Date())
             bridge.webView?.evaluateJavaScript("window.__xmRoute&&window.__xmRoute('\(r)')", completionHandler: nil)
         } else { pendingRoute = r }
     }
@@ -288,6 +289,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     weak var purchases: Purchases?
     private var postTask: Task<Void, Never>?
     private var lastWrite = Date.distantPast
+    /// 最近一次从小组件点进来要打开的页面（页面重新载入后补上）
+    var replayRoute: (String, Date)?
 
     /// 页面加载前注入：存储、触感、分享
     static var startScript: String {
@@ -334,7 +337,17 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         guard let body = message.body as? [String: Any], let cmd = body["cmd"] as? String else { replyHandler(nil, nil); return }
         switch cmd {
         case "load":
+            // 网页刚读过最新数据：回到前台时不用再重新载入（冷启动时这里会误判，把小组件点进来要打开的页面刷掉）
+            lastWrite = Date()
             replyHandler(Persistence.loadRaw(), nil)
+            // 页面因为小组件改了数据而重新载入：刚才从小组件点进来要打开的页面（比如写笔记），载入后再打开一次
+            if let rt = replayRoute, Date().timeIntervalSince(rt.1) < 8 {
+                let r = rt.0
+                replayRoute = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+                    self?.webView?.evaluateJavaScript("window.__xmRoute&&window.__xmRoute('\(r)')", completionHandler: nil)
+                }
+            }
         case "save":
             if let v = body["value"] as? String {
                 Persistence.saveRaw(v)
