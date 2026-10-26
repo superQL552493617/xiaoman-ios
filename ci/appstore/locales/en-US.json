@@ -1,0 +1,26 @@
+{
+ "name": "Xiaoman: Habit & Journal",
+ "subtitle": "Small habits, little by little",
+ "keywords": "habit,tracker,routine,daily,journal,diary,reminder,goals,mood,self care,widget,streak,planner",
+ "promotionalText": "A little every day, and life slowly fills up. A simple, gentle habit tracker and journal.",
+ "whatsNew": "Xiaoman now speaks English and Traditional Chinese. Change the language anytime in Settings.",
+ "description": "Xiaoman is a simple, gentle habit tracker and journal. Light up a few small habits each day, write a few lines, and watch your days slowly fill up.\n\nCHECK IN WITH A TAP\n· Tap a circle to check in, with a little animation, sound and haptic\n· Tap a checked circle to note how it felt\n· Swipe between days to check in late if you forgot\n· Pick an icon, color, shape and repeat days for each habit\n\nREMINDERS THAT RING\n· Set several reminder times for each habit\n· It rings on time and reminds you again if you haven’t checked in; once you have, it stays quiet\n\nNOTES AND MOODS\n· Write quick notes and record your mood each day\n· Browse past days in Memories\n\nSTATS AND REVIEWS\n· See completion and check-ins by week, month and year\n· Get a weekly summary of your check-ins\n\nHOME SCREEN WIDGETS\n· Check in right from your Home Screen; finished habits disappear\n· The note widget opens today’s note in one tap and never shows your notes on the Home Screen\n\nMAKE IT YOURS\n· Themes, fonts, icon shapes and color palettes\n· Use your own photos as habit icons (Premium)\n\nPRIVATE BY DESIGN\n· No sign-up; your data stays on your phone\n· Passcode lock and Face ID (Premium)\n· Export a backup anytime\n\nAbout Premium:\n· Yearly (with a 3-day free trial for first-time subscribers) and Monthly are auto-renewing subscriptions, renewed within 24 hours before the current period ends. Cancel anytime in Settings → Apple ID → Subscriptions. Lifetime is a one-time purchase.\n· Terms of Use: https://superql552493617.github.io/xiaoman-ios/en/terms.html\n· Privacy Policy: https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "iap": {
+  "site.xiaomanhabit.app.vip.year": [
+   "Yearly Premium",
+   "Unlimited habits, photo icons and app lock"
+  ],
+  "site.xiaomanhabit.app.vip.month": [
+   "Monthly Premium",
+   "Unlimited habits, photo icons and app lock"
+  ],
+  "site.xiaomanhabit.app.vip.life": [
+   "Lifetime Premium",
+   "Pay once for all Premium features, forever"
+  ]
+ },
+ "group": "Xiaoman Premium"
+}

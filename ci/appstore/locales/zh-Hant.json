@@ -1,0 +1,26 @@
+{
+ "name": "小滿記",
+ "subtitle": "習慣打卡與日記，每天一點點",
+ "keywords": "習慣,打卡,自律,日記,筆記,提醒,鬧鐘,目標,計畫,心情,早起,健身,喝水,讀書,小工具",
+ "promotionalText": "每天一點點，日子慢慢滿。簡單好用的習慣打卡和日記本。",
+ "whatsNew": "小滿記支援繁體中文和英文了，可以在「設定」裡隨時切換語言。",
+ "description": "小滿記，一個簡單溫柔的習慣打卡和日記 App。每天點亮幾個小習慣，寫幾句日誌和筆記，日子就慢慢滿了。\n\n【輕輕一點就打卡】\n· 點一下圓圈完成打卡，有動畫、音效和震動反饋\n· 再點已打卡的圓圈，寫下當時的感受\n· 左右滑動切換日期，忘了也能補打卡\n· 每個習慣可以選圖示、顏色、形狀和打卡日\n\n【鬧鐘提醒，不會忘】\n· 每個習慣可以設定多個提醒時間\n· 到點響鈴，沒打卡會再提醒；已經打卡的不再打擾\n\n【筆記和心情】\n· 隨手寫筆記，記錄每天的心情\n· 回憶頁按日期翻看過去的記錄\n\n【統計與回顧】\n· 按週、月、年檢視完成率和打卡次數\n· 每週生成一份打卡總結\n\n【桌面小工具】\n· 在桌面直接打卡，打完的自動消失\n· 筆記小工具一點就寫，桌面上不顯示筆記內容\n\n【裝扮成你喜歡的樣子】\n· 多種主題、字型、圖示形狀和配色\n· 可以用自己的照片做習慣圖示（會員）\n\n【安全和隱私】\n· 不用註冊登入，資料只儲存在你的手機上\n· 支持密碼鎖和麵容 ID（會員）\n· 隨時匯出備份\n\n會員說明：\n· 年度卡（首次可免費試用 3 天）、月度卡為自動續期訂閱，到期前 24 小時內自動續費，可隨時在「設定 → Apple ID → 訂閱」中取消；永久會員為一次性購買。\n· 使用者協議：https://superql552493617.github.io/xiaoman-ios/zh-Hant/terms.html\n· 隱私政策：https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "iap": {
+  "site.xiaomanhabit.app.vip.year": [
+   "年度會員",
+   "不限習慣數量、照片圖示和 App 密碼鎖"
+  ],
+  "site.xiaomanhabit.app.vip.month": [
+   "月度會員",
+   "不限習慣數量、照片圖示和 App 密碼鎖"
+  ],
+  "site.xiaomanhabit.app.vip.life": [
+   "永久會員",
+   "一次購買，永久使用全部會員功能"
+  ]
+ },
+ "group": "小滿會員"
+}

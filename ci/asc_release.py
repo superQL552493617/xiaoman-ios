@@ -358,8 +358,130 @@ if MODE.startswith("draft"):
     for p in iaps: print("iap", p["attributes"].get("productId"), p["attributes"].get("state"))
 
 if MODE.startswith("links"):
-    for u in ["https://superql552493617.github.io/", PAGES, PAGES + "privacy.html", PAGES + "terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
+    for u in ["https://superql552493617.github.io/", PAGES, PAGES + "privacy.html", PAGES + "terms.html", PAGES + "en/", PAGES + "en/privacy.html", PAGES + "en/terms.html", PAGES + "zh-Hant/", PAGES + "zh-Hant/privacy.html", PAGES + "zh-Hant/terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
         try:
             r = requests.get(u, timeout=20); print("LINK", r.status_code, u, len(r.text))
         except Exception as e:
             print("LINK ERR", u, e)
+
+# ================= 多语言上架（1.0 过审后再用）=================
+# newversion 1.1   新建版本（1.0 上架后）
+# locales          英文 / 繁体：App 名称、副标题、隐私政策网址、描述、关键词、更新说明、会员商品名称
+# world            开放全部国家和地区（价格：中国大陆按人民币，其余按美元自动换算）
+# lshots           上传 ci/appstore/<语言>/*.png 截图
+LOC_DIR = os.path.join(os.path.dirname(__file__), "appstore", "locales")
+
+def editable_version(aid):
+    vs = all_pages(f"/v1/apps/{aid}/appStoreVersions")[0]
+    ok = [v for v in vs if v["attributes"].get("appStoreState") in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")]
+    return ok[0] if ok else None
+
+def new_version(vs):
+    aid = app_id()
+    if editable_version(aid): print("already have an editable version"); return
+    r = api("POST", "/v1/appStoreVersions", {"data": {"type": "appStoreVersions", "attributes": {"platform": "IOS", "versionString": vs, "releaseType": "AFTER_APPROVAL", "copyright": "2026 lang qin"},
+        "relationships": {"app": rel("apps", aid)}}})
+    print("new version", vs, "ok" if r else "failed")
+
+def locales():
+    aid = app_id()
+    infos, _ = all_pages(f"/v1/apps/{aid}/appInfos")
+    inf = next((i for i in infos if (i["attributes"].get("appStoreState") or i["attributes"].get("state")) not in ("READY_FOR_SALE", "READY_FOR_DISTRIBUTION")), infos[0])
+    ver = editable_version(aid)
+    for f in sorted(glob.glob(os.path.join(LOC_DIR, "*.json"))):
+        loc = os.path.basename(f)[:-5]; d = json.load(open(f))
+        # App 名称、副标题、隐私政策
+        il, _ = all_pages(f"/v1/appInfos/{inf['id']}/appInfoLocalizations")
+        cur = next((x for x in il if x["attributes"]["locale"] == loc), None)
+        attrs = {"name": d["name"], "subtitle": d["subtitle"], "privacyPolicyUrl": d["privacyPolicyUrl"]}
+        if cur: r = api("PATCH", f"/v1/appInfoLocalizations/{cur['id']}", {"data": {"type": "appInfoLocalizations", "id": cur["id"], "attributes": attrs}})
+        else: r = api("POST", "/v1/appInfoLocalizations", {"data": {"type": "appInfoLocalizations", "attributes": dict(attrs, locale=loc), "relationships": {"appInfo": rel("appInfos", inf["id"])}}})
+        print(loc, "appInfo", "ok" if r else "failed")
+        # 版本描述
+        if ver:
+            vl, _ = all_pages(f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")
+            cur = next((x for x in vl if x["attributes"]["locale"] == loc), None)
+            attrs = {k: d[k] for k in ("description", "keywords", "promotionalText", "supportUrl", "marketingUrl", "whatsNew")}
+            if cur: r = api("PATCH", f"/v1/appStoreVersionLocalizations/{cur['id']}", {"data": {"type": "appStoreVersionLocalizations", "id": cur["id"], "attributes": attrs}})
+            else:
+                a2 = dict(attrs, locale=loc); a2.pop("whatsNew", None)
+                r = api("POST", "/v1/appStoreVersionLocalizations", {"data": {"type": "appStoreVersionLocalizations", "attributes": a2, "relationships": {"appStoreVersion": rel("appStoreVersions", ver["id"])}}})
+                if r: api("PATCH", f"/v1/appStoreVersionLocalizations/{r['data']['id']}", {"data": {"type": "appStoreVersionLocalizations", "id": r["data"]["id"], "attributes": {"whatsNew": d["whatsNew"]}}})
+            print(loc, "version", "ok" if r else "failed")
+        else:
+            print("no editable version: run 'newversion 1.1' first")
+        # 会员商品名称
+        grps, _ = all_pages(f"/v1/apps/{aid}/subscriptionGroups")
+        for g in grps:
+            gl, _ = all_pages(f"/v1/subscriptionGroups/{g['id']}/subscriptionGroupLocalizations")
+            if not any(x["attributes"]["locale"] == loc for x in gl):
+                r = api("POST", "/v1/subscriptionGroupLocalizations", {"data": {"type": "subscriptionGroupLocalizations", "attributes": {"locale": loc, "name": d["group"]},
+                    "relationships": {"subscriptionGroup": rel("subscriptionGroups", g["id"])}}}); print(loc, "group", "ok" if r else "failed")
+            subs, _ = all_pages(f"/v1/subscriptionGroups/{g['id']}/subscriptions")
+            for sb in subs:
+                pid = sb["attributes"]["productId"]; nm = d["iap"].get(pid)
+                if not nm: continue
+                sl, _ = all_pages(f"/v1/subscriptions/{sb['id']}/subscriptionLocalizations")
+                cur = next((x for x in sl if x["attributes"]["locale"] == loc), None)
+                if cur: r = api("PATCH", f"/v1/subscriptionLocalizations/{cur['id']}", {"data": {"type": "subscriptionLocalizations", "id": cur["id"], "attributes": {"name": nm[0], "description": nm[1]}}})
+                else: r = api("POST", "/v1/subscriptionLocalizations", {"data": {"type": "subscriptionLocalizations", "attributes": {"locale": loc, "name": nm[0], "description": nm[1]},
+                    "relationships": {"subscription": rel("subscriptions", sb["id"])}}})
+                print(loc, pid, "ok" if r else "failed")
+        iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
+        for p in iaps:
+            pid = p["attributes"]["productId"]; nm = d["iap"].get(pid)
+            if not nm: continue
+            pl, _ = all_pages(f"/v2/inAppPurchases/{p['id']}/inAppPurchaseLocalizations")
+            cur = next((x for x in pl if x["attributes"]["locale"] == loc), None)
+            if cur: r = api("PATCH", f"/v1/inAppPurchaseLocalizations/{cur['id']}", {"data": {"type": "inAppPurchaseLocalizations", "id": cur["id"], "attributes": {"name": nm[0], "description": nm[1]}}})
+            else: r = api("POST", "/v1/inAppPurchaseLocalizations", {"data": {"type": "inAppPurchaseLocalizations", "attributes": {"locale": loc, "name": nm[0], "description": nm[1]},
+                "relationships": {"inAppPurchaseV2": rel("inAppPurchases", p["id"])}}})
+            print(loc, pid, "ok" if r else "failed")
+
+def world(aid):
+    terrs, _ = all_pages("/v1/territories", {"limit": 200})
+    ids = [t["id"] for t in terrs]
+    data = [{"type": "territoryAvailabilities", "id": "${t%s}" % t} for t in ids]
+    inc = [{"type": "territoryAvailabilities", "id": "${t%s}" % t, "attributes": {"available": True},
+            "relationships": {"territory": rel("territories", t)}} for t in ids]
+    av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": True},
+        "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": data}}}, "included": inc})
+    print("world availability", "ok" if av else "failed", len(ids), "territories")
+
+def local_shots():
+    aid = app_id(); ver = editable_version(aid)
+    if not ver: print("no editable version"); return
+    vl, _ = all_pages(f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")
+    for l in vl:
+        loc = l["attributes"]["locale"]
+        files = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "appstore", loc, "*.png")))
+        if loc == "zh-Hans": files = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "appstore", "*.png")))
+        if not files: print(loc, "no screenshots"); continue
+        sets, _ = all_pages(f"/v1/appStoreVersionLocalizations/{l['id']}/appScreenshotSets")
+        st = next((x for x in sets if x["attributes"]["screenshotDisplayType"] == "APP_IPHONE_67"), None)
+        if not st:
+            st = api("POST", "/v1/appScreenshotSets", {"data": {"type": "appScreenshotSets", "attributes": {"screenshotDisplayType": "APP_IPHONE_67"},
+                "relationships": {"appStoreVersionLocalization": rel("appStoreVersionLocalizations", l["id"])}}})["data"]
+        old, _ = all_pages(f"/v1/appScreenshotSets/{st['id']}/appScreenshots")
+        for o in old: api("DELETE", f"/v1/appScreenshots/{o['id']}")
+        for f in files:
+            data = open(f, "rb").read()
+            r = api("POST", "/v1/appScreenshots", {"data": {"type": "appScreenshots", "attributes": {"fileName": os.path.basename(f), "fileSize": len(data)},
+                "relationships": {"appScreenshotSet": rel("appScreenshotSets", st["id"])}}})
+            if not r: continue
+            sid = r["data"]["id"]
+            for op in r["data"]["attributes"]["uploadOperations"]:
+                hdr = {h["name"]: h["value"] for h in op.get("requestHeaders", [])}
+                rr = requests.request(op["method"], op["url"], headers=hdr, data=data[op["offset"]: op["offset"] + op["length"]], timeout=120)
+                if rr.status_code >= 300: print("upload part failed", rr.status_code)
+            api("PATCH", f"/v1/appScreenshots/{sid}", {"data": {"type": "appScreenshots", "id": sid,
+                "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}}) and print(loc, "ok shot", os.path.basename(f))
+
+if MODE.startswith("newversion"):
+    new_version(MODE.split()[1] if len(MODE.split()) > 1 else "1.1")
+if MODE == "locales":
+    locales(); status()
+if MODE == "world":
+    world(app_id())
+if MODE == "lshots":
+    local_shots()
