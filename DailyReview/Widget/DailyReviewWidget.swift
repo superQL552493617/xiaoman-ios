@@ -155,7 +155,7 @@ struct HabitWidgetView: View {
     private var list: some View {
         VStack(spacing: 6) {
             HStack(alignment: .center, spacing: 6) {
-                Text("今日打卡").font(.system(size: 12.5, weight: .semibold))
+                Text(L("今日打卡")).font(.system(size: 12.5, weight: .semibold))
                 Spacer()
                 Text("\(entry.doneCount)/\(entry.total)").font(.system(size: 12.5)).monospacedDigit().opacity(0.6)
                 if pages > 1 && !entry.allDone {
@@ -177,7 +177,7 @@ struct HabitWidgetView: View {
                 VStack(spacing: 6) {
                     Image("prog_palm").resizable().scaledToFit().frame(width: family == .systemSmall ? 44 : 52)
                         .saturation(entry.allDone ? 1 : 0).opacity(entry.allDone ? 1 : 0.6)
-                    Text("今天没有需要打卡的习惯").font(.system(size: 12)).foregroundStyle(Theme.adaptive("#6E6E73", "#A1A1A6"))
+                    Text(L("今天没有需要打卡的习惯")).font(.system(size: 12)).foregroundStyle(Theme.adaptive("#6E6E73", "#A1A1A6"))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -215,8 +215,8 @@ struct DailyReviewWidget: Widget {
                 .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex, theme: entry.pageBg) }
                 .widgetURL(URL(string: "xiaoman://today"))
         }
-        .configurationDisplayName("今日打卡")
-        .description("显示今天还没打卡的习惯，点图标直接打卡，打完的自动消失。")
+        .configurationDisplayName(L("今日打卡"))
+        .description(L("显示今天还没打卡的习惯，点图标直接打卡，打完的自动消失。"))
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
@@ -251,7 +251,8 @@ enum WidgetDay {
         var utc = Calendar(identifier: .gregorian)
         utc.timeZone = TimeZone(identifier: "UTC")!
         let day = Int(((utc.date(from: dc) ?? date).timeIntervalSince1970 / 86400).rounded())
-        return list[((day % list.count) + list.count) % list.count]
+        let p = list[((day % list.count) + list.count) % list.count]
+        return (L(p.0), L(p.1))
     }
 }
 
@@ -278,8 +279,8 @@ struct JournalWidget: Widget {
                 .containerBackground(for: .widget) { WidgetBG(hex: entry.opts.bgHex, theme: entry.pageBg) }
                 .widgetURL(URL(string: "xiaoman://journal"))
         }
-        .configurationDisplayName("笔记")
-        .description("点一下直接写今天的笔记，桌面上不会显示笔记内容。")
+        .configurationDisplayName(L("笔记"))
+        .description(L("点一下直接写今天的笔记，桌面上不会显示笔记内容。"))
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
@@ -291,11 +292,11 @@ struct XiaomanControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "site.xiaomanhabit.app.control.open") {
             ControlWidgetButton(action: OpenXiaomanIntent()) {
-                Label("小满打卡", systemImage: "leaf.fill")
+                Label(L("小满打卡"), systemImage: "leaf.fill")
             }
         }
-        .displayName("小满打卡")
-        .description("打开小满记，记录今天的打卡")
+        .displayName(LocalizedStringResource(stringLiteral: L("小满打卡")))
+        .description(LocalizedStringResource(stringLiteral: L("打开小满记，记录今天的打卡")))
     }
 }
 

@@ -140,7 +140,7 @@ final class Purchases: ObservableObject {
     func buy(kind: String) async -> Bool {
         if products.isEmpty { await loadProducts() }
         guard let p = product(kind) else {
-            message = "暂时连不上 App Store，请检查网络后再试"
+            message = L("暂时连不上 App Store，请检查网络后再试")
             return false
         }
         return await buy(p)
@@ -154,15 +154,15 @@ final class Purchases: ObservableObject {
             let r = try await product.purchase()
             switch r {
             case .success(let v):
-                if case .verified(let t) = v { await t.finish(); message = "开通成功，谢谢你的支持" }
+                if case .verified(let t) = v { await t.finish(); message = L("开通成功，谢谢你的支持") }
                 await refresh()
                 return isVIP
             case .userCancelled: return false
-            case .pending: message = "购买正在等待确认"; return false
+            case .pending: message = L("购买正在等待确认"); return false
             @unknown default: return false
             }
         } catch {
-            message = "购买没有完成：\(error.localizedDescription)"
+            message = L("购买没有完成：") + error.localizedDescription
             return false
         }
     }
@@ -175,7 +175,7 @@ final class Purchases: ObservableObject {
             await refresh()
             message = isVIP ? "已恢复\(planName)" : "没有找到可以恢复的购买"
         } catch {
-            message = "恢复失败，请稍后再试"
+            message = L("恢复失败，请稍后再试")
         }
     }
 }

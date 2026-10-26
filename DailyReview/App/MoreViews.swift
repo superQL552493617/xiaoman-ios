@@ -14,7 +14,7 @@ struct FeedbackView: View {
             if loading { ProgressView().controlSize(.large) }
         }
         .pageBackground()
-        .navigationTitle("意见反馈")
+        .navigationTitle(L("意见反馈"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
     }

@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "小滿記";
+"NSFaceIDUsageDescription" = "用 Face ID 解鎖小滿記，保護你的打卡和筆記";
+"NSPhotoLibraryUsageDescription" = "選擇照片作為頭像或習慣圖示";
+"NSCameraUsageDescription" = "拍照作為頭像或習慣圖示";

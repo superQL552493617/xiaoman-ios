@@ -74,11 +74,11 @@ struct SplashView: View {
             Color("LaunchPaper").ignoresSafeArea()
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
-                Image("splash_art").resizable().scaledToFit().frame(maxWidth: 330, maxHeight: 560)
+                Image(L10n.lang == "en" ? "splash_art_en" : L10n.lang == "zh-Hant" ? "splash_art_hant" : "splash_art").resizable().scaledToFit().frame(maxWidth: 330, maxHeight: 560)
                     .padding(.horizontal, 30)
-                    .accessibilityLabel("每天一点点，日子就慢慢满了。")
+                    .accessibilityLabel(L("每天一点点，日子就慢慢满了。"))
                 Spacer(minLength: 0)
-                Text("小满记 · 记下每一点小小的满足")
+                Text(L("小满记 · 记下每一点小小的满足"))
                     .font(.system(size: 12, weight: .medium, design: .serif))
                     .tracking(4)
                     .foregroundStyle(Color(red: 0.6, green: 0.565, blue: 0.518))
@@ -142,15 +142,15 @@ struct WebRootView: View {
             .sheet(item: $bridge.feedback) { f in
                 NavigationStack {
                     WebFeedbackView(fields: f.fields, url: f.url)
-                        .navigationTitle("意见反馈")
+                        .navigationTitle(L("意见反馈"))
                         .navigationBarTitleDisplayMode(.inline)
-                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { bridge.feedback = nil } } }
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button(L("完成")) { bridge.feedback = nil } } }
                 }
             }
             .sheet(isPresented: Binding(get: { bridge.doc != nil }, set: { if !$0 { bridge.doc = nil } })) {
                 NavigationStack {
-                    DocView(title: bridge.doc == "privacy" ? "隐私政策" : bridge.doc == "credits" ? "致谢与版权" : "用户协议", text: bridge.doc == "privacy" ? LegalText.privacy : bridge.doc == "credits" ? LegalText.credits : LegalText.terms)
-                        .toolbar { ToolbarItem(placement: .topBarLeading) { Button("关闭") { bridge.doc = nil } } }
+                    DocView(title: L(bridge.doc == "privacy" ? "隐私政策" : bridge.doc == "credits" ? "致谢与版权" : "用户协议"), text: bridge.doc == "privacy" ? LegalText.privacy : bridge.doc == "credits" ? LegalText.credits : LegalText.terms)
+                        .toolbar { ToolbarItem(placement: .topBarLeading) { Button(L("关闭")) { bridge.doc = nil } } }
                 }
             }
             .onAppear { bridge.purchases = purchases }
@@ -303,6 +303,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
       window.__XM_VER__={v:'\(v)',b:'\(b)'};
       window.__XM_UID__='\(UserID.value)';
       window.__XM_TEST__=\(UIMode.canSwitch ? "true" : "false");
+      window.__XM_SYSLANG__='\(Locale.preferredLanguages.first ?? "zh-Hans")';
+      window.__XM_LANGPREF__='\(L10n.pref)';
       try{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:function(t){return N({cmd:'copy',text:String(t)}).then(function(){})}}})}catch(e){}
       window.storage={
         get:function(k){return N({cmd:'load'}).then(function(v){return v?{value:v}:null})},
@@ -327,7 +329,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
         if(/support\\.qq\\.com/.test(this.action||'')){var f={};for(var i=0;i<this.elements.length;i++){var el=this.elements[i];if(el.name)f[el.name]=el.value}N({cmd:'feedback',fields:f}).catch(function(){});return}
         return sub.call(this)};
       if(typeof window.faceScan==='function'){
-        window.faceScan=function(onOk,label,onFail,bio){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:label||'',bio:!!bio}).then(function(ok){done();if(ok===true){onOk&&onOk()}else{onFail&&onFail(ok)}}).catch(function(){done();onFail&&onFail()})};
+        window.faceScan=function(onOk,label,onFail,bio){window.__XM_FACE_BUSY=true;var done=function(){setTimeout(function(){window.__XM_FACE_BUSY=false},1500)};N({cmd:'faceid',label:(window.T?T(label||''):(label||'')),bio:!!bio}).then(function(ok){done();if(ok===true){onOk&&onOk()}else{onFail&&onFail(ok)}}).catch(function(){done();onFail&&onFail()})};
       }
     })();
     """
@@ -395,7 +397,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             let policy: LAPolicy = bio ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
             if bio { ctx.localizedFallbackTitle = "" }
             guard ctx.canEvaluatePolicy(policy, error: &err) else { replyHandler(false, nil); return }
-            ctx.evaluatePolicy(policy, localizedReason: (body["label"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "解锁小满") { ok, err in
+            ctx.evaluatePolicy(policy, localizedReason: (body["label"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? L("解锁小满")) { ok, err in
                 // 返回 true 成功；"retry" 系统取消（App 还没回到前台等），网页会自动再试；"cancel" 用户取消；false 没认出来
                 var r: Any = ok
                 if !ok, let e = err as? LAError {
@@ -451,6 +453,13 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
                     replyHandler(self.vipInfo(p), nil)
                 }
             }
+        case "lang":
+            // 网页里换了界面语言：小组件、提醒通知、开屏跟着换
+            L10n.reset()
+            AlarmCenter.shared.registerCategories()
+            WidgetCenter.shared.reloadAllTimelines()
+            if let s = Persistence.load() { Notifier.shared.rescheduleAll(s) }
+            replyHandler(true, nil)
         case "alarm":
             // 网页里的响铃页：去打卡 / 10 分钟后再提醒 / 关闭 / 没人理自己停
             if let ring = AlarmRing(web: body), let act = AlarmCenter.Act(rawValue: (body["act"] as? String) ?? "") {
@@ -471,7 +480,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
                          "cta": c.title, "ctaSub": c.sub, "ctaOn": c.enabled]
         }
         var exp = ""
-        if let e = p.expires { exp = "\(DK.year(e))年\(DK.month(e))月\(DK.day(e))日" }
+        if let e = p.expires { exp = L10n.ymd(DK.year(e), DK.month(e), DK.day(e)) }
         return ["plan": p.plan, "name": p.planName, "expires": exp, "offers": offers]
     }
 
@@ -585,7 +594,7 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
         let a = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        a.addAction(UIAlertAction(title: "好的", style: .default) { _ in completionHandler() })
+        a.addAction(UIAlertAction(title: L("好的"), style: .default) { _ in completionHandler() })
         guard let top = UIApplication.topViewController() else { completionHandler(); return }
         top.present(a, animated: true)
     }
@@ -593,8 +602,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
         let a = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        a.addAction(UIAlertAction(title: "取消", style: .cancel) { _ in completionHandler(false) })
-        a.addAction(UIAlertAction(title: "确定", style: .default) { _ in completionHandler(true) })
+        a.addAction(UIAlertAction(title: L("取消"), style: .cancel) { _ in completionHandler(false) })
+        a.addAction(UIAlertAction(title: L("确定"), style: .default) { _ in completionHandler(true) })
         guard let top = UIApplication.topViewController() else { completionHandler(false); return }
         top.present(a, animated: true)
     }
@@ -603,8 +612,8 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
         let a = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
         a.addTextField { $0.text = defaultText }
-        a.addAction(UIAlertAction(title: "取消", style: .cancel) { _ in completionHandler(nil) })
-        a.addAction(UIAlertAction(title: "确定", style: .default) { _ in completionHandler(a.textFields?.first?.text) })
+        a.addAction(UIAlertAction(title: L("取消"), style: .cancel) { _ in completionHandler(nil) })
+        a.addAction(UIAlertAction(title: L("确定"), style: .default) { _ in completionHandler(a.textFields?.first?.text) })
         guard let top = UIApplication.topViewController() else { completionHandler(nil); return }
         top.present(a, animated: true)
     }

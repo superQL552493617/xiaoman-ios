@@ -25,7 +25,8 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: 小满记
-        CFBundleDevelopmentRegion: zh-Hans
+        # 系统语言不是中文或英文时（日文、韩文等），权限说明等用英文
+        CFBundleDevelopmentRegion: en
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen:

@@ -109,12 +109,17 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     func setup() {
         let c = UNUserNotificationCenter.current()
         c.delegate = self
-        let go = UNNotificationAction(identifier: "XM_GO", title: "去打卡", options: [.foreground])
-        let snz = UNNotificationAction(identifier: "XM_SNZ", title: "10 分钟后提醒", options: [])
-        let off = UNNotificationAction(identifier: "XM_OFF", title: "关闭", options: [.destructive])
+        registerCategories()
+    }
+
+    /// 通知上的三个按钮（换语言后重新注册）
+    func registerCategories() {
+        let go = UNNotificationAction(identifier: "XM_GO", title: L("去打卡"), options: [.foreground])
+        let snz = UNNotificationAction(identifier: "XM_SNZ", title: L("10 分钟后提醒"), options: [])
+        let off = UNNotificationAction(identifier: "XM_OFF", title: L("关闭"), options: [.destructive])
         let cat = UNNotificationCategory(identifier: AlarmRules.category, actions: [go, snz, off],
                                          intentIdentifiers: [], options: [.customDismissAction])
-        c.setNotificationCategories([cat])
+        UNUserNotificationCenter.current().setNotificationCategories([cat])
     }
 
     // MARK: 通知回调
@@ -229,7 +234,7 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
             var list = AlarmLog.snoozes
             list.append(z)
             AlarmLog.snoozes = list
-            await Notifier.shared.addSnooze(z, name: card(for: ring)?.name ?? "小满")
+            await Notifier.shared.addSnooze(z, name: card(for: ring)?.name ?? L("小满"))
         case .off, .timeout:
             break
         }
@@ -298,11 +303,11 @@ struct AlarmRingView: View {
                 avatar.modifier(AlarmShake(on: shake))
                 Text(title).font(.app(size: 24, weight: .heavy)).foregroundStyle(ink).padding(.top, 20)
                     .lineLimit(1).minimumScaleFactor(0.7)
-                Text("到时间啦，做完记得打个卡").font(.app(size: 14)).foregroundStyle(gray).padding(.top, 6)
+                Text(L("到时间啦，做完记得打个卡")).font(.app(size: 14)).foregroundStyle(gray).padding(.top, 6)
                 VStack(spacing: 10) {
                     if !ring.test && card != nil {
                         Button { onAct(.go) } label: {
-                            Text("去打卡").font(.app(size: 17, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
+                            Text(L("去打卡")).font(.app(size: 17, weight: .bold)).foregroundStyle(Color(hex: "#3E3532"))
                                 .frame(maxWidth: .infinity).frame(height: 52)
                                 .background(Capsule().fill(Color(hex: "#FFE7A3")))
                                 .overlay(Capsule().strokeBorder(Color(hex: "#4A3F45"), lineWidth: 1.5))
@@ -310,14 +315,14 @@ struct AlarmRingView: View {
                         .buttonStyle(.plain)
                     }
                     Button { onAct(.snooze) } label: {
-                        Text("10 分钟后再提醒").font(.app(size: 17, weight: .bold))
+                        Text(L("10 分钟后再提醒")).font(.app(size: 17, weight: .bold))
                             .foregroundStyle(dark ? Color(hex: "#ECE6DA") : Color(hex: "#4A3F45"))
                             .frame(maxWidth: .infinity).frame(height: 52)
                             .background(Capsule().fill(Color.white.opacity(dark ? 0.1 : 0.75)))
                     }
                     .buttonStyle(.plain)
                     Button { onAct(.off) } label: {
-                        Text("关闭").font(.app(size: 17, weight: .bold)).foregroundStyle(gray)
+                        Text(L("关闭")).font(.app(size: 17, weight: .bold)).foregroundStyle(gray)
                             .frame(maxWidth: .infinity).frame(height: 44).contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
@@ -335,15 +340,15 @@ struct AlarmRingView: View {
 
     private var title: String {
         let n = (card?.name ?? "").trimmingCharacters(in: .whitespaces)
-        return n.isEmpty ? (ring.test ? "试响" : "小满") : n
+        return n.isEmpty ? (ring.test ? L("试响") : L("小满")) : n
     }
 
     private var dateLine: String {
         let k = DK.key(now)
-        var s = "\(DK.month(now))月\(DK.day(now))日 周\(DK.wdName[DK.weekday(k)])"
-        if ring.test { s += " · 试响" }
-        else if ring.snooze { s += ring.k > 0 ? " · 稍后提醒 · 第 \(ring.k + 1) 次" : " · 稍后提醒" }
-        else if ring.k > 0 { s += " · 第 \(ring.k + 1) 次提醒" }
+        var s = L10n.monthDayWeek(DK.month(now), DK.day(now), DK.weekday(k))
+        if ring.test { s += L(" · 试响") }
+        else if ring.snooze { s += ring.k > 0 ? String(format: L(" · 稍后提醒 · 第 %d 次"), ring.k + 1) : L(" · 稍后提醒") }
+        else if ring.k > 0 { s += String(format: L(" · 第 %d 次提醒"), ring.k + 1) }
         return s
     }
 

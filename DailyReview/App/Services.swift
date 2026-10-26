@@ -225,7 +225,7 @@ final class Notifier {
         items.sort { $0.0 < $1.0 }
         for (_, req) in items.prefix(60) { center.add(req) }
         if s.prefs.daily.on {
-            add(id: "daily-review", title: "小满记", body: "花一分钟，记录一下今天吧", h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
+            add(id: "daily-review", title: L("小满记"), body: L("花一分钟，记录一下今天吧"), h: s.prefs.daily.h, m: s.prefs.daily.m, weekday: nil)
         }
     }
 
@@ -249,9 +249,9 @@ final class Notifier {
         ct.attachments = AlarmIcon.attachment(c, id: "\(occ)#\(k)")
         ct.title = name
         if k == 0 {
-            ct.body = snooze ? "稍后提醒：到时间啦，做完记得打个卡" : "到时间啦，做完记得打个卡"
+            ct.body = snooze ? L("稍后提醒：到时间啦，做完记得打个卡") : L("到时间啦，做完记得打个卡")
         } else {
-            ct.body = "还没打卡哦 · 第 \(k + 1) 次提醒" + (k == AlarmRules.repeats - 1 ? "（今天最后一次）" : "")
+            ct.body = String(format: L("还没打卡哦 · 第 %d 次提醒"), k + 1) + (k == AlarmRules.repeats - 1 ? L("（今天最后一次）") : "")
         }
         ct.sound = Self.ringSound(tone)
         ct.categoryIdentifier = AlarmRules.category
@@ -334,7 +334,7 @@ final class AppLock: ObservableObject {
         var err: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) else { locked = false; return }
         evaluating = true
-        ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "解锁小满") { ok, _ in
+        ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: L("解锁小满")) { ok, _ in
             Task { @MainActor in
                 self.evaluating = false
                 if ok { withAnimation(.easeOut(duration: 0.25)) { self.locked = false } }
@@ -356,9 +356,9 @@ final class AppLock: ObservableObject {
         let ctx = LAContext()
         _ = ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         switch ctx.biometryType {
-        case .faceID: return "面容 ID"
-        case .touchID: return "触控 ID"
-        default: return "设备密码"
+        case .faceID: return L("面容 ID")
+        case .touchID: return L("触控 ID")
+        default: return L("设备密码")
         }
     }
 }

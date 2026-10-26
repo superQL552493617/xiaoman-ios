@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Xiaoman";
+"NSFaceIDUsageDescription" = "Use Face ID to unlock Xiaoman and protect your check-ins and notes";
+"NSPhotoLibraryUsageDescription" = "Choose a photo for your avatar or a habit icon";
+"NSCameraUsageDescription" = "Take a photo for your avatar or a habit icon";
