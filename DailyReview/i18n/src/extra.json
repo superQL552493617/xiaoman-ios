@@ -160,7 +160,7 @@ null
 null
 ],
 "本机账号（未登录）": [
-"Local account (not signed in)",
+"Local account",
 null
 ],
 "添加个人介绍": [
@@ -332,11 +332,11 @@ null
 null
 ],
 "{}/年": [
-"{0}/year",
+"{0}/yr",
 null
 ],
 "{}/月": [
-"{0}/month",
+"{0}/mo",
 null
 ],
 "{}，点击收起日期栏": [
@@ -349,6 +349,42 @@ null
 ],
 "早晨": [
 "Morning",
+null
+],
+"每天 {}:{}": [
+"Daily {0}:{1}",
+null
+],
+"工作日 {}:{}": [
+"Weekdays {0}:{1}",
+null
+],
+"周末 {}:{}": [
+"Weekends {0}:{1}",
+null
+],
+"每天 {}": [
+"Daily {0}",
+null
+],
+"工作日 {}": [
+"Weekdays {0}",
+null
+],
+"周末 {}": [
+"Weekends {0}",
+null
+],
+"相册": [
+"Photo",
+null
+],
+"可以生成 {} 的总结": [
+"{0} summary ready to generate",
+null
+],
+"可以生成{}的总结": [
+"{0} summary ready to generate",
 null
 ]
 }

@@ -177,7 +177,7 @@
 956	Undone. Your note is kept until you check in again
 957	Delete habit “{0}”?
 958	After deleting, this card won’t appear on the Today page. Past check-ins and logs stay in your summaries.
-959	Delete habit
+959	Delete
 960	Deleted; restore default cards in “Me”
 961	Habit deleted
 962	This is a planned check-in
@@ -193,8 +193,8 @@
 972	While paused, the habit is hidden from the Today page and doesn’t count toward check-ins or completion. Set when it resumes, or resume it manually in My Habits.
 973	Full-screen edit
 974	Full screen
-975	Edit habit
-976	Confirm
+975	Edit
+976	OK
 977	Each log is limited to 5000 characters; the rest wasn’t pasted
 978	Pick an end date, or turn on “Resume manually”
 979	After deleting, this card won’t appear on the Today page. Past check-ins and logs stay in your stats.
@@ -233,7 +233,7 @@
 1012	Will pause from {0},
 1013	resumes automatically {0}
 1014	needs manual resume
-1015	No check-ins for now, not counted in completion
+1015	Skip for now, not counted
 1016	Resumed; back on the Today page from today
 1017	Planned pause canceled
 1018	: shows on the Today page only on the day it’s created, for quick thoughts and ideas. No repeat days or reminders, not counted in weekly, monthly or yearly stats, and not shown in habit management.
@@ -243,7 +243,7 @@
 1022	e.g. Today’s takeaway
 1023	Create record
 1024	+ New group
-1025	Every day
+1025	Daily
 1026	Custom
 1027	Not set
 1028	{0} {1}:{2}, alarm, {3}

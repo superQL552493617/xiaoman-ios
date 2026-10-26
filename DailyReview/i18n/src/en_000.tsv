@@ -55,8 +55,8 @@
 54	Set reminder
 55	Cancel reminder
 56	No thanks
-57	Check in
-58	Cancel plan
+57	Done
+58	Cancel
 59	Undo
 60	Plan
 61	Check-in log
@@ -95,7 +95,7 @@
 94	Move to group
 95	Restore
 96	Unpause
-97	Longest streak {0} days ·
+97	Best {0}d ·
 98	{0} selected
 99	My Habits
 100	Tap to select, tap again to unselect
