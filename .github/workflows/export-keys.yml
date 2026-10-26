@@ -1,0 +1,28 @@
+name: 导出加密密钥（给新仓库复用）
+# 把签名用的两个加密密钥（本来就用 SIGNING_PASSPHRASE 加密过）再用 ci/export_pub.pem 加密一层后推到 ci-export 分支。
+# 只有持有对应私钥的一方能解开外层，拿到的仍是需要口令才能解开的密文。用完立即删掉分支。
+on:
+  push:
+    branches: [main]
+    paths: [ci/export.txt]
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 双层加密导出
+        env:
+          ASC_B64: ${{ secrets.ASC_KEY_ENC_B64 }}
+          DIST_B64: ${{ secrets.DIST_KEY_ENC_B64 }}
+        run: |
+          mkdir -p /tmp/out && cd /tmp/out
+          printf %s "$ASC_B64" > asc.b64; printf %s "$DIST_B64" > dist.b64
+          openssl rand -hex 32 > k.txt
+          for f in asc dist; do openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -in $f.b64 -out $f.x -pass file:k.txt; rm $f.b64; done
+          openssl pkeyutl -encrypt -pubin -inkey "$GITHUB_WORKSPACE/ci/export_pub.pem" -pkeyopt rsa_padding_mode:oaep -in k.txt -out k.enc
+          rm k.txt; ls -la
+          git init -q -b ci-export; git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "export"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-export
