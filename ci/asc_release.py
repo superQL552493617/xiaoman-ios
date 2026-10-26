@@ -356,3 +356,10 @@ if MODE.startswith("draft"):
         for sb in ss: print("sub", sb["attributes"].get("productId"), sb["attributes"].get("state"))
     iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
     for p in iaps: print("iap", p["attributes"].get("productId"), p["attributes"].get("state"))
+
+if MODE.startswith("links"):
+    for u in [PAGES, PAGES + "privacy.html", PAGES + "terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
+        try:
+            r = requests.get(u, timeout=20); print("LINK", r.status_code, u, len(r.text))
+        except Exception as e:
+            print("LINK ERR", u, e)
