@@ -1,7 +1,9 @@
 name: iOS 编译检查
 on:
+  # 只在 ci/build.txt 变化或手动点击时编译（私有仓库省 macOS 分钟数）
   push:
     branches: [main]
+    paths: [ci/build.txt]
   workflow_dispatch:
 permissions:
   contents: write
