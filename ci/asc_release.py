@@ -358,7 +358,7 @@ if MODE.startswith("draft"):
     for p in iaps: print("iap", p["attributes"].get("productId"), p["attributes"].get("state"))
 
 if MODE.startswith("links"):
-    for u in [PAGES, PAGES + "privacy.html", PAGES + "terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
+    for u in ["https://superql552493617.github.io/", PAGES, PAGES + "privacy.html", PAGES + "terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
         try:
             r = requests.get(u, timeout=20); print("LINK", r.status_code, u, len(r.text))
         except Exception as e:
