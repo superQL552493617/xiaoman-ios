@@ -16,13 +16,17 @@ jobs:
         run: |
           pip install -q fonttools brotli
           mkdir -p /tmp/out && cd /tmp/out
-          gh release list -R lxgw/yozai-font -L 3 > releases.txt || true
-          gh release download -R lxgw/yozai-font --pattern '*.ttf' --dir raw || gh release download -R lxgw/yozai-font --pattern '*.zip' --dir raw
+          # ci/font.txt：第一行可写「仓库|文件匹配|字符文件」，默认悠哉字体 + font_unicodes.txt
+          L=$(head -1 "$GITHUB_WORKSPACE/ci/font.txt")
+          REPO=lxgw/yozai-font; PAT='*.ttf'; UNI="--unicodes-file=$GITHUB_WORKSPACE/ci/font_unicodes.txt"
+          if echo "$L" | grep -q '|'; then REPO=$(echo "$L"|cut -d'|' -f1); PAT=$(echo "$L"|cut -d'|' -f2); UNI="--text-file=$GITHUB_WORKSPACE/$(echo "$L"|cut -d'|' -f3)"; fi
+          gh release list -R $REPO -L 3 > releases.txt || true
+          gh release download -R $REPO --pattern "$PAT" --dir raw || gh release download -R $REPO --pattern '*.zip' --dir raw
           cd raw && for z in *.zip; do [ -f "$z" ] && unzip -o -q "$z"; done; cd ..
           find raw -name '*.ttf' | sort > list.txt; cat list.txt
           for f in $(cat list.txt); do
             b=$(basename "$f" .ttf)
-            pyftsubset "$f" --unicodes-file="$GITHUB_WORKSPACE/ci/font_unicodes.txt" --output-file="sub_$b.ttf" --layout-features='*' --no-hinting || true
+            pyftsubset "$f" "$UNI" --output-file="sub_$b.ttf" --layout-features='*' --no-hinting || true
           done
           rm -rf raw; ls -la
       - name: 推送
