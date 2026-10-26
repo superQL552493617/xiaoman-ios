@@ -1,0 +1,250 @@
+0	, until
+1	Today
+2	From today
+3	Settings
+4	from
+5	Ungrouped
+6	Scheduled
+7	Done
+8	Not done
+9	Group name
+10	{0} cards
+11	Back to
+12	Go to
+13	· Mood
+14	Mood
+15	Expand
+16	Collapse
+17	Edit note
+18	Copy note
+19	Share as image
+20	View all notes
+21	Delete note
+22	Pick a date
+23	{M0} {1}
+24	Notes
+25	Write a note
+26	No notes yet.
+27	Tap + at the top right to write your first one.
+28	(Empty note)
+29	In a week
+30	In a month
+31	Yesterday
+32	Notes from {0}
+33	No notes in this period yet.
+34	Tap “Notes” on the Today page to write your first one.
+35	· {0} notes
+36	Drag cards here
+37	Move group up
+38	Move group down
+39	{0}, {1} left to do
+40	Found {0} cards
+41	No check-ins containing “{0}”
+42	Search habit names or logs
+43	Close search
+44	Cancel
+45	Show by group
+46	Show without groups
+47	Back to today
+48	{0} of {1} done
+49	All done for today. Nice!
+50	All done for this day. Nice!
+51	Remind you on that day?
+52	Schedule reminder
+53	Update reminder
+54	Set reminder
+55	Cancel reminder
+56	No thanks
+57	Check in
+58	Cancel plan
+59	Undo check-in
+60	Plan
+61	Check-in log
+62	How do you plan to do it…
+63	Add a log…
+64	Background: {0}
+65	How do you plan to do it?
+66	Write today’s log…
+67	From
+68	paused,
+69	Resume manually
+70	: it resumes only when you tap “Resume” in My Habits
+71	Pause
+72	, {0} days in total, resumes {1}
+73	paused. Tap an end date, or skip it and tap “Resume manually”
+74	OK
+75	Delete card
+76	Edit reminder {0}:{1}
+77	Alarm
+78	Delete this reminder
+79	This day
+80	SKIP
+81	Check in
+82	Edit reminder
+83	Add reminder
+84	{W0}
+85	Delete reminder
+86	On the web it only rings while the page is open; the Xiaoman app on your phone rings on time even when locked or in the background.
+87	SKIP
+88	Summaries in the prototype are rule-based.
+89	Month
+90	Day
+91	{0}×
+92	No data yet.
+93	What you write in record-type cards shows up here.
+94	Move to group
+95	Restore
+96	Unpause
+97	Longest streak {0} days ·
+98	{0} selected
+99	My Habits
+100	Tap to select, tap again to unselect
+101	{0} habits · Press and hold to reorder
+102	Done
+103	Organize
+104	All
+105	No habits yet. Tap + at the top right to add one.
+106	Deselect all
+107	Select all
+108	Delete {0}
+109	etc.
+110	System
+111	Check-in
+112	Record
+113	Move up
+114	Move down
+115	Recovered {0} deleted default cards,
+116	Follow system
+117	Light
+118	Dark
+119	Reminder time
+120	{0} sent, thank you
+121	Tell us about any problem or idea
+122	Clear demo data
+123	Keep cards, delete all check-ins
+124	Prototype v176
+125	Check-in sound
+126	Playback: audio file (iPhone compatible mode)
+127	Sound engine OK
+128	Sound engine not started; tap anywhere to start it
+129	Sound engine was paused by the system; tap “Test sound” to resume
+130	Personalize
+131	SKIP
+132	In use · Pick another to replace
+133	Applied as soon as you pick an image
+134	Remove custom background
+135	Remove
+136	Tap “Test” to start sound
+137	Grid
+138	Spectrum
+139	Sliders
+140	Red
+141	Green
+142	Blue
+143	Read
+144	Run
+145	Drink water
+146	Sleep early
+147	Liked · Tap to undo
+148	I like this
+149	Archived on {0}
+150	No archived habits.
+151	to
+152	Back
+153	New event
+154	Add
+155	Delete
+156	First check-in
+157	No events of this kind yet
+158	{M0}: {1} check-ins, tap to see each day
+159	{M0}
+160	{0}×
+161	Back to year
+162	Close
+163	{0} {W1}
+164	Go to this day ›
+165	Tap a day to see its check-ins and notes.
+166	Checked in
+167	Not checked in
+168	No check-ins on this day yet
+169	All done. Nice!
+170	Note · {0}
+171	Timeline
+172	Each ball = 10 check-ins
+173	Each ball = 1 check-in
+174	Check-ins per habit
+175	(Deleted)
+176	To do
+177	Widgets
+178	Widget preview
+179	Swipe to see more
+180	Display
+181	Check in directly
+182	Background color
+183	The test build can’t be added to the Home Screen yet
+184	This is the web test app; iPhone only allows App Store apps to offer Home Screen widgets. You can preview and style it here, and find “Xiaoman” in widgets after release.
+185	Add to Home Screen
+186	Touch and hold an empty area on the Home Screen until the icons jiggle
+187	Tap “Edit” at the top left → “Add Widget”
+188	Search for “Xiaoman”, pick a size and add it
+189	The preview shows sample icons. On your Home Screen the widget shows the habits you haven’t checked in today; finished ones disappear. If they don’t fit on one page, tap “›” at the top right for the next set.
+190	Tap an icon to try a check-in.
+191	Export data
+192	Data type
+193	Time range
+194	Preview
+195	{0} rows
+196	{0} habits, {1} deleted habits, {2} days of records, {3} notes
+197	No data in this time range
+198	No records on this day yet
+199	Check-ins and notes will show up here
+200	Memories
+201	Backup
+202	Your records are safe
+203	Records are saved on this phone
+204	Reminders
+205	Needs your attention
+206	Modules
+207	Drag to reorder
+208	Done sound
+209	Choose a sound
+210	The sound engine was paused by the system (
+211	). Tap the button below to resume
+212	Lifetime
+213	Current plan
+214	· Renews {0}
+215	· Thanks for your support
+216	{0}you {1}{2}
+217	{0} days later,
+218	Just getting started, no rush
+219	Maybe you’ve been busy lately
+220	This is your first full {0} with records. A good start
+221	{0} up by {1}. You’re finding your rhythm
+222	{0} down by {1}. {2}
+223	About the same as last {0}. Very steady
+224	“{0}” was only {1}% done. Try a more fixed time, or make it a little easier first.
+225	It’s also good to leave yourself some space on weekends.
+226	See if that day is too packed.
+227	{0} “{1}”
+228	Today’s review
+229	, and did a careful review
+230	Last week
+231	SKIP
+232	· Version {0}
+233	· Auto
+234	On-device stats
+235	AI generated{0}{1}
+236	· Completion {0}%
+237	{0}
+238	No summary yet
+239	Turn a month of check-ins into a gentle review
+240	Which habits are steadiest, which day slips most
+241	One concrete small suggestion
+242	Look back next month to see if you did it
+243	Understands your logs and notes when you allow it
+244	Makes the summary closer to how you really are
+245	Create a shareable summary card
+246	Only stats and a line of encouragement
+247	Yearly
+248	Monthly
+249	{0} points higher than the week before

@@ -1,0 +1,270 @@
+780	Purple
+781	Yellow
+782	Cyan
+783	Pink
+784	Indigo
+785	Graphite
+786	Night
+787	Mist white
+788	Rounded
+789	Serif
+790	Kai
+791	Mono
+792	Wake up
+793	Morning
+794	Noon
+795	Midday
+796	Evening
+797	Bedtime
+798	All day
+799	Tuesday
+800	Wednesday
+801	Thursday
+802	Friday
+803	Saturday
+804	Paused from {0}{1}
+805	Paused until {0}
+806	From {0} · Resume manually
+807	Paused {0}; resume it in My Habits
+808	Paused: {0}, resumes {1}
+809	Learn English
+810	New skill
+811	Tidy room
+812	Other gains
+813	Happy moments
+814	Learning
+815	Daily life
+816	Not my best day, only learned 10 words
+817	Shadowed a speech, my linking sounds got smoother
+818	Reviewed last week’s wrong words
+819	Found a sentence I love and copied it down
+820	This chapter is hard, I’ll read it again tomorrow
+821	Learned to log spending with Shortcuts
+822	Shared my ideas in the meeting
+823	Getting up half an hour early really helps
+824	The osmanthus downstairs is blooming
+825	Had a great meal with friends
+826	Left work on time, still daylight
+827	Mom called, all is well at home
+828	words
+829	min
+830	pages
+831	Sun
+832	Palm tree
+833	Big tree
+834	Broccoli
+835	Done editing
+836	Drag circles to reorder, tap a card to change its style. To delete cards, go to “Manage habits”.
+837	Moved to “{0}”
+838	Circle
+839	Rounded square
+840	Pebble
+841	Olive
+842	Flower
+843	Scallop
+844	Rice ball
+845	Hexagon
+846	Heart
+847	Solid
+848	Dashed
+849	Dotted
+850	No border
+851	Recorded
+852	To write
+853	Logged
+854	Deleted
+855	Check-in groups
+856	Drag ≡ on the right to reorder groups. On the Today page, press and hold a card to drag it to another group. A group disappears once all its cards are moved or deleted.
+857	Cards without a group go here, at the end
+858	New group name, e.g. Exercise
+859	Add
+860	Untitled
+861	Delete group “{0}”?
+862	Cards in the group won’t be deleted; they move to “Ungrouped”.
+863	Enter a group name first
+864	Group “{0}” added
+865	Back to yesterday
+866	Go to tomorrow
+867	Previous day
+868	Next day
+869	Back to today
+870	Go to today
+871	{0} {M1} {2}
+872	Untitled
+873	{W3}, {M1} {2}, {0} {4}
+874	Great
+875	Good
+876	Okay
+877	Tired
+878	Down
+879	Hugs. Tomorrow will be a little better
+880	Today’s mood cleared
+881	Noted: {0}
+882	How was your mood on {M0} {1}?
+883	One thing I did well today
+884	e.g. Got up without snoozing
+885	Something I regret a little
+886	e.g. Scrolled my phone too long at night
+887	The one thing I most want to do tomorrow
+888	e.g. Finish chapter three
+889	Save
+890	{M0} {1} · Done
+891	/ {0} habits{1}
+892	It’s saved as a note and shows up in Notes and Memories.
+893	Write something before saving
+894	Did well
+895	Regrets
+896	Tomorrow
+897	Review saved
+898	Write a note for the day
+899	Browse past check-ins and notes by calendar
+900	Note today’s mood
+901	Log mood
+902	Top shortcuts
+903	More
+904	{0} notes
+905	Copied to clipboard
+906	Delete this note?
+907	This can’t be undone.
+908	— Xiaoman
+909	Note-{0}.png
+910	Note image
+911	{0} Share
+912	You can also press and hold the image to save it to Photos
+913	System sharing isn’t supported here; the image was saved
+914	No check-ins or notes on this day yet.
+915	Check-ins and notes will appear here in time order.
+916	YaHei
+917	Microsoft YaHei
+918	Rounded
+919	ChillRound
+920	Default (system)
+921	Mint
+922	Mist blue
+923	Sakura pink
+924	{0}
+925	Title (optional)
+926	Tap to start writing. What happened today, what crossed your mind…
+927	Week
+928	Discard this note?
+929	Discard changes?
+930	What you wrote won’t be saved.
+931	It will go back to how it was before.
+932	Discard
+933	Note saved
+934	Saved
+935	{0} notes · Newest first
+936	This note has been deleted
+937	{M0} {1} · {W2}{3}
+938	Edit
+939	Last month
+940	{M1} {0}
+941	{M0} {1} · {2} check-ins{3}
+942	Daily check-ins
+943	Today
+944	Yesterday
+945	{0}, tap the {1} date bar
+946	A few things I want to keep up today
+947	New card
+948	New card
+949	Nothing scheduled for this day. Take a break.
+950	Start with one small habit
+951	Tap “New card” below to plant your first check-in card. Light it up once a day, and your days will slowly brighten.
+952	Switched to ungrouped view
+953	Switched to grouped view
+954	This card was deleted; restore it in “Me → Archived habits”
+955	This day hasn’t come yet. Check in when it does
+956	Undone. Your note is kept until you check in again
+957	Delete habit “{0}”?
+958	After deleting, this card won’t appear on the Today page. Past check-ins and logs stay in your summaries.
+959	Delete habit
+960	Deleted; restore default cards in “Me”
+961	Habit deleted
+962	This is a planned check-in
+963	That’s in {0} day{s0}, not today.
+964	Cards you add become that day’s plan.
+965	Keep planning
+966	Oops, check in for today instead
+967	You’ll be reminded to finish planned cards on time.
+968	Reminder set for {0} {1}
+969	Reminder canceled
+970	{M0} {1}  {2}:{3}
+971	Pause habit
+972	While paused, the habit is hidden from the Today page and doesn’t count toward check-ins or completion. Set when it resumes, or resume it manually in My Habits.
+973	Full-screen edit
+974	Full screen
+975	Edit habit
+976	Confirm
+977	Each log is limited to 5000 characters; the rest wasn’t pasted
+978	Pick an end date, or turn on “Resume manually”
+979	After deleting, this card won’t appear on the Today page. Past check-ins and logs stay in your stats.
+980	Cute
+981	Milk white
+982	Celadon
+983	White
+984	The deeper the blue, the more check-ins that day.
+985	Start
+986	End
+987	Edit card
+988	Create check-in
+989	Change icon and color
+990	Name
+991	Enter a name…
+992	Group
+993	Repeat
+994	Weekdays
+995	Weekends
+996	On unchecked days this card won’t show on the Today page.
+997	Add more reminders
+998	Up to 5 reminders per card
+999	Enter a name first
+1000	Pick at least one day to repeat
+1001	Get Premium to unlock unlimited habits. Build as many good habits as you like.
+1002	Record card created{0}; you’ll see it on {1}’s Today page
+1003	Created. Today isn’t a scheduled day, so it won’t show on the Today page today
+1004	Added to “{0}”
+1005	Check-in created
+1006	Saved. Today isn’t a scheduled day, so it won’t show on the Today page today
+1007	Delete “{0}”?
+1008	This card will be deleted from all dates, along with its check-ins and logs. This can’t be undone.
+1009	Card deleted
+1010	Resume habit
+1011	Paused,
+1012	Will pause from {0},
+1013	resumes automatically {0}
+1014	needs manual resume
+1015	No check-ins for now, not counted in completion
+1016	Resumed; back on the Today page from today
+1017	Planned pause canceled
+1018	: shows on the Today page only on the day it’s created, for quick thoughts and ideas. No repeat days or reminders, not counted in weekly, monthly or yearly stats, and not shown in habit management.
+1019	Check-in card
+1020	: shows on the Today page on its repeat days, good for habits you keep up every day. Counted in weekly, monthly and yearly stats and shown in habit management.
+1021	Record name
+1022	e.g. Today’s takeaway
+1023	Create record
+1024	+ New group
+1025	Every day
+1026	Custom
+1027	Not set
+1028	{0} {1}:{2}, alarm, {3}
+1029	· Test
+1030	· Snoozed · #{0}
+1031	· Snoozed
+1032	· Reminder #{0}
+1033	Test
+1034	{W2}, {M0} {1}{3}
+1035	Time’s up. Remember to check in when you’re done
+1036	Remind me in 10 minutes
+1037	The real reminder will ring again in 10 minutes
+1038	I’ll remind you in 10 minutes
+1039	Alarm reminder
+1040	Rings on time, even when locked or in the background; if ignored, rings again every 5 minutes, up to 3 times
+1041	Open the alarm to check in, snooze 10 minutes or dismiss; it won’t ring again that day after you check in. Allow Xiaoman to send notifications; when your phone is silenced it only vibrates.
+1042	Repeat
+1043	Days of the week
+1044	Sound
+1045	Test once
+1046	Pick at least one day
+1047	Icon and color
+1048	Icon style
+1049	Shape

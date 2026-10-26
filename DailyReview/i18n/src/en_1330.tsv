@@ -1,0 +1,290 @@
+1330	See completion and check-ins by week, month and year; tap the bar chart to drill down to a specific day; tap “Notes” to see all notes from that period.
+1331	Opened from “Me”, it’s a monthly calendar: days with check-ins or notes have a dot; tap a day to see its timeline.
+1332	Me and Settings
+1333	Avatar
+1334	Tap your avatar to change it, your nickname, bio and gender; without an uploaded photo, a default avatar is shown by gender.
+1335	Feature tiles
+1336	Manage habits, Personalize (theme, borders, layout, check-in sound), Widgets, Events and more; hide or reorder them in “Modules”.
+1337	Gear at the top right
+1338	Passcode lock, tab bar (what goes in slots 2–4), home page content, daily reminder, first day of the week and more.
+1339	Data
+1340	Export a backup or restore from one; if you haven’t backed up in a while, a “Reminder” appears here.
+1341	After deleting, the card won’t appear on the Today page; past check-ins and logs stay in your stats.
+1342	User guide
+1343	Watch the intro again
+1344	鄂ICP备2026060859号-1A
+1345	About
+1346	No ads
+1347	No pop-ups or streak pressure
+1348	Your data is yours
+1349	Saved on your phone, export a backup anytime
+1350	Icon credits
+1351	Added habit “{0}”
+1352	Deleted habit “{0}”
+1353	Restored habit “{0}”
+1354	First time finishing “{0}”
+1355	First note on “{0}”
+1356	Wrote note “{0}”
+1357	{W2}, {M0} {1}
+1358	{M0} {1} – {M2} {3}
+1359	{M0} · {1}×
+1360	{M0} {1} · {2}×
+1361	View the check-in calendar for {0}
+1362	{M0} {1}, {2} check-ins
+1363	Days checked in
+1364	Most in a day
+1365	Less
+1366	More
+1367	The deeper the color, the more check-ins that day. Tap a month, then a day to view it.
+1368	Done {0}/{1}
+1369	Checked in · {0}
+1370	Not checked in · {0}
+1371	Total check-ins
+1372	Logs written
+1373	Off-white (default)
+1374	Cream
+1375	Light blue
+1376	Light green
+1377	Light pink
+1378	Light purple
+1379	Light yellow
+1380	Light gray
+1381	Write down today’s you
+1382	Good or bad, it’s all part of life.
+1383	All checked in
+1384	You did great today.
+1385	Today’s effort, received
+1386	Little by little, you’re growing.
+1387	Today’s small goals, all done
+1388	Get some good rest.
+1389	All wrapped up
+1390	Let’s keep going tomorrow.
+1391	Practice piano
+1392	Handwriting
+1393	Example: {0}
+1394	Today’s check-ins
+1395	Write a note
+1396	{0} today
+1397	Small
+1398	Tap to write today’s note
+1399	Medium
+1400	Note content isn’t shown on the Home Screen, for privacy
+1401	Large
+1402	4 habits, finished ones disappear
+1403	8 habits
+1404	16 habits
+1405	All done · Small
+1406	Turns into a little potted plant when all are done
+1407	All done · Medium
+1408	Three little potted plants
+1409	All done · Large
+1410	A whole row of plants
+1411	Check-in widget
+1412	Note widget
+1413	Tap a habit on the widget to check in without opening the app
+1414	With “Check in directly” on, tap here to check in
+1415	All data
+1416	Last 30 days
+1417	Last 3 months
+1418	Last year
+1419	Weekday
+1420	Type
+1421	Title
+1422	Content
+1423	Mood
+1424	Name
+1425	Repeat
+1426	Status
+1427	Total check-ins
+1428	Active
+1429	Habit
+1430	Check-in time
+1431	{0} exported
+1432	This is a preview; files are handled by the host app. Please export from “Xiaoman” on your Home Screen
+1433	{0} is downloading; find it in Downloads in the Files app
+1434	Saving files isn’t supported here; please use “Copy backup content”
+1435	Date, habit, status, check-in time and log (CSV)
+1436	Date, time, title, content and mood (CSV)
+1437	Habit list
+1438	Each habit’s repeat rule, reminders and total check-ins (CSV)
+1439	Full backup
+1440	All cards, check-ins, notes, groups and moods; can be used to restore data (JSON)
+1441	Export your data
+1442	Save to Files or iCloud Drive; exporting is always free
+1443	{0}Export {1}
+1444	Xiaoman-{0}-{1}.json
+1445	Xiaoman-{0}-{1}.csv
+1446	Morning
+1447	Afternoon
+1448	Evening
+1449	Wrote a note
+1450	Tap to view
+1451	Notes{0}
+1452	Today’s little progress, all kept here
+1453	Previous year
+1454	Next year
+1455	{M0} · {W1}
+1456	iCloud
+1457	iCloud account
+1458	Not signed in to iCloud; sign in in Settings
+1459	iCloud Drive
+1460	iCloud Drive is off; turn it on in Settings › Apple ID › iCloud
+1461	iCloud permission for this app
+1462	Xiaoman can’t access iCloud; turn on iCloud in Settings › Xiaoman
+1463	iCloud storage
+1464	Can’t read iCloud Drive right now
+1465	Signed in
+1466	On
+1467	Allowed
+1468	Available
+1469	Network connection
+1470	Network
+1471	Connected
+1472	No network right now; it’ll upload when it’s back
+1473	Background and notifications
+1474	Background refresh
+1475	Push notifications
+1476	Push notifications denied; syncing after switching phones will be slower
+1477	Push notifications aren’t on yet; turn them on for faster syncing
+1478	Exported {M0} {1}
+1479	Never exported
+1480	On this phone
+1481	{0} days of records
+1482	Backup files
+1483	{0} habits, {1} days of check-ins and {2} notes are all on your phone, never uploaded to our servers
+1484	Manual backup
+1485	Restore or merge from a backup file
+1486	Export
+1487	Spreadsheet or full backup
+1488	FAQ
+1489	If I delete the app, are my records still there?
+1490	No. Deleting the app deletes the records on your phone too. Before deleting, tap “Export” and save a “Full backup”.
+1491	What do I do when I get a new phone?
+1492	If you move your whole phone over with iCloud Backup or a computer, Xiaoman’s records come along. You can also “Export” a full backup on the old phone and “Import” it on the new one.
+1493	How often should I back up?
+1494	We suggest exporting once a month, or before switching or resetting your phone. Exporting and restoring are free.
+1495	Cloud sync paused
+1496	{0} thing{s0} could be better
+1497	One copy on your phone, another on iCloud
+1498	Don’t worry, not a single record on your phone will be lost
+1499	Doesn’t affect use; syncing will be smoother once handled
+1500	Synced
+1501	Paused
+1502	If I turn off iCloud, will my records disappear?
+1503	No. Records are written on your phone first; iCloud just keeps another copy. Syncing resumes when you turn it back on.
+1504	Sign in with the same Apple ID, open the app and wait a moment. You can also “Export” a full backup on the old phone and “Import” it on the new one.
+1505	Two devices show different things?
+1506	With both online and iCloud on, pull down or tap “Check again” below; they’ll match up shortly.
+1507	Check again
+1508	Prototype demo: simulate iCloud permission off
+1509	All checked
+1510	Drag {0} on the right to reorder; modules switched off won’t appear on the “Me” page.
+1511	Always shown, so you can find hidden modules
+1512	Restore default order
+1513	Order saved
+1514	Default order restored
+1515	Check-in sounds
+1516	All synthesized in code, no recorded samples
+1517	When the silent switch on the side of the iPhone is on, sounds are muted too.
+1518	Free
+1519	Monthly
+1520	Yearly
+1521	Lifetime
+1522	Clean, no ads
+1523	No pop-ups, easier to keep going
+1524	Unlimited habits
+1525	Build as many good habits as you like, no need to give any up
+1526	Photo icons
+1527	Take a photo or pick one to make a one-of-a-kind habit icon
+1528	Passcode and Face ID
+1529	Verify when opening Xiaoman, so only you can see your journal and check-ins
+1530	Help Xiaoman go further
+1531	Your support turns into more handy little features
+1532	Check-ins, alarm reminders, stats, notes, widgets, theme backgrounds and data backup are free for everyone.
+1533	See the full content in the release version
+1534	Terms of Use and Privacy Policy
+1535	Welcome to Xiaoman
+1536	Before you start, please take a minute to read the 
+1537	Terms of Use
+1538	 and 
+1539	Privacy Policy
+1540	· No sign-up; your check-ins, logs and notes are only saved on this phone
+1541	· Photos, camera, notifications and Face ID are only requested when you use those features
+1542	· We have no servers and don’t collect or upload your personal data
+1543	Agree and continue
+1544	Disagree
+1545	We need your consent
+1546	Xiaoman can only be used after you agree to the Terms of Use and Privacy Policy. If you don’t agree, you can just exit the app; we won’t save anything.
+1547	Let me reread
+1548	Premium features
+1549	Free to try in the web preview.
+1550	Try for free
+1551	Premium trial activated
+1552	Default avatar
+1553	Account
+1554	Change avatar
+1555	You’re a Lifetime member
+1556	Thanks for always supporting Xiaoman
+1557	Currently using
+1558	Renews monthly; cancel anytime in Settings
+1559	Renews yearly; cancel anytime in Settings
+1560	3-day free trial
+1561	Then {0}/year after 3 days; cancel during the trial and you won’t be charged
+1562	Get Yearly
+1563	Renews at {0} per year; cancel anytime in Settings
+1564	Get Monthly
+1565	Buy Lifetime
+1566	Upgrade to Lifetime
+1567	One-time purchase, no auto-renewal
+1568	Yearly
+1569	/year
+1570	3 days free, then about {0}/month
+1571	About {0}/month, renews yearly
+1572	Best value
+1573	Pay once, use forever
+1574	Monthly
+1575	/month
+1576	{0} per month, cancel anytime
+1577	Restore purchases
+1578	Xiaoman Premium
+1579	A little support keeps good habits with you longer
+1580	By subscribing you agree to the 
+1581	Restored {0}
+1582	No purchases to restore
+1583	{0} activated (web trial)
+1584	Can’t reach the App Store right now, please try again later
+1585	See the full terms in the release version
+1586	Check-ins bar chart
+1587	Doing great
+1588	Steady progress
+1589	Keep it up
+1590	Take it slow
+1591	Not started yet
+1592	{0}% done
+1593	×
+1594	Slow and steady. Every little extra you do today quietly becomes your confidence.
+1595	You don’t need a perfect score every day. Coming back is already remarkable.
+1596	Habits are like savings: each check-in is a coin, and time pays the interest.
+1597	Be patient with yourself. You’re becoming someone you like.
+1598	It’s fine to stop now and then. What matters is remembering why you started.
+1599	Break big goals into small things you can do today, and let time do the rest.
+1600	Compared with the first {1} days of last {0}
+1601	Compared with last {0}
+1602	{0}{1}you checked in
+1603	times, completion
+1604	Your steadiest was “{0}”, {1}% done. {2}
+1605	You were most active on {0}, more relaxed on {1}. {2}
+1606	During this time you {0}. Adjusting your habits is taking yourself seriously.
+1607	You wrote {0} notes in this period{1}. Writing your days down leaves signposts for yourself.
+1608	You wrote {0} logs. One line is worth rereading: “{1}”
+1609	No logs in this period yet. Write a line next time you check in, and the summary will understand you better.
+1610	Log and note analysis is off; this summary only looked at check-ins.
+1611	Generate your weekly summary
+1612	Generate your monthly summary
+1613	Generate your yearly summary
+1614	Weekly summary
+1615	Monthly AI summary
+1616	Yearly AI summary
+1617	Yearly AI summary
+1618	Monthly AI summary
+1619	Weekly summary

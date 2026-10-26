@@ -1,0 +1,250 @@
+250	{0} points lower than the week before
+251	Same as the week before
+252	Needs the most push: “{0}” {1}/{2} days, {3}% done.
+253	Counted on {M0} {1} {2}:{3}
+254	Counted
+255	Monthly summaries with you for {0} months
+256	Rose to {0}%. You did it
+257	Fell to {0}%. Maybe try another way
+258	Stayed at
+259	New year
+260	Next month
+261	Watch out for {0}, the day you slip most
+262	Start with 2–3 times a week
+263	Check-ins, logs and notes
+264	Check-in records
+265	AI is reading {0} {1}…
+266	Counting data for {0}…
+267	· Auto-generated
+268	Uses logs and notes
+269	Check-in data only
+270	(the period shown in Stats)
+271	this week’s
+272	’s
+273	On: summaries use what you wrote
+274	Off: only analyze check-in data
+275	Let AI read logs and notes
+276	Auto-generate
+277	Written automatically the first time you open the app after each period
+278	Regenerating replaces the current version
+279	Times
+280	One per period; you can regenerate up to {0} times when data changes.
+281	Time
+282	Data
+283	Mode
+284	By default the most recent period is generated; switch to an earlier week, month or year in Stats and tap the button to generate it.
+285	By default the most recent week is generated; switch to an earlier week in Stats and tap the button to generate it.
+286	No habits to check in during this period
+287	Check-ins per month
+288	Check-ins per day
+289	No habits added, deleted or restored in this period
+290	{0}Past summaries {1}
+291	Upgrading, stay tuned
+292	Coming soon
+293	On: monthly and yearly summaries use what you wrote
+294	Off: monthly and yearly summaries only analyze check-ins
+295	Weekly summaries are counted on your phone, offline, once a week.
+296	Weekly summaries are counted on your phone, offline, once a week.
+297	Record card
+298	Checked in on this day
+299	Not checked in on this day
+300	(check-ins are not affected)
+301	Has a log, tap to view
+302	No log, tap to add
+303	Not checked in, tap to check in late
+304	Logs this month
+305	Words this month
+306	Total logs
+307	Check-ins this month
+308	Completion
+309	Days due
+310	Record cards don’t check in, they only keep logs. Switch to “Log calendar” to view them.
+311	{W:一}
+312	{W:二}
+313	{W:三}
+314	{W:四}
+315	{W:五}
+316	{W:六}
+317	{W:日}
+318	Logged
+319	No log
+320	Not a scheduled day
+321	Tap a day with a log to view or edit it; tap an empty day to add one
+322	Tap an empty day to check in late; tap a checked day to write a log or undo
+323	Generated on {M0} {1} {2}:{3}
+324	Generated
+325	Check-in data changed; you can regenerate
+326	Daily reminder
+327	Monday
+328	Sunday
+329	Key sounds
+330	Key haptics
+331	Follow system dark mode
+332	Hide notification badge
+333	Language
+334	Language
+335	Clear cached images
+336	Delete account
+337	Passcode lock
+338	or Face ID
+339	Unlock with Face ID
+340	Face ID first, passcode if it fails
+341	Change passcode
+342	Lock now
+343	Preview the lock screen
+344	App lock is on. You’ll need to verify each time you come back to the app.
+345	When on, you enter a 4-digit passcode each time you open the app; you can also turn on Face ID to unlock faster.
+346	Fixed
+347	Slot {0}: {1}
+348	Tab bar
+349	Home shortcuts
+350	Me
+351	Show labels
+352	Home page content
+353	Use Face ID
+354	Forgot passcode?
+355	Me
+356	{0} days of records
+357	Start recording today
+358	Get Premium
+359	· Debugging
+360	Version {0}{1}{2}
+361	Version {0} (beta {1}{2})
+362	Check-in sound
+363	Undo sound
+364	Default
+365	Write to the developer
+366	Only the developer can see your feedback
+367	Suggest in the feedback community
+368	Post text and screenshots, and see replies from the developer and others
+369	Your feedback only goes to the developer. Current version {0}, {1}{2}; include it when reporting a problem.
+370	Attached automatically: {0} ({1}), {2}{3}. Your check-ins, logs and notes are never attached.
+371	, read
+372	{0} min read{1}
+373	Articles in the release version update from the server, no app update needed.
+374	Xiaoman
+375	Xiaoman
+376	Featured
+377	Lollipop
+378	Ice cream cone
+379	Magnifier
+380	Knit hat
+381	Teacup
+382	Light bulb
+383	Bubbles
+384	Backpack
+385	Ice cream
+386	Ghost
+387	Tea
+388	Shoulder bag
+389	Sailboat
+390	Whisk
+391	Strawberry roll
+392	Swiss roll
+393	Mixer
+394	Winter hat
+395	Globe
+396	Juice
+397	Watering can
+398	Butterfly
+399	Beret
+400	Starfish
+401	Pinwheel
+402	Avocado
+403	Briefcase
+404	Arch
+405	Unicycle
+406	Paper plane
+407	TV
+408	Rocket
+409	Explore
+410	Headphones
+411	Film
+412	Hot drink
+413	Pets
+414	Telescope
+415	Succulent
+416	Roller skates
+417	Gramophone
+418	Drawing
+419	Canvas shoes
+420	Watermelon
+421	Cassette
+422	Pizza
+423	Games
+424	Daily
+425	Coffee
+426	Coffee beans
+427	Chopping
+428	Eat veggies
+429	Brush teeth
+430	Bath
+431	Wash hair
+432	Face mask
+433	Nails
+434	Tissues
+435	Wipe
+436	Take medicine
+437	Take the bus
+438	Period
+439	First aid
+440	Presentation
+441	Charging
+442	Movie
+443	3D glasses
+444	Cash
+445	Luggage
+446	Drinks
+447	Stroller walk
+448	Feeding
+449	Baby food
+450	Apple
+451	Fried egg
+452	Milk
+453	Meditate
+454	E-bike
+455	Sing
+456	Sleep
+457	Intimacy
+458	Skincare
+459	Clean up
+460	Report
+461	Finance
+462	Calm down
+463	Drive
+464	Bread
+465	Salad
+466	Soap
+467	Laundry
+468	Bucket
+469	Bed
+470	Band-aid
+471	Temperature
+472	Makeup
+473	Haircut
+474	Clothes
+475	Shopping cart
+476	Save money
+477	Track spending
+478	Write a letter
+479	Schedule
+480	Go home
+481	Water plants
+482	Bus
+483	Keys
+484	Umbrella
+485	Exercise
+486	Basketball
+487	Football
+488	Ping pong
+489	Badminton
+490	Tennis
+491	Billiards
+492	Baseball
+493	Rugby
+494	Volleyball
+495	Golf
+496	Bowling
+497	Swimming
+498	Cycling
+499	Archery

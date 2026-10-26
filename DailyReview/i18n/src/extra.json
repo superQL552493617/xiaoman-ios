@@ -1,0 +1,350 @@
+{
+"QQ 互联": [
+"QQ Connect",
+null
+],
+"{} · 复制": [
+"{0} · Copy",
+null
+],
+"{} 列": [
+"{0} columns",
+null
+],
+"{}备份 / 恢复数据": [
+"{0}Back up / restore data",
+null
+],
+"{}底部栏大小": [
+"{0}Tab bar size",
+null
+],
+"{}显示哪些快捷入口": [
+"{0}Which shortcuts to show",
+null
+],
+"{}没有声音？": [
+"{0}No sound?",
+null
+],
+"{}登录还没有接入：需要先在{}申请 App 的 AppID，并同时提供「通过 Apple 登录」。接入前这一行只在测试包里显示，正式版不会出现。": [
+"{0} sign-in isn’t connected yet.",
+null
+],
+"{}选好就用上了，不用另外保存": [
+"{0}Applied as soon as you pick, no need to save",
+null
+],
+"你自己给每张卡片设的颜色，选它可以还原": [
+"The colors you set for each card; pick this to restore them",
+null
+],
+"你设置了自己的头像，切换性别不会改变它。": [
+"You set your own avatar; changing gender won’t change it.",
+null
+],
+"先看看手机侧边的静音键有没有打开，再把媒体音量调大一些；「设置」里的「按键声音」也要开着。": [
+"Check whether the silent switch on the side of your phone is on, then turn up the media volume; “Key sounds” in Settings should be on too.",
+null
+],
+"和图标一样大": [
+"Same size as the icon",
+null
+],
+"图标样式": [
+"Icon style",
+null
+],
+"图标边框的画法，左边是未打卡，右边是已打卡。": [
+"How icon borders are drawn: left is not checked in, right is checked in.",
+null
+],
+"在图标下方显示功能名称，图标大小不变": [
+"Show feature names under the icons; icon size stays the same",
+null
+],
+"在打卡主页日期栏下方显示": [
+"Shown below the date bar on the Today page",
+null
+],
+"女": [
+"Female",
+null
+],
+"男": [
+"Male",
+null
+],
+"字": [
+"chars",
+null
+],
+"字体预览": [
+"Font preview",
+null
+],
+"完成时": [
+"On check-in",
+null
+],
+"撤销时": [
+"On undo",
+null
+],
+"完成标记": [
+"Done mark",
+null
+],
+"完成那一下，配个响声": [
+"A little sound for that moment of done",
+null
+],
+"当前账号": [
+"Current account",
+null
+],
+"微信": [
+"WeChat",
+null
+],
+"微信开放平台": [
+"WeChat Open Platform",
+null
+],
+"性别": [
+"Gender",
+null
+],
+"恢复默认头像": [
+"Restore default avatar",
+null
+],
+"所有习惯会一起换成这套颜色": [
+"All habits switch to this set of colors",
+null
+],
+"打卡后的样子。点一下可以预览打卡时的扩散效果。": [
+"How it looks after checking in. Tap to preview the ripple effect.",
+null
+],
+"找到适合你的首页节奏": [
+"Find the home page rhythm that suits you",
+null
+],
+"挑 3～6 个喜欢的颜色，做一组专属配色": [
+"Pick 3–6 colors you like to make your own palette",
+null
+],
+"换上这套颜色": [
+"Use these colors",
+null
+],
+"换好后，手机桌面上的图标也会跟着变": [
+"Your Home Screen icon changes too",
+null
+],
+"早睡早起，喝水读书，慢慢变成更喜欢的自己": [
+"Early to bed, early to rise, water and books: slowly becoming someone you like more",
+null
+],
+"昵称": [
+"Nickname",
+null
+],
+"显示顶部快捷栏": [
+"Show top shortcuts",
+null
+],
+"未绑定 ›": [
+"Not linked ›",
+null
+],
+"本机账号（未登录）": [
+"Local account (not signed in)",
+null
+],
+"添加个人介绍": [
+"Add a bio",
+null
+],
+"清单已复制，发给我就行": [
+"List copied, just send it to me",
+null
+],
+"点左边的 + 选一张照片，透明背景的图片效果最好。": [
+"Tap + on the left to pick a photo; images with transparent backgrounds look best.",
+null
+],
+"用户 ID": [
+"User ID",
+null
+],
+"用户类型": [
+"Plan",
+null
+],
+"用照片做习惯图标是会员功能，开通后就能用。": [
+"Photo habit icons are a Premium feature, available once you subscribe.",
+null
+],
+"用自己的照片做图标": [
+"Use your own photo as the icon",
+null
+],
+"线条样式": [
+"Line style",
+null
+],
+"绑定 QQ": [
+"Link QQ",
+null
+],
+"绑定{}（测试包）": [
+"Link {0} (test build)",
+null
+],
+"绑定微信": [
+"Link WeChat",
+null
+],
+"记单词": [
+"Vocabulary",
+null
+],
+"轻点就能试听，选中即用": [
+"Tap to preview; selected sounds are used right away",
+null
+],
+"还没有标记图标": [
+"No icons marked yet",
+null
+],
+"还没有自定义配色板": [
+"No custom palettes yet",
+null
+],
+"还没有设置头像，默认头像会跟着性别变化。": [
+"No avatar set yet; the default avatar changes with gender.",
+null
+],
+"选好后，所有页面的文字都会换成这款字体，笔记里单独选的字体不受影响。字体都已内置在 App 里，不用联网；个别生僻字会用系统字体显示。": [
+"Once chosen, text on every page uses this font; fonts chosen separately in notes aren’t affected. All fonts are built into the app, no internet needed; rare characters use the system font.",
+null
+],
+"选择你喜欢的 App 图标": [
+"Choose the app icon you like",
+null
+],
+"选择排列密度": [
+"Choose a density",
+null
+],
+"配色预览": [
+"Palette preview",
+null
+],
+"铺满整个图标": [
+"Fill the whole icon",
+null
+],
+"长按自己的配色板可以删除。": [
+"Press and hold one of your palettes to delete it.",
+null
+],
+"隐藏后只是不在打卡主页显示，笔记、回忆和心情的内容都不会删除。至少保留一个入口；都不想要时，直接关闭顶部快捷栏。": [
+"Hidden shortcuts just don’t show on the Today page; notes, memories and moods aren’t deleted. Keep at least one; if you want none, turn off the top shortcuts.",
+null
+],
+"顶部快捷栏已隐藏": [
+"Top shortcuts hidden",
+null
+],
+"预设配色板": [
+"Preset palettes",
+null
+],
+"颜色 {}": [
+"Color {0}",
+null
+],
+"＋ 新建": [
+"+ New",
+null
+],
+"密码锁定 / 面容 ID": [
+"Passcode / Face ID",
+null
+],
+"密码锁定 / 面容 ID{}": [
+"Passcode / Face ID{0}",
+null
+],
+"备份 / 恢复数据": [
+"Back up / restore data",
+null
+],
+"上周 {}–{}": [
+"Last week {0}–{1}",
+null
+],
+"{}–{}": [
+"{0}–{1}",
+null
+],
+"圆形 · 无边框": [
+"Circle · No border",
+null
+],
+"{} · {}": [
+"{0} · {1}",
+null
+],
+"普通用户 ›": [
+"Free ›",
+null
+],
+"预览里是示例图标。放到桌面后，小组件会显示你当天还没打卡的习惯，打完的自动消失；一页放不下时，点右上角的「›」翻到下一组。可以点一下图标，看看打卡效果。": [
+"The preview shows sample icons. On your Home Screen the widget shows the habits you haven’t checked in today; finished ones disappear. If they don’t fit on one page, tap “›” at the top right for the next set. Tap an icon to try a check-in.",
+null
+],
+"按住右侧": [
+"Hold and drag",
+null
+],
+"拖动排序，关闭开关的模块不会出现在“我的”页面。": [
+"on the right to reorder; modules switched off won’t appear on the “Me” page.",
+null
+],
+"{}，已完成": [
+"{0}, done",
+null
+],
+"{}，未完成": [
+"{0}, not done",
+null
+],
+"{}，已预约": [
+"{0}, scheduled",
+null
+],
+"跟随系统": [
+"Follow system",
+null
+],
+"{}/年": [
+"{0}/year",
+null
+],
+"{}/月": [
+"{0}/month",
+null
+],
+"{}，点击收起日期栏": [
+"{0}, tap to collapse the date bar",
+null
+],
+"{}，点击展开日期栏": [
+"{0}, tap to expand the date bar",
+null
+]
+}
