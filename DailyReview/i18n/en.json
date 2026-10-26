@@ -1389,7 +1389,7 @@
 "练琴": "Practice piano",
 "写字": "Handwriting",
 "示例：{}": "Example: {0}",
-"今日打卡": "Today’s check-ins",
+"今日打卡": "Today",
 "写笔记": "Write a note",
 "今天 {} 篇": "{0} today",
 "小号": "Small",
@@ -1989,5 +1989,6 @@
 "{}/年": "{0}/year",
 "{}/月": "{0}/month",
 "{}，点击收起日期栏": "{0}, tap to collapse the date bar",
-"{}，点击展开日期栏": "{0}, tap to expand the date bar"
+"{}，点击展开日期栏": "{0}, tap to expand the date bar",
+"早晨": "Morning"
 }
