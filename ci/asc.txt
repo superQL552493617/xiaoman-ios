@@ -1,1 +1,2 @@
-newversion 1.1
+locales
+# 2026-10-30T02:25:04
