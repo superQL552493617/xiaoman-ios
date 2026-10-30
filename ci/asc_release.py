@@ -490,3 +490,20 @@ if MODE in ("manual", "auto"):
     rt = "MANUAL" if MODE == "manual" else "AFTER_APPROVAL"
     r = api("PATCH", f"/v1/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"], "attributes": {"releaseType": rt}}})
     print("releaseType", rt, "ok" if r else "failed")
+if MODE == "withdraw":
+    aid = app_id()
+    subs, _ = all_pages(f"/v1/apps/{aid}/reviewSubmissions")
+    for x in subs:
+        if x["attributes"].get("state") in ("WAITING_FOR_REVIEW", "IN_REVIEW"):
+            r = api("PATCH", f"/v1/reviewSubmissions/{x['id']}", {"data": {"type": "reviewSubmissions", "id": x["id"], "attributes": {"canceled": True}}})
+            print("withdraw", x["id"], "ok" if r else "failed")
+    time.sleep(20)
+if MODE.startswith("copyright"):
+    aid = app_id(); ver = editable_version(aid)
+    cp = MODE.split(" ", 1)[1] if " " in MODE else "2026 superQL"
+    if ver:
+        r = api("PATCH", f"/v1/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"], "attributes": {"copyright": cp}}})
+        print("copyright", cp, "ok" if r else "failed")
+    else: print("no editable version")
+if MODE in ("withdraw",) or MODE.startswith("copyright"):
+    for v in all_pages(f"/v1/apps/{aid}/appStoreVersions")[0]: print("version", v["attributes"]["versionString"], v["attributes"].get("appStoreState"), v["attributes"].get("copyright"))
