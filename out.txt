@@ -1,0 +1,26 @@
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+
+Service restarts being deferred:
+ systemctl restart hosted-compute-agent.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+LINK 200 https://superql552493617.github.io/ 142
+LINK 200 https://superql552493617.github.io/xiaoman-ios/ 1503
+LINK 200 https://superql552493617.github.io/xiaoman-ios/privacy.html 2395
+LINK 200 https://superql552493617.github.io/xiaoman-ios/terms.html 1877
+LINK 200 https://superql552493617.github.io/xiaoman-ios/en/ 2054
+LINK 200 https://superql552493617.github.io/xiaoman-ios/en/privacy.html 4323
+LINK 200 https://superql552493617.github.io/xiaoman-ios/en/terms.html 3123
+LINK 200 https://superql552493617.github.io/xiaoman-ios/zh-Hant/ 1515
+LINK 200 https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html 2417
+LINK 200 https://superql552493617.github.io/xiaoman-ios/zh-Hant/terms.html 1891
+LINK 200 https://wj.qq.com/s2/28298368/emfy/ 29681
+FORM OK 写给小满的悄悄话  遇到问题、想要的新功能、或者只是想说点什么，都欢迎写下来。每一条我都会认真看。  开始填写 01 * 必填  你想说的是哪一类？  遇到了问题 / 出错了  想要一个新功能  某个地方用着不顺手  会员和购买相关  其他
+LINK 521 https://beian.miit.gov.cn/ 871
