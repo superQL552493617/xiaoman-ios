@@ -364,13 +364,16 @@ if MODE.startswith("links"):
             bad = [w for w in ("尚未发布", "已暂停", "已结束", "停止回收", "not published") if w in r.text]
             if bad: print("LINK BAD", u, bad)
             if "wj.qq.com" in u:
-                import re as _re
-                sid = _re.search(r"/s2/(\d+)/(\w+)", u)
-                if sid:
-                    try:
-                        j = requests.get(f"https://wj.qq.com/api/v2/respondent/surveys/{sid.group(1)}/legacy?hash={sid.group(2)}", timeout=20)
-                        print("WJ API", j.status_code, j.text[:300])
-                    except Exception as e: print("WJ API ERR", e)
+                # 问卷页面是脚本渲染的，要用浏览器打开后看文字：没发布 / 暂停 / 结束都算不合格
+                import subprocess
+                subprocess.run("pip install -q playwright && python3 -m playwright install --with-deps chromium >/dev/null 2>&1", shell=True)
+                from playwright.sync_api import sync_playwright
+                with sync_playwright() as pw:
+                    b = pw.chromium.launch(); pg = b.new_page(user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148")
+                    pg.goto(u, wait_until="networkidle", timeout=60000); pg.wait_for_timeout(3000)
+                    txt = pg.inner_text("body"); b.close()
+                bad = [w for w in ("尚未发布", "已暂停", "已结束", "停止回收", "无法填写") if w in txt]
+                print("FORM", "BAD " + ",".join(bad) if bad else "OK", txt.strip().replace("\n", " ")[:120])
         except Exception as e:
             print("LINK ERR", u, e)
 
