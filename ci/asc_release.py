@@ -485,3 +485,8 @@ if MODE == "world":
     world(app_id())
 if MODE == "lshots":
     local_shots()
+if MODE in ("manual", "auto"):
+    aid = app_id(); ver = editable_version(aid)
+    rt = "MANUAL" if MODE == "manual" else "AFTER_APPROVAL"
+    r = api("PATCH", f"/v1/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"], "attributes": {"releaseType": rt}}})
+    print("releaseType", rt, "ok" if r else "failed")
