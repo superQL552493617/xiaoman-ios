@@ -202,7 +202,7 @@ def meta():
     api("PATCH", f"/v1/apps/{aid}", {"data": {"type": "apps", "id": aid, "attributes": {"contentRightsDeclaration": "USES_THIRD_PARTY_CONTENT"}}}) and print("ok contentRights")
     ver = [v for v in all_pages(f"/v1/apps/{aid}/appStoreVersions")[0] if v["attributes"].get("appStoreState") in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")][0]
     api("PATCH", f"/v1/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"],
-        "attributes": {"copyright": "2026 lang qin", "releaseType": "AFTER_APPROVAL"}}}) and print("ok copyright")
+        "attributes": {"copyright": "2026 superQL", "releaseType": "AFTER_APPROVAL"}}}) and print("ok copyright")
     vl = first(f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")
     api("PATCH", f"/v1/appStoreVersionLocalizations/{vl['id']}", {"data": {"type": "appStoreVersionLocalizations", "id": vl["id"],
         "attributes": {"description": DESC, "keywords": KEYWORDS, "promotionalText": PROMO, "supportUrl": PAGES, "marketingUrl": PAGES}}}) and print("ok description")
@@ -379,7 +379,7 @@ def editable_version(aid):
 def new_version(vs):
     aid = app_id()
     if editable_version(aid): print("already have an editable version"); return
-    r = api("POST", "/v1/appStoreVersions", {"data": {"type": "appStoreVersions", "attributes": {"platform": "IOS", "versionString": vs, "releaseType": "AFTER_APPROVAL", "copyright": "2026 lang qin"},
+    r = api("POST", "/v1/appStoreVersions", {"data": {"type": "appStoreVersions", "attributes": {"platform": "IOS", "versionString": vs, "releaseType": "AFTER_APPROVAL", "copyright": "2026 superQL"},
         "relationships": {"app": rel("apps", aid)}}})
     print("new version", vs, "ok" if r else "failed")
 

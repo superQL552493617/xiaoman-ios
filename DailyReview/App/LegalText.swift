@@ -19,7 +19,7 @@ enum LegalText {
 Last updated: \(updatedEN)
 Effective: \(updatedEN)
 
-Xiaoman ("the App") is developed and operated by independent developer lang qin. We take your privacy seriously. This policy explains what information the App handles, why, and your rights.
+Xiaoman ("the App") is developed and operated by independent developer superQL. We take your privacy seriously. This policy explains what information the App handles, why, and your rights.
 
 **1. We don’t collect your personal data**
 
@@ -71,7 +71,7 @@ If this policy changes significantly, the App will ask you to read and agree to 
 更新日期：\(updatedHant)
 生效日期：\(updatedHant)
 
-小滿記（以下簡稱"本 App"）由個人開發者 lang qin 開發和運營。我們非常重視你的隱私，本政策說明本 App 會處理哪些資訊、為什麼處理以及你的權利。
+小滿記（以下簡稱"本 App"）由個人開發者 superQL 開發和運營。我們非常重視你的隱私，本政策說明本 App 會處理哪些資訊、為什麼處理以及你的權利。
 
 **一、我們不收集你的個人資料**
 
@@ -122,7 +122,7 @@ If this policy changes significantly, the App will ask you to read and agree to 
 
 Last updated: \(updatedEN)
 
-Welcome to Xiaoman ("the App"). The App is developed and operated by independent developer lang qin. Please read these terms carefully before using the App. By tapping “Agree and continue” or continuing to use the App, you agree to these terms.
+Welcome to Xiaoman ("the App"). The App is developed and operated by independent developer superQL. Please read these terms carefully before using the App. By tapping “Agree and continue” or continuing to use the App, you agree to these terms.
 
 **1. Service**
 
@@ -158,7 +158,7 @@ If these terms change significantly, the App will ask you to read and agree to t
 
 更新日期：\(updatedHant)
 
-歡迎使用小滿記（以下簡稱"本 App"）。本 App 由個人開發者 lang qin 開發和運營。使用本 App 前請仔細閱讀本協議，點"同意並繼續"或繼續使用即表示你同意本協議。
+歡迎使用小滿記（以下簡稱"本 App"）。本 App 由個人開發者 superQL 開發和運營。使用本 App 前請仔細閱讀本協議，點"同意並繼續"或繼續使用即表示你同意本協議。
 
 **一、服務內容**
 
@@ -225,7 +225,7 @@ App 內建的字型均按 **SIL Open Font License 1.1** 授權使用（已按協
 更新日期：\(updated)
 生效日期：\(updated)
 
-小满记（以下简称"本 App"）由个人开发者 lang qin 开发和运营。我们非常重视你的隐私，本政策说明本 App 会处理哪些信息、为什么处理以及你的权利。
+小满记（以下简称"本 App"）由个人开发者 superQL 开发和运营。我们非常重视你的隐私，本政策说明本 App 会处理哪些信息、为什么处理以及你的权利。
 
 **一、我们不收集你的个人数据**
 
@@ -276,7 +276,7 @@ App 內建的字型均按 **SIL Open Font License 1.1** 授權使用（已按協
 
 更新日期：\(updated)
 
-欢迎使用小满记（以下简称"本 App"）。本 App 由个人开发者 lang qin 开发和运营。使用本 App 前请仔细阅读本协议，点"同意并继续"或继续使用即表示你同意本协议。
+欢迎使用小满记（以下简称"本 App"）。本 App 由个人开发者 superQL 开发和运营。使用本 App 前请仔细阅读本协议，点"同意并继续"或继续使用即表示你同意本协议。
 
 **一、服务内容**
 
