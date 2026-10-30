@@ -366,7 +366,9 @@ if MODE.startswith("links"):
             if "wj.qq.com" in u:
                 # 问卷页面是脚本渲染的，要用浏览器打开后看文字：没发布 / 暂停 / 结束都算不合格
                 import subprocess
-                subprocess.run("pip install -q playwright && python3 -m playwright install --with-deps chromium >/dev/null 2>&1", shell=True)
+                subprocess.run([sys.executable, "-m", "pip", "install", "-q", "playwright"], check=False)
+                subprocess.run([sys.executable, "-m", "playwright", "install", "--with-deps", "chromium"], check=False, stdout=subprocess.DEVNULL)
+                import importlib, site; importlib.invalidate_caches(); site.main()
                 from playwright.sync_api import sync_playwright
                 with sync_playwright() as pw:
                     b = pw.chromium.launch(); pg = b.new_page(user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148")
