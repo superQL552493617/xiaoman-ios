@@ -1,2 +1,2 @@
-withdraw
-# 2026-10-30T02:43:01
+copyright 2026 superQL
+# 2026-10-30T02:55:37
