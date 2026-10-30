@@ -361,6 +361,16 @@ if MODE.startswith("links"):
     for u in ["https://superql552493617.github.io/", PAGES, PAGES + "privacy.html", PAGES + "terms.html", PAGES + "en/", PAGES + "en/privacy.html", PAGES + "en/terms.html", PAGES + "zh-Hant/", PAGES + "zh-Hant/privacy.html", PAGES + "zh-Hant/terms.html", "https://wj.qq.com/s2/28298368/emfy/", "https://beian.miit.gov.cn/"]:
         try:
             r = requests.get(u, timeout=20); print("LINK", r.status_code, u, len(r.text))
+            bad = [w for w in ("尚未发布", "已暂停", "已结束", "停止回收", "not published") if w in r.text]
+            if bad: print("LINK BAD", u, bad)
+            if "wj.qq.com" in u:
+                import re as _re
+                sid = _re.search(r"/s2/(\d+)/(\w+)", u)
+                if sid:
+                    try:
+                        j = requests.get(f"https://wj.qq.com/api/v2/respondent/surveys/{sid.group(1)}/legacy?hash={sid.group(2)}", timeout=20)
+                        print("WJ API", j.status_code, j.text[:300])
+                    except Exception as e: print("WJ API ERR", e)
         except Exception as e:
             print("LINK ERR", u, e)
 
