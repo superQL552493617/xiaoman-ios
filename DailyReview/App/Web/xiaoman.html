@@ -2399,6 +2399,29 @@ const k=sel;
 if(k>TODAY()){buzz();toast('还没到这一天，到时候再来打卡吧','gray');const el=$(`#pane .grid [data-id="${id}"] .dot`);el&&el.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:dur(300)});return}
 checkIn(id);
 }
+/* ================= 评分邀请 =================
+只在用户刚有成就感的时候请求系统评分弹窗，不先问「喜不喜欢」（苹果不允许筛选用户再引导好评）：
+· 今天的打卡全部完成的那一刻，并且累计打卡满 7 天；
+· 或者刚开通会员（累计打卡满 3 天）。
+每个版本最多请求一次，两次之间至少隔 90 天；苹果自己还限制一年最多弹 3 次，所以不保证每次都会出现。 */
+function checkedDays(){let n=0;for(const k in (S.records||{})){const day=S.records[k];if(Object.values(day).some(r=>r&&r.checked))n++}return n}
+function maybeAskReview(why){
+if(!IN_APP)return;
+const P=S.prefs,now=Date.now(),v=NV.v||'';
+if(P.rvVer===v)return;
+if(P.rvAt&&now-P.rvAt<90*864e5)return;
+if(checkedDays()<(why==='vip'?3:7))return;
+setTimeout(()=>{
+if(why!=='vip'&&document.querySelector('.al-bd.show,.sheet.show'))return;   // 打卡时有弹窗开着就不打扰（开通会员时本来就在会员页里）
+P.rvVer=v;P.rvAt=Date.now();save();
+try{window.webkit.messageHandlers.native.postMessage({cmd:'review'})}catch(e){}
+},why==='vip'?1800:1400);
+}
+function todayAllDone(){
+const k=TODAY(),d=parseKey(k),day=S.records[k]||{};
+const cs=S.cards.filter(c=>!isNoteCard(c)&&!pausedOn(c,k)&&(scheduled(c,d)||inState(k,day[c.id])));
+return cs.length>0&&cs.every(c=>inState(k,day[c.id]));
+}
 function checkIn(id){
 const c=cardAny(id),k=sel;
 playCheck();setIn(k,id,true);refresh();buzz();
@@ -2410,6 +2433,7 @@ shapeRipple(dot);
 setTimeout(()=>{
 if(c.type==='note'){openCheckDialog(id,true)}
 },dur(460));
+if(k===TODAY()&&c.type!=='note'&&todayAllDone())maybeAskReview('day');
 }
 function uncheck(id,quiet){
 const rec=getRec(sel,id);if(!quiet)playSoft();setIn(sel,id,false);refresh();buzz();
@@ -4834,7 +4858,7 @@ ${d.plan!=='free'?`<span class="vp2-st">${mi('crown',15,2.2)}你是${d.name}${d.
 <p class="vp2-legal">开通即表示同意<button data-doc="terms">《用户协议》</button>和<button data-doc="privacy">《隐私政策》</button></p></div>`};
 const {sh,close}=openSheet(draw(),()=>{if(tab==='me')renderMe();if(tab==='ai')renderAI()});sh.classList.add('full','vp2');
 const redraw=()=>{const x=$('.vp2-plans',sh),sl=x?x.scrollLeft:0,y=sh.scrollTop;sh.innerHTML='<div class="grab"></div>'+draw();bind();const nx=$('.vp2-plans',sh);if(nx){nx.scrollLeft=sl;const on=$('.vp2-plan.on',nx);on&&on.scrollIntoView({behavior:'smooth',inline:'nearest',block:'nearest'})}sh.scrollTop=y};
-const done=r=>{busy=false;sh.classList.remove('busy');if(!r)return;info=r;if(r.msg)toast(r.msg);window.__xmVipSync({plan:r.plan});redraw()};
+const done=r=>{busy=false;sh.classList.remove('busy');if(!r)return;const was=planOf();info=r;if(r.msg)toast(r.msg);window.__xmVipSync({plan:r.plan});redraw();if(was==='free'&&r.plan&&r.plan!=='free')maybeAskReview('vip')};
 const bind=()=>{
 $('#vpX',sh).onclick=close;
 $$('.vp2-plan',sh).forEach(b=>b.onclick=()=>{pick=b.dataset.k;buzz();redraw()});

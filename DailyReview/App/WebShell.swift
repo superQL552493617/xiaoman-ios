@@ -5,6 +5,7 @@ import LocalAuthentication
 import WidgetKit
 import UserNotifications
 import Security
+import StoreKit
 
 // MARK: - 网页版界面（把最终版网页原样装进 App，用原生能力补齐：存储、触感、分享导出、反馈、面容 ID、提醒、小组件）
 
@@ -459,6 +460,12 @@ final class WebBridge: NSObject, ObservableObject, WKScriptMessageHandlerWithRep
             AlarmCenter.shared.registerCategories()
             WidgetCenter.shared.reloadAllTimelines()
             if let s = Persistence.load() { Notifier.shared.rescheduleAll(s) }
+            replyHandler(true, nil)
+        case "review":
+            // 系统评分弹窗（苹果自己控制：一年最多弹 3 次，用户可能看不到）。什么时候请求由网页决定。
+            if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                AppStore.requestReview(in: scene)
+            }
             replyHandler(true, nil)
         case "alarm":
             // 网页里的响铃页：去打卡 / 10 分钟后再提醒 / 关闭 / 没人理自己停
