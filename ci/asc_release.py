@@ -534,3 +534,23 @@ if MODE.startswith("copyright"):
     else: print("no editable version")
 if MODE in ("withdraw",) or MODE.startswith("copyright"):
     for v in all_pages(f"/v1/apps/{aid}/appStoreVersions")[0]: print("version", v["attributes"]["versionString"], v["attributes"].get("appStoreState"), v["attributes"].get("copyright"))
+if MODE == "iapterr":
+    aid = app_id()
+    grps, _ = all_pages(f"/v1/apps/{aid}/subscriptionGroups")
+    for g in grps:
+        subs, _ = all_pages(f"/v1/subscriptionGroups/{g['id']}/subscriptions")
+        for sb in subs:
+            j = api("GET", f"/v1/subscriptions/{sb['id']}/subscriptionAvailability")
+            n = None
+            if j and j.get("data"):
+                ts, _ = all_pages(f"/v1/subscriptionAvailabilities/{j['data']['id']}/availableTerritories", {"limit": 200}); n = len(ts)
+            pr, _ = all_pages(f"/v1/subscriptions/{sb['id']}/prices", {"limit": 200})
+            print("sub", sb["attributes"]["productId"], "territories", n, "prices", len(pr), "newTerr", j and j.get("data", {}).get("attributes"))
+    iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
+    for p in iaps:
+        j = api("GET", f"/v2/inAppPurchases/{p['id']}/iapAvailability")
+        n = None
+        if j and j.get("data"):
+            ts, _ = all_pages(f"/v1/inAppPurchaseAvailabilities/{j['data']['id']}/availableTerritories", {"limit": 200}); n = len(ts)
+        print("iap", p["attributes"]["productId"], "territories", n, j and j.get("data", {}).get("attributes"))
+    st = api("GET", f"/v1/apps/{aid}/appAvailabilityV2"); print("app avail", st and st["data"]["attributes"])
