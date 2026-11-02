@@ -462,6 +462,18 @@ def world(aid):
     av = api("POST", "/v2/appAvailabilities", {"data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": True},
         "relationships": {"app": rel("apps", aid), "territoryAvailabilities": {"data": data}}}, "included": inc})
     print("world availability", "ok" if av else "failed", len(ids), "territories")
+    if av: return
+    # 已经有地区设置：逐个把没开的地区打开
+    j = api("GET", f"/v1/apps/{aid}/appAvailabilityV2")
+    if not j or not j.get("data"): print("no availability"); return
+    tas, _ = all_pages(f"/v2/appAvailabilities/{j['data']['id']}/territoryAvailabilities", {"limit": 200})
+    off = [x for x in tas if not x["attributes"].get("available")]
+    print("territories total", len(tas), "off", len(off))
+    ok = 0
+    for x in off:
+        r = api("PATCH", f"/v1/territoryAvailabilities/{x['id']}", {"data": {"type": "territoryAvailabilities", "id": x["id"], "attributes": {"available": True}}})
+        ok += 1 if r else 0
+    print("opened", ok, "of", len(off))
 
 def local_shots():
     aid = app_id(); ver = editable_version(aid)
