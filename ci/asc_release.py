@@ -548,7 +548,7 @@ if MODE == "iapterr":
             print("sub", sb["attributes"]["productId"], "territories", n, "prices", len(pr), "newTerr", j and j.get("data", {}).get("attributes"))
     iaps, _ = all_pages(f"/v1/apps/{aid}/inAppPurchasesV2")
     for p in iaps:
-        j = api("GET", f"/v2/inAppPurchases/{p['id']}/iapAvailability")
+        j = api("GET", f"/v2/inAppPurchases/{p['id']}/inAppPurchaseAvailability")
         n = None
         if j and j.get("data"):
             ts, _ = all_pages(f"/v1/inAppPurchaseAvailabilities/{j['data']['id']}/availableTerritories", {"limit": 200}); n = len(ts)
