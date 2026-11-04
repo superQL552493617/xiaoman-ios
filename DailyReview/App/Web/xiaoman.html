@@ -4831,7 +4831,7 @@ bind();
 }
 function openVip(){
 let pick=S.vip&&['month','year'].includes(planOf())?'life':'year',info=null,busy=false;
-const zh=/^zh/i.test(navigator.language||'zh');
+const zh=LANG!=='en';/* 默认价币种按界面语言，App 里 navigator.language 可能是英文 */
 /* 没连上 App Store（或网页预览）时按地区显示默认价 */
 const local=()=>{const plan=planOf(),y=zh?'¥18':'$2.90',m=zh?'¥3.5':'$1.90',l=zh?'¥35':'$9.90',pm=zh?'¥1.5':'$0.24',trial=plan==='free';
 const cta=k=>{if(plan==='life')return['你已是永久会员','谢谢你一直支持小满',false];
