@@ -5614,13 +5614,13 @@ addEventListener('resize',place);
 requestAnimationFrame(()=>{ov.classList.add('show');show()});
 }
 /* 打开 App 后：开屏页、密码锁、新建习惯页都结束了再出来 */
-/* 测试包：每次打开 App 都出现新手引导，方便查看；正式版只出现一次 */
-let GUIDE_SHOWN_THIS_LAUNCH=false;
-function maybeGuide(){const testEvery=IN_APP&&window.__XM_TEST__===true&&!GUIDE_SHOWN_THIS_LAUNCH;
-if(S.prefs.guided&&!testEvery)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided&&!testEvery){clearInterval(t);return}
+/* 新手引导只在第一次使用时出现：更新版本、测试包都不再弹 */
+function maybeGuide(){if(S.prefs.guided)return;let n=0;const t=setInterval(()=>{n++;if(S.prefs.guided){clearInterval(t);return}
 const from=S.prefs.guideStep||0;
 const ready=(!IN_APP||window.__XM_SPLASH_DONE)&&!needConsent()&&!LOCKED&&!document.querySelector('.lk,.pc,.sheet.show,.jr.show,.fn,.gd,#dName')&&tab==='today'&&document.querySelector('#pane')&&(from<2||document.querySelector('#pane .grid .cw'));
-if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd')){GUIDE_SHOWN_THIS_LAUNCH=true;startGuide(testEvery,testEvery?0:from)}},dur(500))}else if(n>1200)clearInterval(t)},500)}
+if(ready){clearInterval(t);setTimeout(()=>{if(!document.querySelector('.gd'))startGuide(false,from)},dur(500))}else if(n>1200)clearInterval(t)},500)}
+/* 新功能确实需要讲解时才特别安排：newsOnce('功能id',()=>{...})，老用户只看一次；新用户已有新手引导，直接记为看过 */
+function newsOnce(id,fn){const k=S.prefs.news||(S.prefs.news={});if(k[id])return;const old=!!S.prefs.guided;k[id]=1;save();if(old)fn()}
 function lockOnStart(){showLock()}
 let HIDDEN_AT=0;
 /* 离开 App 时先盖一层空白锁屏，回来时直接是锁住的样子，不会先闪一下 App 里的内容 */
