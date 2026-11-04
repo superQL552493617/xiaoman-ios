@@ -5743,14 +5743,12 @@ const {sh,close}=openSheet(`
 <div class="fb2">
 ${FEEDBACK_FORM?`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('msg',22,2)}</span><span class="t"><b>写给开发者</b><small>只有开发者能看到，其他用户看不到你的反馈</small></span><span class="ar">›</span></button>`
 :`<button class="fb2-main" id="fbTxc"><span class="fb2-ic">${mi('msg',22,2)}</span><span class="t"><b>去反馈社区提建议</b><small>可以发文字和截图，也能看到开发者的回复和其他人的建议</small></span><span class="ar">›</span></button>`}
-<button class="fb2-main" id="fbUid"><span class="fb2-ic">${mi('copy',22,2)}</span><span class="t"><b>复制我的用户 ID</b><small>${userId()}，写反馈时附上，方便开发者帮你查会员和数据问题</small></span></button>
 </div>
 <div class="fb2-tips"><p><b>反馈小提示</b></p><p>遇到问题时，写清楚在哪个页面、做了什么、看到了什么，最好附一张截图，我们能更快找到原因。</p></div>
 <p class="meta">${FEEDBACK_FORM?`你的反馈只会发给开发者。当前版本 ${IN_APP?NV.v+'（'+NV.b+'）':APP_VER()}，${device}${os?' iOS '+os:''}，遇到问题时可以一起写上。`:`会自动附带：${APP_VER()}（${APP_BUILD}），${device}${os?' iOS '+os:''}。不会附带你的打卡、日志和笔记内容。`}</p>`);
 $('#fbX',sh).onclick=close;
 $('#fbTxc',sh).onclick=()=>{buzz();if(!FEEDBACK_FORM){openTxc();return}
 if(IN_APP)window.webkit.messageHandlers.native.postMessage({cmd:'feedback',url:FEEDBACK_FORM,fill:`${userId()}｜${PLAN_NAME[planOf()]}｜${NV.v}(${NV.b})`}).catch(()=>{});else window.open(FEEDBACK_FORM,'_blank')};
-$('#fbUid',sh).onclick=async()=>{try{await navigator.clipboard.writeText(userId());toast('用户 ID 已复制')}catch(e){toast('用户 ID：'+userId())}};
 }
 
 
