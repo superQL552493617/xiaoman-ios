@@ -1,0 +1,257 @@
+item added
+SUBMITTED
+app 6824745672
+appInfo fce7d30c-c4ca-4652-b1c0-5700d5026002 READY_FOR_SALE FOUR_PLUS
+== appInfoLoc en-US
+{
+ "locale": "en-US",
+ "name": "Xiaoman: Habit & Journal",
+ "subtitle": "Small habits, little by little",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+== appInfoLoc zh-Hant
+{
+ "locale": "zh-Hant",
+ "name": "小滿記",
+ "subtitle": "習慣打卡與日記，每天一點點",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+== appInfoLoc zh-Hans
+{
+ "locale": "zh-Hans",
+ "name": "小满记",
+ "subtitle": "习惯打卡与日记，每天一点点",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+primaryCategory PRODUCTIVITY
+secondaryCategory LIFESTYLE
+== ageRating
+{
+ "advertising": false,
+ "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+ "contests": "NONE",
+ "gambling": false,
+ "gamblingSimulated": "NONE",
+ "gunsOrOtherWeapons": "NONE",
+ "healthOrWellnessTopics": false,
+ "kidsAgeBand": null,
+ "lootBox": false,
+ "medicalOrTreatmentInformation": "NONE",
+ "messagingAndChat": false,
+ "parentalControls": false,
+ "profanityOrCrudeHumor": "NONE",
+ "ageAssurance": false,
+ "sexualContentGraphicAndNudity": "NONE",
+ "sexualContentOrNudity": "NONE",
+ "socialMedia": false,
+ "socialMediaAgeRestricted": false,
+ "horrorOrFearThemes": "NONE",
+ "matureOrSuggestiveThemes": "NONE",
+ "unrestrictedWebAccess": false,
+ "userGeneratedContent": false,
+ "violenceCartoonOrFantasy": "NONE",
+ "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+ "violenceRealistic": "NONE",
+ "ageRatingOverride": "NONE",
+ "ageRatingOverrideV2": "NONE",
+ "koreaAgeRatingOverride": "NONE",
+ "gracRatingClassificationNumber": null,
+ "developerAgeRatingInfoUrl": null
+}
+appInfo cb863c86-46dd-4ee9-bfcd-ce1894c1424a WAITING_FOR_REVIEW FOUR_PLUS
+== appInfoLoc en-US
+{
+ "locale": "en-US",
+ "name": "Xiaoman: Habit & Journal",
+ "subtitle": "Small habits, little by little",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+== appInfoLoc zh-Hant
+{
+ "locale": "zh-Hant",
+ "name": "小滿記",
+ "subtitle": "習慣打卡與日記，每天一點點",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+== appInfoLoc zh-Hans
+{
+ "locale": "zh-Hans",
+ "name": "小满记",
+ "subtitle": "习惯打卡与日记，每天一点点",
+ "privacyPolicyUrl": "https://superql552493617.github.io/xiaoman-ios/privacy.html",
+ "privacyChoicesUrl": null,
+ "privacyPolicyText": null
+}
+primaryCategory PRODUCTIVITY
+secondaryCategory LIFESTYLE
+== ageRating
+{
+ "advertising": false,
+ "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+ "contests": "NONE",
+ "gambling": false,
+ "gamblingSimulated": "NONE",
+ "gunsOrOtherWeapons": "NONE",
+ "healthOrWellnessTopics": false,
+ "kidsAgeBand": null,
+ "lootBox": false,
+ "medicalOrTreatmentInformation": "NONE",
+ "messagingAndChat": false,
+ "parentalControls": false,
+ "profanityOrCrudeHumor": "NONE",
+ "ageAssurance": false,
+ "sexualContentGraphicAndNudity": "NONE",
+ "sexualContentOrNudity": "NONE",
+ "socialMedia": false,
+ "socialMediaAgeRestricted": false,
+ "horrorOrFearThemes": "NONE",
+ "matureOrSuggestiveThemes": "NONE",
+ "unrestrictedWebAccess": false,
+ "userGeneratedContent": false,
+ "violenceCartoonOrFantasy": "NONE",
+ "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+ "violenceRealistic": "NONE",
+ "ageRatingOverride": "NONE",
+ "ageRatingOverrideV2": "NONE",
+ "koreaAgeRatingOverride": "NONE",
+ "gracRatingClassificationNumber": null,
+ "developerAgeRatingInfoUrl": null
+}
+version 8ef6f76c-ad3c-4ceb-b31d-fd45030e3a21 1.1.1 WAITING_FOR_REVIEW IOS release: AFTER_APPROVAL
+== verLoc zh-Hant
+{
+ "description": "小滿記，一個簡單溫柔的習慣打卡和日記 App。每天點亮幾個小習慣，寫幾句日誌和筆記，日子就慢慢滿了。\n\n【輕輕一點就打卡】\n· 點一下圓圈完成打卡，有動畫、音效和震動反饋\n· 再點已打卡的圓圈，寫下當時的感受\n· 左右滑動切換日期，忘了也能補打卡\n· 每個習慣可以選圖示、顏色、形狀和打卡日\n\n【鬧鐘提醒，不會忘】\n· 每個習慣可以設定多個提醒時間\n· 到點響鈴，沒打卡會再提醒；已經打卡的不再打擾\n\n【筆記和心情】\n· 隨手寫筆記，記錄每天的心情\n· 回憶頁按日期翻看過去的記錄\n\n【統計與回顧】\n· 按週、月、年檢視完成率和打卡次數\n· 每週生成一份打卡總結\n\n【桌面小工具】\n· 在桌面直接打卡，打完的自動消失\n· 筆記小工具一點就寫，桌面上不顯示筆記內容\n\n【裝扮成你喜歡的樣子】\n· 多種主題、字型、圖示形狀和配色\n· 可以用自己的照片做習慣圖示（會員）\n\n【安全和隱私】\n· 不用註冊登入，資料只儲存在你的手機上\n· 支持密碼鎖和麵容 ID（會員）\n· 隨時匯出備份\n\n會員說明：\n· 年度卡（首次可免費試用 3 天）、月度卡為自動續期訂閱，到期前 24 小時內自動續費，可隨時在「設定 → Apple ID → 訂閱」中取消；永久會員為一次性購買。\n· 使用者協議：https://superql552493617.github.io/xiaoman-ios/zh-Hant/terms.html\n· 隱私政策：https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "locale": "zh-Hant",
+ "keywords": "習慣,打卡,自律,日記,筆記,提醒,鬧鐘,目標,計畫,心情,早起,健身,喝水,讀書,小工具",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "promotionalText": "每天一點點，日子慢慢滿。簡單好用的習慣打卡和日記本。",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "whatsNew": "· 修正第一次新增習慣時，點「新卡片」沒有反應的問題\n· 新手引導只在第一次使用時出現，更新後不再跳出\n· 新的預設頭像：窗台上的小黑貓\n· 意見回饋更簡潔，會員價格依介面語言顯示\n· 優化了英文介面的部分按鈕"
+}
+  shots APP_IPHONE_67 6
+== verLoc zh-Hans
+{
+ "description": "小满记，一个简单温柔的习惯打卡和日记 App。每天点亮几个小习惯，写几句日志和笔记，日子就慢慢满了。\n\n【轻轻一点就打卡】\n· 点一下圆圈完成打卡，有动画、音效和震动反馈\n· 再点已打卡的圆圈，写下当时的感受\n· 左右滑动切换日期，忘了也能补打卡\n· 每个习惯可以选图标、颜色、形状和打卡日\n\n【闹钟提醒，不会忘】\n· 每个习惯可以设置多个提醒时间\n· 到点响铃，没打卡会再提醒；已经打卡的不再打扰\n\n【笔记和心情】\n· 随手写笔记，记录每天的心情\n· 回忆页按日期翻看过去的记录\n\n【统计与回顾】\n· 按周、月、年查看完成率和打卡次数\n· 每周生成一份打卡总结\n\n【桌面小组件】\n· 在桌面直接打卡，打完的自动消失\n· 笔记小组件一点就写，桌面上不显示笔记内容\n\n【装扮成你喜欢的样子】\n· 多种主题、字体、图标形状和配色\n· 可以用自己的照片做习惯图标（会员）\n\n【安全和隐私】\n· 不用注册登录，数据只保存在你的手机上\n· 支持密码锁和面容 ID（会员）\n· 随时导出备份\n\n会员说明：\n· 年度卡（首次可免费试用 3 天）、月度卡为自动续期订阅，到期前 24 小时内自动续费，可随时在「设置 → Apple ID → 订阅」中取消；永久会员为一次性购买。\n· 用户协议：https://superql552493617.github.io/xiaoman-ios/terms.html\n· 隐私政策：https://superql552493617.github.io/xiaoman-ios/privacy.html",
+ "locale": "zh-Hans",
+ "keywords": "习惯,打卡,自律,日记,笔记,提醒,闹钟,目标,计划,心情,早起,健身,喝水,读书,小组件",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "promotionalText": "每天一点点，日子慢慢满。简单好用的习惯打卡和日记本。",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "whatsNew": "· 修复第一次添加习惯时，点「新卡片」没有反应的问题\n· 新手引导只在第一次使用时出现，更新后不再弹出\n· 新的默认头像：窗台上的小黑猫\n· 意见反馈更简洁，会员价格按界面语言显示\n· 优化了英文界面的部分按钮"
+}
+  shots APP_IPHONE_67 6
+== verLoc en-US
+{
+ "description": "Xiaoman is a simple, gentle habit tracker and journal. Light up a few small habits each day, write a few lines, and watch your days slowly fill up.\n\nCHECK IN WITH A TAP\n· Tap a circle to check in, with a little animation, sound and haptic\n· Tap a checked circle to note how it felt\n· Swipe between days to check in late if you forgot\n· Pick an icon, color, shape and repeat days for each habit\n\nREMINDERS THAT RING\n· Set several reminder times for each habit\n· It rings on time and reminds you again if you haven’t checked in; once you have, it stays quiet\n\nNOTES AND MOODS\n· Write quick notes and record your mood each day\n· Browse past days in Memories\n\nSTATS AND REVIEWS\n· See completion and check-ins by week, month and year\n· Get a weekly summary of your check-ins\n\nHOME SCREEN WIDGETS\n· Check in right from your Home Screen; finished habits disappear\n· The note widget opens today’s note in one tap and never shows your notes on the Home Screen\n\nMAKE IT YOURS\n· Themes, fonts, icon shapes and color palettes\n· Use your own photos as habit icons (Premium)\n\nPRIVATE BY DESIGN\n· No sign-up; your data stays on your phone\n· Passcode lock and Face ID (Premium)\n· Export a backup anytime\n\nAbout Premium:\n· Yearly (with a 3-day free trial for first-time subscribers) and Monthly are auto-renewing subscriptions, renewed within 24 hours before the current period ends. Cancel anytime in Settings → Apple ID → Subscriptions. Lifetime is a one-time purchase.\n· Terms of Use: https://superql552493617.github.io/xiaoman-ios/en/terms.html\n· Privacy Policy: https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "locale": "en-US",
+ "keywords": "habit,tracker,routine,daily,journal,diary,reminder,goals,mood,self care,widget,streak,planner",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "promotionalText": "A little every day, and life slowly fills up. A simple, gentle habit tracker and journal.",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "whatsNew": "· Fixed: tapping \"New card\" did nothing when adding your first habit\n· The welcome guide now only appears the first time you use the app\n· New default avatar: a little black cat on the windowsill\n· Simpler feedback page; premium prices follow your app language\n· Polished some buttons in the English interface"
+}
+  shots APP_IPHONE_67 6
+  build ('6f0150c8-39bc-40d6-9ca3-80cab065df29', '69')
+== reviewDetail
+{
+ "contactFirstName": "lang",
+ "contactLastName": "qin",
+ "demoAccountName": null,
+ "demoAccountPassword": null,
+ "demoAccountRequired": false,
+ "notes": "小满记是一款本地的习惯打卡和日记 App，不需要注册登录，所有数据只保存在用户手机上，没有服务器。\n会员（年度卡含 3 天免费试用、月度卡、永久会员）入口：我的 → 右上方「开通会员」，可在会员页底部查看用户协议和隐私政策，并可恢复购买。\n会员功能：不限习惯数量（免费版最多 4 个）、用照片做习惯图标、App 密码锁和面容 ID 解锁。\n首次打开会先请用户同意用户协议和隐私政策，然后是新手引导，可以直接点「跳过」。"
+}
+version b499750b-1e8a-473c-90bb-92b0f3bc084b 1.1 READY_FOR_SALE IOS release: MANUAL
+== verLoc zh-Hant
+{
+ "description": "小滿記，一個簡單溫柔的習慣打卡和日記 App。每天點亮幾個小習慣，寫幾句日誌和筆記，日子就慢慢滿了。\n\n【輕輕一點就打卡】\n· 點一下圓圈完成打卡，有動畫、音效和震動反饋\n· 再點已打卡的圓圈，寫下當時的感受\n· 左右滑動切換日期，忘了也能補打卡\n· 每個習慣可以選圖示、顏色、形狀和打卡日\n\n【鬧鐘提醒，不會忘】\n· 每個習慣可以設定多個提醒時間\n· 到點響鈴，沒打卡會再提醒；已經打卡的不再打擾\n\n【筆記和心情】\n· 隨手寫筆記，記錄每天的心情\n· 回憶頁按日期翻看過去的記錄\n\n【統計與回顧】\n· 按週、月、年檢視完成率和打卡次數\n· 每週生成一份打卡總結\n\n【桌面小工具】\n· 在桌面直接打卡，打完的自動消失\n· 筆記小工具一點就寫，桌面上不顯示筆記內容\n\n【裝扮成你喜歡的樣子】\n· 多種主題、字型、圖示形狀和配色\n· 可以用自己的照片做習慣圖示（會員）\n\n【安全和隱私】\n· 不用註冊登入，資料只儲存在你的手機上\n· 支持密碼鎖和麵容 ID（會員）\n· 隨時匯出備份\n\n會員說明：\n· 年度卡（首次可免費試用 3 天）、月度卡為自動續期訂閱，到期前 24 小時內自動續費，可隨時在「設定 → Apple ID → 訂閱」中取消；永久會員為一次性購買。\n· 使用者協議：https://superql552493617.github.io/xiaoman-ios/zh-Hant/terms.html\n· 隱私政策：https://superql552493617.github.io/xiaoman-ios/zh-Hant/privacy.html",
+ "locale": "zh-Hant",
+ "keywords": "習慣,打卡,自律,日記,筆記,提醒,鬧鐘,目標,計畫,心情,早起,健身,喝水,讀書,小工具",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "promotionalText": "每天一點點，日子慢慢滿。簡單好用的習慣打卡和日記本。",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/zh-Hant/",
+ "whatsNew": "小滿記支援繁體中文和英文了，可以在「設定」裡隨時切換語言。"
+}
+  shots APP_IPHONE_67 6
+== verLoc en-US
+{
+ "description": "Xiaoman is a simple, gentle habit tracker and journal. Light up a few small habits each day, write a few lines, and watch your days slowly fill up.\n\nCHECK IN WITH A TAP\n· Tap a circle to check in, with a little animation, sound and haptic\n· Tap a checked circle to note how it felt\n· Swipe between days to check in late if you forgot\n· Pick an icon, color, shape and repeat days for each habit\n\nREMINDERS THAT RING\n· Set several reminder times for each habit\n· It rings on time and reminds you again if you haven’t checked in; once you have, it stays quiet\n\nNOTES AND MOODS\n· Write quick notes and record your mood each day\n· Browse past days in Memories\n\nSTATS AND REVIEWS\n· See completion and check-ins by week, month and year\n· Get a weekly summary of your check-ins\n\nHOME SCREEN WIDGETS\n· Check in right from your Home Screen; finished habits disappear\n· The note widget opens today’s note in one tap and never shows your notes on the Home Screen\n\nMAKE IT YOURS\n· Themes, fonts, icon shapes and color palettes\n· Use your own photos as habit icons (Premium)\n\nPRIVATE BY DESIGN\n· No sign-up; your data stays on your phone\n· Passcode lock and Face ID (Premium)\n· Export a backup anytime\n\nAbout Premium:\n· Yearly (with a 3-day free trial for first-time subscribers) and Monthly are auto-renewing subscriptions, renewed within 24 hours before the current period ends. Cancel anytime in Settings → Apple ID → Subscriptions. Lifetime is a one-time purchase.\n· Terms of Use: https://superql552493617.github.io/xiaoman-ios/en/terms.html\n· Privacy Policy: https://superql552493617.github.io/xiaoman-ios/en/privacy.html",
+ "locale": "en-US",
+ "keywords": "habit,tracker,routine,daily,journal,diary,reminder,goals,mood,self care,widget,streak,planner",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "promotionalText": "A little every day, and life slowly fills up. A simple, gentle habit tracker and journal.",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/en/",
+ "whatsNew": "Xiaoman now speaks English and Traditional Chinese. Change the language anytime in Settings."
+}
+  shots APP_IPHONE_67 6
+== verLoc zh-Hans
+{
+ "description": "小满记，一个简单温柔的习惯打卡和日记 App。每天点亮几个小习惯，写几句日志和笔记，日子就慢慢满了。\n\n【轻轻一点就打卡】\n· 点一下圆圈完成打卡，有动画、音效和震动反馈\n· 再点已打卡的圆圈，写下当时的感受\n· 左右滑动切换日期，忘了也能补打卡\n· 每个习惯可以选图标、颜色、形状和打卡日\n\n【闹钟提醒，不会忘】\n· 每个习惯可以设置多个提醒时间\n· 到点响铃，没打卡会再提醒；已经打卡的不再打扰\n\n【笔记和心情】\n· 随手写笔记，记录每天的心情\n· 回忆页按日期翻看过去的记录\n\n【统计与回顾】\n· 按周、月、年查看完成率和打卡次数\n· 每周生成一份打卡总结\n\n【桌面小组件】\n· 在桌面直接打卡，打完的自动消失\n· 笔记小组件一点就写，桌面上不显示笔记内容\n\n【装扮成你喜欢的样子】\n· 多种主题、字体、图标形状和配色\n· 可以用自己的照片做习惯图标（会员）\n\n【安全和隐私】\n· 不用注册登录，数据只保存在你的手机上\n· 支持密码锁和面容 ID（会员）\n· 随时导出备份\n\n会员说明：\n· 年度卡（首次可免费试用 3 天）、月度卡为自动续期订阅，到期前 24 小时内自动续费，可随时在「设置 → Apple ID → 订阅」中取消；永久会员为一次性购买。\n· 用户协议：https://superql552493617.github.io/xiaoman-ios/terms.html\n· 隐私政策：https://superql552493617.github.io/xiaoman-ios/privacy.html",
+ "locale": "zh-Hans",
+ "keywords": "习惯,打卡,自律,日记,笔记,提醒,闹钟,目标,计划,心情,早起,健身,喝水,读书,小组件",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "promotionalText": "每天一点点，日子慢慢满。简单好用的习惯打卡和日记本。",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "whatsNew": "小满记支持繁体中文和英文了，可以在「设置」里随时切换语言。\n另外优化了一些细节，修复了已知问题。"
+}
+  shots APP_IPHONE_67 6
+  build ('834bc136-1c4a-4bdc-b28c-aef36d3d86f4', '66')
+== reviewDetail
+{
+ "contactFirstName": "lang",
+ "contactLastName": "qin",
+ "demoAccountName": null,
+ "demoAccountPassword": null,
+ "demoAccountRequired": false,
+ "notes": "小满记是一款本地的习惯打卡和日记 App，不需要注册登录，所有数据只保存在用户手机上，没有服务器。\n会员（年度卡含 3 天免费试用、月度卡、永久会员）入口：我的 → 右上方「开通会员」，可在会员页底部查看用户协议和隐私政策，并可恢复购买。\n会员功能：不限习惯数量（免费版最多 4 个）、用照片做习惯图标、App 密码锁和面容 ID 解锁。\n首次打开会先请用户同意用户协议和隐私政策，然后是新手引导，可以直接点「跳过」。"
+}
+version 31c6a80e-bcee-47a1-bbb9-79748d9b41e1 1.0 READY_FOR_SALE IOS release: AFTER_APPROVAL
+== verLoc zh-Hans
+{
+ "description": "小满记，一个简单温柔的习惯打卡和日记 App。每天点亮几个小习惯，写几句日志和笔记，日子就慢慢满了。\n\n【轻轻一点就打卡】\n· 点一下圆圈完成打卡，有动画、音效和震动反馈\n· 再点已打卡的圆圈，写下当时的感受\n· 左右滑动切换日期，忘了也能补打卡\n· 每个习惯可以选图标、颜色、形状和打卡日\n\n【闹钟提醒，不会忘】\n· 每个习惯可以设置多个提醒时间\n· 到点响铃，没打卡会再提醒；已经打卡的不再打扰\n\n【笔记和心情】\n· 随手写笔记，记录每天的心情\n· 回忆页按日期翻看过去的记录\n\n【统计与回顾】\n· 按周、月、年查看完成率和打卡次数\n· 每周生成一份打卡总结\n\n【桌面小组件】\n· 在桌面直接打卡，打完的自动消失\n· 笔记小组件一点就写，桌面上不显示笔记内容\n\n【装扮成你喜欢的样子】\n· 多种主题、字体、图标形状和配色\n· 可以用自己的照片做习惯图标（会员）\n\n【安全和隐私】\n· 不用注册登录，数据只保存在你的手机上\n· 支持密码锁和面容 ID（会员）\n· 随时导出备份\n\n会员说明：\n· 年度卡（首次可免费试用 3 天）、月度卡为自动续期订阅，到期前 24 小时内自动续费，可随时在「设置 → Apple ID → 订阅」中取消；永久会员为一次性购买。\n· 用户协议：https://superql552493617.github.io/xiaoman-ios/terms.html\n· 隐私政策：https://superql552493617.github.io/xiaoman-ios/privacy.html",
+ "locale": "zh-Hans",
+ "keywords": "习惯,打卡,自律,日记,笔记,提醒,闹钟,目标,计划,心情,早起,健身,喝水,读书,小组件",
+ "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "promotionalText": "每天一点点，日子慢慢满。简单好用的习惯打卡和日记本。",
+ "supportUrl": "https://superql552493617.github.io/xiaoman-ios/",
+ "whatsNew": null
+}
+  shots APP_IPHONE_67 6
+  build ('45b2486e-8765-4f0c-8bcf-9e7eed02b572', '62')
+== reviewDetail
+{
+ "contactFirstName": "lang",
+ "contactLastName": "qin",
+ "demoAccountName": null,
+ "demoAccountPassword": null,
+ "demoAccountRequired": false,
+ "notes": "小满记是一款本地的习惯打卡和日记 App，不需要注册登录，所有数据只保存在用户手机上，没有服务器。\n会员（年度卡含 3 天免费试用、月度卡、永久会员）入口：我的 → 右上方「开通会员」，可在会员页底部查看用户协议和隐私政策，并可恢复购买。\n会员功能：不限习惯数量（免费版最多 4 个）、用照片做习惯图标、App 密码锁和面容 ID 解锁。\n首次打开会先请用户同意用户协议和隐私政策，然后是新手引导，可以直接点「跳过」。"
+}
+build 6f0150c8-39bc-40d6-9ca3-80cab065df29 69 VALID False False
+build 21d63606-e976-45e0-a45d-66266f680d3e 68 VALID False False
+build 06fd0dd3-ab06-445f-a8c6-542e4dba5e88 67 VALID False False
+build 834bc136-1c4a-4bdc-b28c-aef36d3d86f4 66 VALID False False
+build 940f04ba-5e85-4361-a916-918bfd873fe8 65 VALID False False
+availability {'availableInNewTerritories': False}
+territories available: 175 ['SLE', 'GHA', 'TJK', 'VNM', 'XKS', 'SLV', 'AZE', 'CYM', 'GAB', 'NZL']
+priceSchedule 6824745672 ['territories:CHN', 'appPrices:eyJzIjoiNjgyNDc0NTY3MiIsInQiOiJDSE4iLCJwIjoiMTAwMDAiLCJzZCI6MC4wLCJlZCI6MC4wfQ']
+subGroup 小满会员 locs ['en-US:APPROVED', 'en-US:PREPARE_FOR_SUBMISSION', 'zh-Hans:APPROVED', 'zh-Hans:PREPARE_FOR_SUBMISSION', 'zh-Hant:PREPARE_FOR_SUBMISSION']
+  sub site.xiaomanhabit.app.vip.year APPROVED
+  sub site.xiaomanhabit.app.vip.month APPROVED
+iap site.xiaomanhabit.app.vip.life APPROVED
+reviewSubmission 53ea2b6f-a7db-4808-8576-d49902563b74 WAITING_FOR_REVIEW IOS
+reviewSubmission 67237489-a71f-459c-9383-dfd8ecc91619 COMPLETE IOS
+reviewSubmission c1917e12-ed5d-4f45-bf22-7a65aa00546c COMPLETE IOS
+reviewSubmission 28b292ef-be07-452c-849e-70609ae4074b COMPLETE IOS
+reviewSubmission b2513c2c-5f38-4856-a180-c21bda944253 COMPLETE IOS
+reviewSubmission d9e5d0a0-5374-41a7-932f-33b68aadc768 COMPLETE IOS
