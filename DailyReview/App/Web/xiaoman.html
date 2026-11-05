@@ -743,6 +743,10 @@ body.dark .tray-head .th-add{background:#3A3016!important;color:#F5D57B!importan
 .tray-head .th-flat svg{width:18px;height:18px;filter:none!important}
 body.dark .tray-head #flatBtn,body.dark .tray-head .th-add{color:#98989D!important}
 .tray-head .th-flat:active{opacity:.5}
+
+/* 编辑页顶栏：按钮文字不换行，放不下时由 fitBtn() 缩小字号 */
+.ep-bar{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.ep-save,.ep-bar .ep-link{white-space:nowrap;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -2404,6 +2408,8 @@ checkIn(id);
 · 今天的打卡全部完成的那一刻，并且累计打卡满 7 天；
 · 或者刚开通会员（累计打卡满 3 天）。
 每个版本最多请求一次，两次之间至少隔 90 天；苹果自己还限制一年最多弹 3 次，所以不保证每次都会出现。 */
+/* 按钮文字太长时缩小字号（最小 11px），仍放不下才显示省略号 */
+function fitBtn(b){if(!b)return;requestAnimationFrame(()=>{b.style.fontSize='';let fs=parseFloat(getComputedStyle(b).fontSize)||15;let n=0;while(b.scrollWidth>b.clientWidth+1&&fs>11&&n++<10){fs-=1;b.style.fontSize=fs+'px'}})}
 function checkedDays(){let n=0;for(const k in (S.records||{})){const day=S.records[k];if(Object.values(day).some(r=>r&&r.checked))n++}return n}
 function maybeAskReview(why){
 if(!IN_APP)return;
@@ -2863,7 +2869,7 @@ if(!same&&!isN){const T=TODAY(),H=(c.daysHist||[]).filter(h=>h.until<T);H.push({
 c.pauses=orig.pauses;if(!c.pauses)delete c.pauses;Object.assign(orig,c);if(!orig.pauses)delete orig.pauses;delete orig.reminder;toast(offToday?'已保存。今天不在循环日里，打卡页今天不会显示它':'已保存')}
 save();close();
 };
-$('#dOk',pg).onclick=doSave;$('#dOk2',pg).onclick=doSave;
+requestAnimationFrame(()=>fitBtn($('#dOk',pg)));$('#dOk',pg).onclick=doSave;$('#dOk2',pg).onclick=doSave;
 $('#dDel',pg)&&($('#dDel',pg).onclick=()=>plainConfirm(`删除“${esc(orig.name)}”？`,'所有日期里的这张卡片都会删除，打卡记录和日志也一起删除，不能恢复。','删除',()=>{
 deleteCardForever(orig.id);close();toast('卡片已删除')}));
 const drawPz=()=>{const t=$('#dPzT',pg),sm=$('#dPzS',pg);if(!t)return;const cc=cardById(orig.id),ap=activePause(cc),now=pausedOn(cc,TODAY());
@@ -2881,7 +2887,7 @@ $('#kHint',pg)&&($('#kHint',pg).innerHTML=n?'<b>记录卡片</b>：只在创建�
 :'<b>打卡卡片</b>：按循环日出现在打卡页，适合每天要坚持的习惯。计入周、月、年的打卡统计，并显示在习惯管理里。');
 $('#daysSec',pg).style.display=n?'none':'';$('#remBox',pg).style.display=n?'none':'';
 $('#dNameL',pg).textContent=n?'记录名称':'打卡名称';$('#dName',pg).placeholder=n?'比如：今天的心得':'输入打卡名称…';
-const lbl=isNew?(n?'创建记录':'创建打卡'):'保存';$('#dOk',pg).textContent=lbl;$('#dOk2',pg).textContent=lbl;
+const lbl=isNew?(n?'创建记录':'创建打卡'):'保存';$('#dOk',pg).textContent=lbl;$('#dOk2',pg).textContent=lbl;fitBtn($('#dOk',pg));
 
 };
 $$('#kType button',pg).forEach(b=>b.onclick=()=>{c.type=b.dataset.k;drawType();buzz()});
