@@ -1999,5 +1999,6 @@
 "周末 {}": "Weekends {0}",
 "相册": "Photo",
 "可以生成 {} 的总结": "{0} summary ready to generate",
-"可以生成{}的总结": "{0} summary ready to generate"
+"可以生成{}的总结": "{0} summary ready to generate",
+"还没有设置头像，正在使用默认头像。": "No photo yet, using the default avatar."
 }
