@@ -7,7 +7,7 @@
  "promotionalText": "每天一点点，日子慢慢满。简单好用的习惯打卡和日记本。",
  "supportUrl": "https://superql552493617.github.io/xiaoman-ios/",
  "marketingUrl": "https://superql552493617.github.io/xiaoman-ios/",
- "whatsNew": "小满记支持繁体中文和英文了，可以在「设置」里随时切换语言。\n另外优化了一些细节，修复了已知问题。",
+ "whatsNew": "· 修复第一次添加习惯时，点「新卡片」没有反应的问题\n· 新的默认头像：窗台上的小黑猫\n· 意见反馈更简洁，会员价格按界面语言显示\n· 优化了英文界面的部分按钮",
  "group": "小满会员",
  "iap": {}
 }
