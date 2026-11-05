@@ -554,3 +554,13 @@ if MODE == "iapterr":
             ts, _ = all_pages(f"/v1/inAppPurchaseAvailabilities/{j['data']['id']}/availableTerritories", {"limit": 200}); n = len(ts)
         print("iap", p["attributes"]["productId"], "territories", n, j and j.get("data", {}).get("attributes"))
     st = api("GET", f"/v1/apps/{aid}/appAvailabilityV2"); print("app avail", st and st["data"]["attributes"])
+if MODE == "builds":
+    aid = app_id()
+    bl, _ = all_pages("/v1/builds", {"filter[app]": aid, "sort": "-uploadedDate", "limit": 3, "include": "preReleaseVersion,buildBetaDetail"})
+    for b in bl:
+        a = b["attributes"]
+        print("build", a["version"], a.get("processingState"), "uploaded", a.get("uploadedDate"), "expired", a.get("expired"), "encryption", a.get("usesNonExemptEncryption"))
+        d = api("GET", f"/v1/builds/{b['id']}/buildBetaDetail")
+        if d and d.get("data"): print("  beta", d["data"]["attributes"])
+        pv = api("GET", f"/v1/builds/{b['id']}/preReleaseVersion")
+        if pv and pv.get("data"): print("  version", pv["data"]["attributes"].get("version"))
